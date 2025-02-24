@@ -52,8 +52,11 @@ main {
     width: 100px;
     height: 100px; /* 버튼 높이 설정 (원하는 높이로 조정 가능) */
 }
-.mode-button:hover {
+.skill-button:hover {
     background: #f2b179; /* 호버 시 배경 색상 변화 */
+}
+.skill-button.selected {
+    background: #d28265; /* 클릭 시 진한 색상 */
 }
 
 .skills-container {
