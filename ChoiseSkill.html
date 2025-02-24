@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리버스 2048</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/ChoiseSkill.css">
+</head>
+
+<body>
+
+    <head>
+
+    </head>
+    <main>
+        <div class="text-container">
+            <h2 id="map-size"></h2>
+            <p>스킬을 1개 선택하세요</p>
+        </div>
+        <div class="skills-container">
+            <button class="skill-button" onclick="choiseSkill('0타일')">0타일</button>
+            <button class="skill-button" onclick="choiseSkill('시간 증폭')">시간 증폭</button>
+            <button class="skill-button" onclick="choiseSkill('쉴드')">쉴드</button>
+            <button class="skill-button" onclick="choiseSkill('전체 쉴드')">전체 쉴드</button>
+            <button class="skill-button" onclick="choiseSkill('폭탄')">폭탄</button>
+            <button class="skill-button" onclick="choiseSkill('고정')">고정</button>
+            <button class="skill-button" onclick="choiseSkill('마인드 컨트롤')">마인드 컨트롤</button>
+            <button class="skill-button" onclick="choiseSkill('타일 값 2배')">타일 값 2배</button>
+            <button class="skill-button" onclick="choiseSkill('연속 공격')">연속 공격</button>
+            <button class="skill-button" onclick="choiseSkill('미선택')">미선택</button>
+        </div>
+        <div class="text-container">
+            <p>선택된 스킬</p>
+            <p>아이콘 + 설명</p>
+        </div>
+        <div class="button-container">
+            <button class="start-button" onclick="startGame()">게임 시작</button>
+        </div>
+    </main>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const setSize = localStorage.getItem('gameSize'); // localStorage에서 게임 사이즈 가져오기
+        const setSkill = '0타일';
+
+        // 게임 사이즈를 화면에 표시
+        document.getElementById("map-size").textContent = `${setSize}x${setSize} 게임 모드`;
+
+        function choiseSkill(skill) {
+            // 게임 스킬을 localStorage에 저장
+            localStorage.setItem('gameSkill', skill);
+        }
+
+        function startGame() {
+            // 인게임 화면으로 이동
+            window.location.href = `index.html`;
+        }
+    </script>
+</body>
+
+</html>
