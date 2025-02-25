@@ -53,10 +53,6 @@ export class Tile {
 
     setValue(value){
         this.value = value;
-        if (this.value !== null){
-            console.log(value);
-        }
-
         this.div.textContent = value;
     }
 
