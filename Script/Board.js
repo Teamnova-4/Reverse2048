@@ -2,7 +2,7 @@ import { Tile } from './main.js';
 
 let insertTile;
 
-let turn
+let turn= 0;
 let CurrentGameState;
 
 let gridSize = 4;
@@ -99,8 +99,13 @@ function setCurrentState(state) {
 }
 
 function finishTurn(){
+    // 턴 증가
     turn += 1;
+    document.getElementById("turn").innerText = turn;
+    // 쿨타임 감소
     if (coolTime > 0) {coolTime -= 1;}
+    document.getElementById("cooltime").innerText = coolTime;
+    // 다음 턴 준비
     setCurrentState("Control");
 }
 
