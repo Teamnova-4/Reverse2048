@@ -1,6 +1,5 @@
 import { Tile } from './main.js';
 
-let skill;
 let insertTile;
 
 let turn
@@ -13,10 +12,26 @@ let BestMove;
 
 let timer;
 
+//스킬 변수
+let playerSkill = "fullShield";
+let playerSkillCoolTime = 1;
+let coolTime = 0;
+/**
+ * 플레이어 가 스페이스 바를 눌렀을떄 실행되고 각자
+ * 다른 실행방식이 있다 
+ * 현제 기간이 길지 않고
+ * 스킬 개수의 증가 가능성이 0에 수렴하다 보니
+ * 스파게티 코드 형식으로 만들겠다
+ * 
+ */
 document.addEventListener("keydown", (event)=>{
-    console.log( event.key );
-    if (CurrentGameState === "Control" && event.key === "space"){
-        //스킬 사용코드
+    if (CurrentGameState === "Control" && event.key === " "){
+        if(coolTime === 0){
+            coolTime = playerSkillCoolTime;
+            UseSkill();
+        } else {
+            console.log(`coolTime : ${coolTime}`);
+        }
     }
 });
 
@@ -29,6 +44,14 @@ function startGame(){
 function initSkill() {
 
 }
+function DrawBoard(){
+    board.forEach((row) => {
+        row.forEach((tile) => {
+            tile.assignValue();
+        });
+    });
+}
+
 function initBoard() {
     board = new Array(gridSize).fill(null).map(() => new Array(gridSize).fill(0));
     const grid = document.getElementById("grid");
@@ -66,18 +89,19 @@ function setCurrentState(state) {
         case "Move":
             move();
             break;
+        case"FinishTurn":
+            finishTurn();
+            break
         case "End":
-            turn += 1;
             break;
     }
+    DrawBoard();
 }
 
-function drawBoard(){
-
-}
-
-function getTile (r, c) {
-
+function finishTurn(){
+    turn += 1;
+    if (coolTime > 0) {coolTime -= 1;}
+    setCurrentState("Control");
 }
 
 function startTimer(){
@@ -101,7 +125,7 @@ function showHtmlTimeCount(countTime){
 }
 
 function placeTile(tile){
-    if (CurrentGameState === "Control") {
+    if ( tile.value === null&& CurrentGameState === "Control") {
         tile.insertTile(insertTile);
         setCurrentState("FinishControl");
     }
@@ -117,7 +141,6 @@ function simulate() {
         let tempBoard = board.map(row => [...row]);
         let tempScore = 0;
         tempScore = simulateDirection(tempBoard, direction);
-        console.log(`${direction} score: ${tempScore}`);
         if (tempScore > maxMergeScore) {
             maxMergeScore = tempScore;
             bestMoves = [direction];
@@ -170,7 +193,7 @@ function move() {
         if (BestMove === 'right' || BestMove === 'down') { line.reverse(); }
     }
 
-    setCurrentState("Control");
+    setCurrentState("FinishTurn");
 }
 
 
@@ -178,5 +201,50 @@ function endGame(){
 
 }
 
+//스킬 사용 함수
+function UseSkill() {
+    switch (playerSkill) {
+        case "zeroTile":
+            insertTile = 0;
+            break;
+        case "shield":
+            // 선택필요 스킬
+            break;
+        case "fullShield":
+            board.forEach(row => { 
+                row.forEach(tile => { 
+                    if (tile.value !== null){
+                        tile.value.isShield = true; 
+                    }
+                });
+            });
+            break;
+        case "bomb":
+            insertTile = "bomb";
+            break;
+        case "fix":
+            // 선택필요 스킬
+            break;
+        case "mindControl":
+            // 선택필요 스킬
+            break;
+        case "double":
+            // 선택필요 스킬
+            break;
+        case "sequence":
+            // 기존 시스탬 변경필요 
+            break;
+        default:
+    }
+    DrawBoard();
+}
+
+function reduceCoolTime(){
+    coolTime -= 1;
+}
+function setSkill(param1, param2) {
+    playerSkill = param1;
+    playerSkillCoolTime = param2;
+}
 export { setCurrentState };
 export { CurrentGameState };

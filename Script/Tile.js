@@ -1,5 +1,22 @@
 import { CurrentGameState } from "./main.js";
 
+export class Value {
+    constructor(value) {
+        this.value = value;
+        this.isShield = false;
+    }
+
+
+    isEqual(value) {
+        if (!isNaN(value)) {
+            return this.value === value;
+        } else if (value instanceof Value){
+            return this.value === value.value;
+        }
+        return false;
+    }
+}
+
 export class Tile {
     static isChanged;
 
@@ -48,12 +65,24 @@ export class Tile {
     }
 
     insertTile(value) {
-        this.setValue(value);
+        this.setValue(new Value(value));
     }
 
     setValue(value){
         this.value = value;
-        this.div.textContent = value;
+        if (value === null || this.div.textContent === undefined){
+            this.div.textContent = null;
+        }else {
+            this.div.textContent = value.value;
+        }
+        this.assignValue();
+    }
+
+    assignValue() {
+        if(this.value === null)
+            return;
+
+        this.div.style=`color: ${this.value.isShield ? "red" : "black"}`;
     }
 
     mergeEffect() {
@@ -77,8 +106,6 @@ export class Tile {
         return tile1Val === tile2Val;
     }
 
-    getValue() {
-    }
 
 
     startCheckValueChange(value = null) {
@@ -94,7 +121,7 @@ export class Tile {
     }
 
     endCheckValueChange() {
-        const result = !(this.checkValue === null || this.checkValue.length === 0 || this.checkValue.every(v => v === this.checkValue[0]));
+        const result = !(this.checkValue === null || this.checkValue.length === 0 || this.checkValue.every(v => v.value === this.checkValue[0].value));
         this.checkValue = null;
         return
     }
@@ -102,12 +129,12 @@ export class Tile {
     static merge(tile1Val, tile2Val) {
         let result = null; 
         let score = 0;
-        if (Number.isNaN(tile1Val)){
+        if (isNaN(tile1Val.value)){
             switch(tile1Val){
             }
         } else {
-            result = tile1Val + tile2Val;
-            score = result;
+            result = new Value(tile1Val.value + tile2Val.value);
+            score = tile1Val.value + tile2Val.value;
         }
         return {result, score};
     }
@@ -120,7 +147,7 @@ export class Tile {
         // 1. null이 아닌 value들을 원래 순서대로 추출
         const nonNullValues = arr.reduce((acc, instance) => {
             if (instance.value !== null) {
-            acc.push(instance.value);
+                acc.push(instance.value);
             }
             return acc;
         }, []);
@@ -128,8 +155,17 @@ export class Tile {
         // 2. 좌측부터 인접한 같은 숫자 병합 (한 번 병합된 값은 재병합 불가)
         const mergedValues = [];
         for (let i = 0; i < nonNullValues.length; i++) {
-            if (i < nonNullValues.length - 1 && nonNullValues[i] == nonNullValues[i + 1]) {
-                mergedValues.push(Tile.merge(nonNullValues[i], nonNullValues[i + 1]).result);
+            if (i < nonNullValues.length - 1 && nonNullValues[i].isEqual(nonNullValues[i + 1])) {
+                //쉴드 스킬 사용 체크
+                if(!(nonNullValues[i].isShield || nonNullValues[i+1].isShield)){
+                    mergedValues.push(Tile.merge(nonNullValues[i], nonNullValues[i + 1]).result);
+                } else {
+                    //쉴드 제거
+                    nonNullValues[i].isShield = false;
+                    nonNullValues[i+1].isShield = false;
+                    mergedValues.push(nonNullValues[i]);
+                    mergedValues.push(nonNullValues[i+1]);
+                }
                 i++; // 병합에 사용된 다음 값을 건너뜀
             } else {
                 mergedValues.push(nonNullValues[i]);
@@ -141,7 +177,6 @@ export class Tile {
         for (let i = 0; i < arr.length; i++) {
             arr[i].setValue((i < mergedValues.length) ? mergedValues[i] : null);
         }
-        
         return arr;
     }
 
@@ -162,10 +197,10 @@ export class Tile {
         
         // 2. 좌측부터 인접한 같은 숫자 병합 (한 번 병합된 값은 재병합 불가)
         for (let i = 0; i < nonNullValues.length; i++) {
-            if (nonNullValues[i] !== arr[i].value)
+            if (!nonNullValues[i].isEqual(arr[i].value))
                 Tile.isChanged = true;
-            if (i < nonNullValues.length - 1 && nonNullValues[i] == nonNullValues[i + 1]) {
-                mergedScore += this.merge(nonNullValues[i], nonNullValues[i + 1]).score;
+            if (i < nonNullValues.length - 1 && nonNullValues[i].isEqual(nonNullValues[i + 1])) {
+                mergedScore += 1 + this.merge(nonNullValues[i], nonNullValues[i + 1]).score;
                 Tile.isChanged = true;
                 i++; // 병합에 사용된 다음 값을 건너뜀
             }
