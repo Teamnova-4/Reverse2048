@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column; /* 세로 방향으로 정렬 */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #faf8ef;
+}
+head {
+    width: 80%;
+    max-width: 1200px;
+}
+main {
+    width: 80%;
+    max-width: 1200px;
+}
+
+.container {
+    text-align: center;
+}
+
+/* 상단 버튼 스타일 */
+.top-button-container {
+    display: flex; /* 버튼을 가로로 배치 */
+    justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
+    margin: 0 auto; /* 중앙 정렬을 위해 자동 여백 설정 */
+    position: fixed; /* 스크롤 시에도 항상 상단에 고정 */
+    top: 20px; /* 상단에서 20px 떨어지도록 설정 */
+    left: 0; /* 왼쪽에 붙도록 설정 */
+    right: 0; /* 오른쪽에 붙도록 설정 */
+    max-width: 1200px; /* 최대 너비 설정 */
+    background: #faf8ef; /* 배경색 설정 (필요에 따라 조정) */
+    z-index: 10; /* 다른 요소 위에 표시되도록 설정 */
+}
+
+.top-button-container button {
+    margin-left: 10px; /* 버튼 간격 설정 */
+}
+
+/* 텍스트 스타일 */
+.text-container {
+    margin: 20px; /* 텍스트 박스의 여백 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+.text-container h2 {
+    font-size: 50px; /* 제목 글자 크기 */
+    color: #7d7267; /* 제목 글자 색상 */
+    margin-bottom: 10px; /* 제목 아래 여백 */
+}
+.text-container p {
+    font-size: 24px; /* 본문 글자 크기 */
+    color: #bbada0; /* 본문 글자 색상 */
+    line-height: 1.5; /* 줄 간격 */
+}
+
+/* 중앙 게임모드 선택 버튼 스타일 */
+.gamemode-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px; /* 버튼 위쪽 여백 */
+    margin-bottom: 50px; /* 버튼 아래쪽 여백 */
+}
+.mode-button {
+    background: #bbada0; /* 배경 색상 */
+    color: white; /* 글자 색상 */
+    border: none;
+    border-radius: 5px;
+    padding: 15px 30px; /* 버튼 패딩 */
+    font-size: 18px; /* 글자 크기 */
+    margin: 0 10px; /* 버튼 간격 */
+    cursor: pointer; /* 커서 모양 변경 */
+    transition: background 0.3s; /* 배경 색상 변화 효과 */
+}
+.mode-button:hover {
+    background: #f2b179; /* 호버 시 배경 색상 변화 */
+}
