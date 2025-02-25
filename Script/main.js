@@ -1,9 +1,6 @@
+import { CurrentGameState, setCurrentState } from "./Board.js";
 import { Tile, Value } from "./Tile.js";
-import { CurrentGameState } from "./Board.js";
-import { setCurrentState } from "./Board.js";
 
-export { Tile, Value };
-export { CurrentGameState};
-export { setCurrentState };
+export { CurrentGameState, setCurrentState, Tile, Value };
 
 setCurrentState("Start");
