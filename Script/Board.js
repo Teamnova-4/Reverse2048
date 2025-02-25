@@ -1,12 +1,13 @@
 import { Tile } from './main.js';
+import { playSound } from './Sound.js';
 
 let insertTile;
 
-let turn= 0;
+let turn = 0;
 let CurrentGameState;
 
 let gridSize = 4;
-let board; 
+let board;
 
 let BestMove;
 
@@ -26,9 +27,9 @@ let coolTime = 0;
  * 스파게티 코드 형식으로 만들겠다
  * 
  */
-document.addEventListener("keydown", (event)=>{
-    if (CurrentGameState === "Control" && event.key === " "){
-        if(coolTime === 0){
+document.addEventListener("keydown", (event) => {
+    if (CurrentGameState === "Control" && event.key === " ") {
+        if (coolTime === 0) {
             coolTime = playerSkillCoolTime;
             UseSkill();
         } else {
@@ -37,9 +38,9 @@ document.addEventListener("keydown", (event)=>{
     }
 });
 
-function startGame(){
-    gameTime = 0;
-    startGameTimer();
+
+function startGame() {
+
     initSkill();
     initBoard();
 }
@@ -47,7 +48,7 @@ function startGame(){
 function initSkill() {
 
 }
-function DrawBoard(){
+function DrawBoard() {
     board.forEach((row) => {
         row.forEach((tile) => {
             tile.assignValue();
@@ -63,8 +64,11 @@ function initBoard() {
         for (let c = 0; c < gridSize; c++) {
             const cell = document.createElement("div");
             cell.className = "tile";
-            board[r][c] = new Tile(r, c, cell); 
-            cell.addEventListener("click", () => placeTile(board[r][c]));
+            board[r][c] = new Tile(r, c, cell);
+            cell.addEventListener("click", () => {
+                playSound('place');
+                placeTile(board[r][c]);
+            });
             grid.appendChild(cell);
         }
     }
@@ -73,7 +77,7 @@ function initBoard() {
 function setCurrentState(state) {
     CurrentGameState = state;
     console.log(CurrentGameState);
-    switch(CurrentGameState) {
+    switch (CurrentGameState) {
         case "Start":
             startGameTimer();
             initBoard();
@@ -86,7 +90,7 @@ function setCurrentState(state) {
             break;
         case "FinishControl":
             clearInterval(timer);
-            setTimeout(() => {setCurrentState("Simulate")},1000);
+            setTimeout(() => { setCurrentState("Simulate") }, 1000);
             break;
         case "Simulate":
             simulate()
@@ -94,7 +98,7 @@ function setCurrentState(state) {
         case "Move":
             move();
             break;
-        case"FinishTurn":
+        case "FinishTurn":
             finishTurn();
             break
         case "End":
@@ -103,18 +107,18 @@ function setCurrentState(state) {
     DrawBoard();
 }
 
-function finishTurn(){
+function finishTurn() {
     // 턴 증가
     turn += 1;
     document.getElementById("turn").innerText = turn;
     // 쿨타임 감소
-    if (coolTime > 0) {coolTime -= 1;}
+    if (coolTime > 0) { coolTime -= 1; }
     document.getElementById("cooltime").innerText = coolTime;
     // 다음 턴 준비
     setCurrentState("Control");
 }
 
-function startTimer(){
+function startTimer() {
     showHtmlTimeCount(0);
     let countTime = 0;
     let timer = setInterval(() => {
@@ -123,14 +127,14 @@ function startTimer(){
         // 1초마다 event3 실행
         showHtmlTimeCount(countTime);
 
-        if ( (countTime % 6) == 0 ) {
+        if ((countTime % 6) == 0) {
             //console.log("6초마다 event3 실행");
-        } 
+        }
     }, 1000);
     return timer;
 }
 
-function showHtmlTimeCount(countTime){
+function showHtmlTimeCount(countTime) {
     //console.log("ShowHtmlTimeCOunt " + countTime);
     // 턴마다 6초 제한 표시
     // 6초에서 카운트다운 되는 형식으로 제한시간 표시
@@ -138,8 +142,8 @@ function showHtmlTimeCount(countTime){
     document.getElementById('limit').innerText= remainingTime;
 }
 
-function placeTile(tile){
-    if ( tile.value === null&& CurrentGameState === "Control") {
+function placeTile(tile) {
+    if (tile.value === null && CurrentGameState === "Control") {
         tile.insertTile(insertTile);
         setCurrentState("FinishControl");
     }
@@ -185,7 +189,7 @@ function simulateDirection(tempBoard, direction) {
             line = tempBoard[i];
         }
 
-        if(direction === 'right' || direction === 'down'){
+        if (direction === 'right' || direction === 'down') {
             line.reverse();
         }
 
@@ -195,13 +199,14 @@ function simulateDirection(tempBoard, direction) {
 }
 
 function move() {
+    playSound('move');
     for (let i = 0; i < gridSize; i++) {
         let line = [];
         if (BestMove === 'up' || BestMove === 'down') {
             line = board.map(row => row[i]);
         } else {
             line = board[i];
-        } 
+        }
         if (BestMove === 'right' || BestMove === 'down') { line.reverse(); }
         line = Tile.mergeList(line);
         if (BestMove === 'right' || BestMove === 'down') { line.reverse(); }
@@ -211,7 +216,7 @@ function move() {
 }
 
 
-function endGame(){
+function endGame() {
 
 }
 
@@ -226,10 +231,10 @@ function UseSkill() {
             // 선택필요 스킬
             break;
         case "fullShield":
-            board.forEach(row => { 
-                row.forEach(tile => { 
-                    if (tile.value !== null){
-                        tile.value.isShield = true; 
+            board.forEach(row => {
+                row.forEach(tile => {
+                    if (tile.value !== null) {
+                        tile.value.isShield = true;
                     }
                 });
             });
@@ -254,7 +259,7 @@ function UseSkill() {
     DrawBoard();
 }
 
-function reduceCoolTime(){
+function reduceCoolTime() {
     coolTime -= 1;
 }
 function setSkill(param1, param2) {

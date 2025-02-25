@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style href="./css/style.css"></style>
     <title>Document</title>
     <link rel="stylesheet" href="./css/index.css">
-    <style>
-        
-    </style>
 </head>
 <script type="module" src="./Script/main.js"></script>
+
 <body>
+    <!-- 스피커 버튼 -->
+    <div class="speaker-button" onclick="toggleSound()">
+        <div class="speaker-icon" id="speakerIcon"></div>
+    </div>
+
     <div>
         <div class="container">
             <h2 style="font-size: 50px; margin: 20px auto;">리버스 2048</h2>
@@ -36,13 +39,17 @@
             <div class="grid" id="grid"></div>
         </div>
         <div class="container">
-            <div class="cooltime"><span style="display: inline-block; padding: 7px 17px; background: #e8e8e8; border: 1px solid #999; border-radius: 4px; font-size: 25px; color: #333;">Space Bar</span> <span id="skill">스킬명</span> [쿨타임 <span id="cooltime">0</span>]</div>
+            <div class="cooltime"><span
+                    style="display: inline-block; padding: 7px 17px; background: #e8e8e8; border: 1px solid #999; border-radius: 4px; font-size: 25px; color: #333;">Space
+                    Bar</span> <span id="skill">스킬명</span> [쿨타임 <span id="cooltime">0</span>]</div>
         </div>
     </div>
-    
+
     <script>
-        let skillName= localStorage.getItem('gameSkill');
-        document.getElementById('skill').innerText= skillName;
+        let skillName = localStorage.getItem('gameSkill');
+        document.getElementById('skill').innerText = skillName;
     </script>
+    <script type="module" src="./Script/Sound.js"></script>
 </body>
+
 </html>

@@ -81,3 +81,31 @@ body {
     justify-content: space-between;
     align-items: end;
 }
+
+ /* 스피커 버튼 스타일 */
+ .speaker-button {
+    position: fixed; /* 화면 고정 */
+    top: 10px;       /* 상단 여백 */
+    right: 10px;     /* 오른쪽 여백 */
+    width: 40px;     /* 너비 */
+    height: 40px;    /* 높이 */
+    background-color: #eee; /* 배경색 */
+    border-radius: 50%;   /* 둥근 모서리 */
+    display: flex;     /* 내부 요소 정렬 */
+    justify-content: center; /* 가로 가운데 정렬 */
+    align-items: center;   /* 세로 가운데 정렬 */
+    cursor: pointer;     /* 마우스 커서 변경 */
+    z-index: 1000;      /* 다른 요소 위에 표시 */
+}
+
+.speaker-button:hover {
+    background-color: #ccc; /* 호버 효과 */
+}
+
+.speaker-icon {
+    width: 24px;   /* 아이콘 너비 */
+    height: 24px;  /* 아이콘 높이 */
+    background-image: url('../assets/images/s_on.svg'); /* SVG 아이콘 */
+    background-size: cover; /* 이미지 크기 조절 */
+    background-repeat: no-repeat; /* 이미지 반복 방지 */
+}
