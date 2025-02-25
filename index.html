@@ -5,75 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style href="./css/style.css"></style>
     <title>Document</title>
+    <link rel="stylesheet" href="css/index.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #faf8ef;
-        }
-        .container {
-            text-align: center;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, 100px);
-            grid-template-rows: repeat(4, 100px);
-            gap: 10px;
-            background: #bbada0;
-            padding: 10px;
-            border-radius: 10px;
-        }
-        .tile {
-            width: 100px;
-            height: 100px;
-            background: #cdc1b4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-            border-radius: 5px;
-            transition: transform 0.2s ease-in-out;
-            cursor: pointer;
-            caret-color: transparent;
-        }
-        .score {
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-        .cooltime {
-            margin-top: 20px;
-            font-size: 24px;
-        }
-        @keyframes mergeEffect {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes moveTile {
-            0% {
-                transform: translate(0, 0);
-            }
-
-            100% {
-                transform: translate(var(--move-x), var(--move-y));
-            }
-        }
+        
     </style>
 </head>
 <script type="module" src="./Script/main.js"></script>
 <body>
     <div>
         <div class="container">
-            <div class="score">턴: <span id="score">0</span></div>
+            <div class="title-score">
+                <h2 style="font-size: 40px;">리버스 2048</h2>
+                <div class="turn-container">
+                    <div class="turn-label">NEXT</div>
+                    <div class="turn-value" id="next">0</div>
+                </div>
+                <div class="turn-container">
+                    <div class="turn-label">TURN</div>
+                    <div class="turn-value" id="turn">0</div>
+                </div>
+            </div>
             <div class="grid" id="grid"></div>
         </div>
         <div class="container">
-            <div class="cooltime"><span style="display: inline-block; padding: 7px 17px; background: #e8e8e8; border: 1px solid #999; border-radius: 4px; font-size: 25px; color: #333;">space</span> <span id="skill">스킬명</span> [쿨타임 <span id="cooltime">0</span>]</div>
+            <div class="cooltime"><span style="display: inline-block; padding: 7px 17px; background: #e8e8e8; border: 1px solid #999; border-radius: 4px; font-size: 25px; color: #333;">Space Bar</span> <span id="skill">스킬명</span> [쿨타임 <span id="cooltime">0</span>]</div>
         </div>
     </div>
     
