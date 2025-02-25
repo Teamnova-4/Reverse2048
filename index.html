@@ -44,6 +44,10 @@
             margin-bottom: 20px;
             font-size: 24px;
         }
+        .cooltime {
+            margin-top: 20px;
+            font-size: 24px;
+        }
         @keyframes mergeEffect {
             0% { transform: scale(1); }
             50% { transform: scale(1.2); }
@@ -63,9 +67,19 @@
 </head>
 <script type="module" src="./Script/main.js"></script>
 <body>
-    <div class="container">
-        <div class="score">점수: <span id="score">0</span></div>
-        <div class="grid" id="grid"></div>
+    <div>
+        <div class="container">
+            <div class="score">턴: <span id="score">0</span></div>
+            <div class="grid" id="grid"></div>
+        </div>
+        <div class="container">
+            <div class="cooltime"><span style="display: inline-block; padding: 7px 17px; background: #e8e8e8; border: 1px solid #999; border-radius: 4px; font-size: 25px; color: #333;">space</span> <span id="skill">스킬명</span> [쿨타임 <span id="cooltime">0</span>]</div>
+        </div>
     </div>
+    
+    <script>
+        let skillName= localStorage.getItem('gameSkill');
+        document.getElementById('skill').innerText= skillName;
+    </script>
 </body>
 </html>

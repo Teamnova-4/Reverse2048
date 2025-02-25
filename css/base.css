@@ -4,3 +4,12 @@
     padding: 0;
     box-sizing: border-box; /* 요소의 크기를 계산할 때 패딩과 보더를 포함 */
 }
+
+head {
+    width: 80%;
+    max-width: 1200px;
+}
+main {
+    width: 80%;
+    max-width: 1200px;
+}
