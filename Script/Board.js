@@ -82,6 +82,7 @@ function setCurrentState(state) {
         case "Control":
             timer = startTimer();
             insertTile = Math.random() < 0.9 ? 2 : 4;
+            document.getElementById('next').innerText= insertTile;
             break;
         case "FinishControl":
             clearInterval(timer);

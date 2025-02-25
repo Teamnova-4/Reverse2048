@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/index.css">
-
+    <link rel="stylesheet" href="./css/index.css">
 </head>
 <script type="module" src="./Script/main.js"></script>
 
@@ -18,15 +17,21 @@
 
     <div>
         <div class="container">
+            <h2 style="font-size: 50px; margin: 20px auto;">리버스 2048</h2>
             <div class="title-score">
-                <h2 style="font-size: 40px;">리버스 2048</h2>
                 <div class="turn-container">
-                    <div class="turn-label">NEXT</div>
-                    <div class="turn-value" id="next">0</div>
+                    <div class="turn-label">TIME</div>
+                    <div class="turn-value" id="time">00:00</div>
                 </div>
-                <div class="turn-container">
-                    <div class="turn-label">TURN</div>
-                    <div class="turn-value" id="turn">0</div>
+                <div>
+                    <div class="turn-container">
+                        <div class="turn-label">NEXT</div>
+                        <div class="turn-value" id="next">0</div>
+                    </div>
+                    <div class="turn-container">
+                        <div class="turn-label">TURN</div>
+                        <div class="turn-value" id="turn">0</div>
+                    </div>
                 </div>
             </div>
             <div class="grid" id="grid"></div>
