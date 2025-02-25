@@ -11,9 +11,11 @@ let board;
 let BestMove;
 
 let timer;
+let gameTime = 0;
+let gameTimer;
 
 //스킬 변수
-let playerSkill = "fullShield";
+let playerSkill = localStorage.getItem('gameSkill');
 let playerSkillCoolTime = 1;
 let coolTime = 0;
 /**
@@ -36,7 +38,8 @@ document.addEventListener("keydown", (event)=>{
 });
 
 function startGame(){
-
+    gameTime = 0;
+    startGameTimer();
     initSkill();
     initBoard();
 }
@@ -72,6 +75,7 @@ function setCurrentState(state) {
     console.log(CurrentGameState);
     switch(CurrentGameState) {
         case "Start":
+            startGameTimer();
             initBoard();
             setCurrentState("Control");
             break;
@@ -128,6 +132,10 @@ function startTimer(){
 
 function showHtmlTimeCount(countTime){
     //console.log("ShowHtmlTimeCOunt " + countTime);
+    // 턴마다 6초 제한 표시
+    // 6초에서 카운트다운 되는 형식으로 제한시간 표시
+    let remainingTime = 6 - countTime;
+    document.getElementById('limit').innerText= remainingTime;
 }
 
 function placeTile(tile){
@@ -212,6 +220,7 @@ function UseSkill() {
     switch (playerSkill) {
         case "zeroTile":
             insertTile = 0;
+            document.getElementById('next').innerText= insertTile;
             break;
         case "shield":
             // 선택필요 스킬
@@ -252,5 +261,24 @@ function setSkill(param1, param2) {
     playerSkill = param1;
     playerSkillCoolTime = param2;
 }
+
+
+function startGameTimer() {
+    if (gameTimer) clearInterval(gameTimer);
+    
+    gameTimer = setInterval(() => {
+        gameTime++;
+        updateGameTimeDisplay();
+    }, 1000);
+}
+
+function updateGameTimeDisplay() {
+    let minute = Math.floor(gameTime / 60);
+    let second = gameTime % 60;
+    minute = minute < 10 ? "0" + minute : minute;
+    second = second < 10 ? "0" + second : second;
+    document.getElementById('time').innerText = minute + ":" + second;
+}
+
 export { setCurrentState };
 export { CurrentGameState };
