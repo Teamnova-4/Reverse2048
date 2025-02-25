@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>리버스 2048</title>
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/ChoiseSkill.css">
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/ChoiseSkill.css">
 </head>
 
 <body>
@@ -20,15 +20,15 @@
             <p>스킬을 1개 선택하세요</p>
         </div>
         <div class="skills-container">
-            <button class="skill-button" onclick="choiseSkill('0타일', this)">0타일</button>
+            <button class="skill-button" onclick="choiseSkill('zeroTile', this)">0타일</button>
             <button class="skill-button" onclick="choiseSkill('시간 증폭', this)">시간 증폭</button>
-            <button class="skill-button" onclick="choiseSkill('쉴드', this)">쉴드</button>
-            <button class="skill-button" onclick="choiseSkill('전체 쉴드', this)">전체 쉴드</button>
-            <button class="skill-button" onclick="choiseSkill('폭탄', this)">폭탄</button>
-            <button class="skill-button" onclick="choiseSkill('고정', this)">고정</button>
-            <button class="skill-button" onclick="choiseSkill('마인드 컨트롤', this)">마인드 컨트롤</button>
-            <button class="skill-button" onclick="choiseSkill('타일 값 2배', this)">타일 값 2배</button>
-            <button class="skill-button" onclick="choiseSkill('연속 공격', this)">연속 공격</button>
+            <button class="skill-button" onclick="choiseSkill('shield', this)">쉴드</button>
+            <button class="skill-button" onclick="choiseSkill('fullShield', this)">전체 쉴드</button>
+            <button class="skill-button" onclick="choiseSkill('bomb', this)">폭탄</button>
+            <button class="skill-button" onclick="choiseSkill('fix', this)">고정</button>
+            <button class="skill-button" onclick="choiseSkill('mindControl', this)">마인드 컨트롤</button>
+            <button class="skill-button" onclick="choiseSkill('double', this)">타일 값 2배</button>
+            <button class="skill-button" onclick="choiseSkill('sequence', this)">연속 공격</button>
             <button class="skill-button" onclick="choiseSkill('미선택', this)">미선택</button>
         </div>
         <div class="text-container">
@@ -64,42 +64,53 @@
             showSkillDescription(skill);
         }
         function showSkillDescription(skill) {
+            let skillName;
             let massage;
 
             switch (skill) {
-                case '0타일':
+                case 'zeroTile':
+                    skillName = "0타일";
                     massage = "칸 채우기용 0타일 입니다. 0타일 끼리는 0 + 0 = 0 으로 합쳐질수 있습니다. (쿨타임: 12턴)";
                     break;
                 case '시간 증폭':
+                    skillName = "시간 증폭";
                     massage = "사용한 턴의 시간제한이 3배가 됩니다. (쿨타임 8턴)";
                     break;
-                case '쉴드':
+                case 'shield':
+                    skillName = "쉴드";
                     massage = "선택한 블럭이 한번 합쳐지는 것을 방지합니다. (쿨타임: 10턴)";
                     break;
-                case '전체 쉴드':
+                case 'fullShield':
+                    skillName = "전체 쉴드";
                     massage = "모든 블럭이 한번 합쳐지는 것을 방지합니다. (쿨타임: 30턴)";
                     break;
-                case '폭탄':
+                case 'bomb':
+                    skillName = "폭탄";
                     massage = "폭탄끼리 합쳐 지는 경우 병합위치 포함 주변 9칸의 블럭을 제거합니다. (쿨타임: 1턴)";
                     break;
-                case '고정':
+                case 'fix':
+                    skillName = "고정";
                     massage = "선택한 블럭을 한번에 턴동안 해당 위치에 고정 시킵니다. (쿨타임: 5턴)";
                     break;
-                case '마인드 컨트롤':
+                case 'mindControl':
+                    skillName = "마인드 컨트롤";
                     massage = "컴퓨터가 다음에 선택할 방향을 강제 지정합니다. (쿨타임 15턴)";
                     break;
-                case '타일 값 2배':
+                case 'double':
+                    skillName = "타일 값 2배";
                     massage = "지정한 타일의 숫자를 2배 증가시킵니다. (쿨타임: 8턴)";
                     break;
-                case '연속 공격':
+                case 'sequence':
+                    skillName = "연속 공격";
                     massage = "플레이어가 연속으로 블럭을 2번 배치할 수 있습니다 (쿨타임: 10턴)";
                     break;
                 case '미선택':
+                    skillName = "미선택";
                     massage = "용감하시네요!";
                     break;
             }
             document.getElementById('skill-description').innerText = massage;
-            document.getElementById('skill-name').innerText = skill;
+            document.getElementById('skill-name').innerText = skillName;
         }
         function startGame() {
             // 인게임 화면으로 이동
