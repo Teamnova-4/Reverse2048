@@ -1,14 +1,29 @@
+import { Tile } from './main.js';
 
 let skill;
+let insertTile;
+
+let turn
+let CurrentGameState;
+
 let gridSize = 4;
 let board; 
-let playerClickMode = "";
+
+let BestMove;
+
+let timer;
+
+document.addEventListener("keydown", (event)=>{
+    console.log( event.key );
+    if (CurrentGameState === "Control" && event.key === "space"){
+        //스킬 사용코드
+    }
+});
 
 function startGame(){
 
     initSkill();
     initBoard();
-    gameLoop();
 }
 
 function initSkill() {
@@ -20,17 +35,41 @@ function initBoard() {
     grid.innerHTML = "";
     for (let r = 0; r < gridSize; r++) {
         for (let c = 0; c < gridSize; c++) {
-            let cell = document.createElement("div");
-            cell.className = "cell";
-            cell.textContent = board[r][c] || "";
-            cell.addEventListener("click", () => placeTile(r, c));
+            const cell = document.createElement("div");
+            cell.className = "tile";
+            board[r][c] = new Tile(r, c, cell); 
+            cell.addEventListener("click", () => placeTile(board[r][c]));
             grid.appendChild(cell);
         }
     }
 }
 
-function gameLoop() {
-    gameLoop();
+function setCurrentState(state) {
+    CurrentGameState = state;
+    console.log(CurrentGameState);
+    switch(CurrentGameState) {
+        case "Start":
+            initBoard();
+            setCurrentState("Control");
+            break;
+        case "Control":
+            timer = startTimer();
+            insertTile = Math.random() < 0.9 ? 2 : 4;
+            break;
+        case "FinishControl":
+            clearInterval(timer);
+            setTimeout(() => {setCurrentState("Simulate")},1000);
+            break;
+        case "Simulate":
+            simulate()
+            break;
+        case "Move":
+            move();
+            break;
+        case "End":
+            turn += 1;
+            break;
+    }
 }
 
 function drawBoard(){
@@ -41,38 +80,103 @@ function getTile (r, c) {
 
 }
 
-/**
- * 사용자가 타일을 선택할경우 호출되는 메서드
- * 
- * 이 이벤트는 2가지 경우로 사용될수있다.
- * 스킬을 사용할떄, 숫자를 배치할떄
- * 
- * 또한 사용 불가능한 경우의 수가 있다.
- * 이동중이나 어떠한 이유로 플레이어가 클릭하지 못할때
- * 
- * 이것을 playerClickMode으로 판단한다.
- * 그리고 
- * 
- * skill 일경우 스킬은 사용한다. 
- * @param {*} tile 
- */
-function clickTile (tile){
-    switch(playerClickMode){
-        case "skill":
+function startTimer(){
+    showHtmlTimeCount(0);
+    let countTime = 0;
+    let timer = setInterval(() => {
+        countTime++;
 
-            break;
-        case "insert":
-            break;
-        default:
-            break;
+        // 1초마다 event3 실행
+        showHtmlTimeCount(countTime);
+
+        if ( (countTime % 6) == 0 ) {
+            //console.log("6초마다 event3 실행");
+        } 
+    }, 1000);
+    return timer;
+}
+
+function showHtmlTimeCount(countTime){
+    //console.log("ShowHtmlTimeCOunt " + countTime);
+}
+
+function placeTile(tile){
+    if (CurrentGameState === "Control") {
+        tile.insertTile(insertTile);
+        setCurrentState("FinishControl");
     }
 }
 
-function placeTile(r, c){
 
+function simulate() {
+    const directions = ["up", "down", "left", "right"];
+    let maxMergeScore = 0;
+    let bestMoves = [];
+
+    directions.forEach(direction => {
+        let tempBoard = board.map(row => [...row]);
+        let tempScore = 0;
+        tempScore = simulateDirection(tempBoard, direction);
+        console.log(`${direction} score: ${tempScore}`);
+        if (tempScore > maxMergeScore) {
+            maxMergeScore = tempScore;
+            bestMoves = [direction];
+        } else if (tempScore === maxMergeScore) {
+            bestMoves.push(direction);
+        }
+    });
+
+    if (bestMoves.length > 0) {
+        BestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+        console.log("Best Move: ", BestMove);
+        setCurrentState("Move");
+    } else {
+        console.log("No valid moves");
+        setCurrentState("End");
+    }
+}
+
+
+function simulateDirection(tempBoard, direction) {
+    let tempScore = 0;
+    Tile.isChanged = false;
+    for (let i = 0; i < gridSize; i++) {
+        let line = [];
+        if (direction === 'up' || direction === 'down') {
+            line = tempBoard.map(row => row[i]);
+        } else {
+            line = tempBoard[i];
+        }
+
+        if(direction === 'right' || direction === 'down'){
+            line.reverse();
+        }
+
+        tempScore += Tile.simulateMergeList(line);
+    }
+    return Tile.isChanged ? tempScore : -1;
+}
+
+function move() {
+    for (let i = 0; i < gridSize; i++) {
+        let line = [];
+        if (BestMove === 'up' || BestMove === 'down') {
+            line = board.map(row => row[i]);
+        } else {
+            line = board[i];
+        } 
+        if (BestMove === 'right' || BestMove === 'down') { line.reverse(); }
+        line = Tile.mergeList(line);
+        if (BestMove === 'right' || BestMove === 'down') { line.reverse(); }
+    }
+
+    setCurrentState("Control");
 }
 
 
 function endGame(){
 
 }
+
+export { setCurrentState };
+export { CurrentGameState };
