@@ -74,6 +74,9 @@
     </div>
 
     <script>
+        // 우클릭 방지
+        document.oncontextmenu = function(){return false;}
+
         let skillName = localStorage.getItem('gameSkill');
         let skillImageSrc = '';
 

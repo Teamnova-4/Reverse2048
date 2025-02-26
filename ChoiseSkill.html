@@ -61,6 +61,9 @@
     </main>
 
     <script>
+        // 우클릭 방지
+        document.oncontextmenu = function(){return false;}
+        
         // 저장된 스킬 가져오기
         const savedSkill = localStorage.getItem('gameSkill');
         

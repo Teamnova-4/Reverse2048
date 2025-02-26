@@ -39,6 +39,9 @@
     </main>
 
     <script>
+        // 우클릭 방지
+        document.oncontextmenu = function(){return false;}
+        
         function setMode(size) {
             
             // 게임 사이즈를 localStorage에 저장
