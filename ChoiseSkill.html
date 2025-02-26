@@ -10,10 +10,9 @@
 </head>
 
 <body>
-
-    <head>
+    <div class="header">
         <button class="choiseMode-btn" onclick="window.location.href = `ChoiseMode.html`">게임 모드 선택</button>
-    </head>
+    </div>
     <main>
         <div class="text-container">
             <h2 id="map-size"></h2>
@@ -143,7 +142,7 @@
                     break;
                 case '미선택':
                     skillName = "미선택";
-                    massage = "용감하시네요!";
+                    massage = "아무것도 선택하지 않으셨습니다.";
                     break;
             }
             document.getElementById('skill-description').innerText = massage;

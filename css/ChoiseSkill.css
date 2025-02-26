@@ -6,8 +6,9 @@ body {
     align-items: center;
     height: 100vh;
     background: #faf8ef;
+    overflow: hidden; /* 스크롤 방지 */
 }
-head {
+header {
     width: 80%;
     max-width: 1200px;
     display: flex;
