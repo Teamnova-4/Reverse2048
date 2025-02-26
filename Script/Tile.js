@@ -136,9 +136,15 @@ export class Tile {
             }
             return acc;
         }, []);
-        let explodeTileArr = [];
+
+        //fix 스킬
+        if (nonNullValues.some(value => value.isFixed )){
+            nonNullValues.forEach(value => value.isFixed = false);
+            return arr;
+        }
         
         // 2. 좌측부터 인접한 같은 숫자 병합 (한 번 병합된 값은 재병합 불가)
+        let explodeTileArr = [];
         const mergedValues = [];
         for (let i = 0; i < nonNullValues.length; i++) {
             if (i < nonNullValues.length - 1 && nonNullValues[i].isEqual(nonNullValues[i + 1])) {

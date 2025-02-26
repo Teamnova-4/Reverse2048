@@ -12,12 +12,15 @@ let board;
 
 let BestMove;
 
+const baseLimitTime = 6;
 let timer;
+let limitTime = baseLimitTime;
 let gameTime = 0;
 let gameTimer;
 
 //스킬 변수
-let playerSkill = localStorage.getItem('gameSkill');
+// let playerSkill = localStorage.getItem('gameSkill');
+let playerSkill = "fix"; 
 let playerSkillCoolTime = 1;
 let coolTime = 0;
 
@@ -118,6 +121,7 @@ function setCurrentState(state) {
 function finishTurn() {
     // 턴 증가
     turn += 1;
+    limitTime = baseLimitTime;
     document.getElementById("turn").innerText = turn;
     // 쿨타임 감소
     if (coolTime > 0) { coolTime -= 1; }
@@ -135,7 +139,7 @@ function startTimer() {
         // 1초마다 event3 실행
         showHtmlTimeCount(countTime);
 
-        if ((countTime % 6) == 0) {
+        if ((countTime % limitTime) == 0) {
             divideAllTileByNumber();
         }
     }, 1000);
@@ -164,7 +168,7 @@ function showHtmlTimeCount(countTime) {
     //console.log("ShowHtmlTimeCOunt " + countTime);
     // 턴마다 6초 제한 표시
     // 6초에서 카운트다운 되는 형식으로 제한시간 표시
-    let remainingTime = 6 - countTime;
+    let remainingTime = limitTime - countTime % limitTime;
     document.getElementById('limit').innerText= remainingTime;
 }
 
@@ -309,6 +313,9 @@ function UseSkill() {
             insertTile = 0;
             document.getElementById('next').innerText= insertTile;
             break;
+        case "timeAmplification":
+            limitTime = 15;
+            break;
         case "shield":
             // 선택필요 스킬
             clickMode = "skillMode";
@@ -330,11 +337,11 @@ function UseSkill() {
             clickMode = "skillMode";
             break;
         case "mindControl":
-            // 선택필요 스킬
             isMindControl = true;
             break;
         case "double":
             // 선택필요 스킬
+            clickMode = "skillMode";
             break;
         case "sequence":
             isDouble = true;
