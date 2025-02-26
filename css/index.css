@@ -84,6 +84,7 @@ body {
 .cooltime {
     margin-top: 20px;
     font-size: 24px;
+}
 .tile-fixed {
     box-shadow: 0 0 0 5px #3cb842;
     z-index: 1;
