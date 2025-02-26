@@ -59,7 +59,7 @@ async function loadRankings() {
 }
 
 function displayRankings(rankings) {
-    document.querySelector('table').style.display = 'table';
+    
     const tbody = document.querySelector('tbody');
     tbody.innerHTML = '';
 
@@ -73,8 +73,7 @@ function displayRankings(rankings) {
         `;
         tbody.appendChild(tr);
     });
-
-
+    document.querySelector('table').style.display = 'table';
 }
 
 function debouncedLoadRankings() {
