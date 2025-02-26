@@ -402,8 +402,11 @@ function explodeTile(tile) {
 function UseSkillToTile(tile) {
     assignSkillMode(false);
     clickMode = "insertMode";
-    if (tile.value === null && CurrentGameState === "Control")
+    if (tile.value === null && CurrentGameState === "Control") {
+        coolTime = 0;
+        updateCooltime();
         return;
+    }
 
     switch (playerSkill) {
         case "shield":
