@@ -42,6 +42,29 @@ try {
         echo json_encode(['success' => false, 'message' => $message]);
         exit;
     }
+    // 2. 닉네임 유효성 검사 (추가)
+    // $nickname = $data['nickname'];
+
+    // // 2-1. 닉네임 길이 검사 (바이트 단위)
+    // if (mb_strlen($nickname, 'UTF-8') > 16) {  // 한글 최대 16자 (UTF-8 기준)
+    //     http_response_code(400);
+    //     echo json_encode(['success' => false, 'message' => '닉네임은 한글 최대 16자까지 입력 가능합니다.']);
+    //     exit;
+    // }
+
+    // // 다른 문자 인코딩을 사용하는 경우 mb_strlen($nickname, '해당인코딩')으로 변경
+    // if (strlen($nickname) > 32) { // 영어,숫자, 특수문자는 최대 32자
+    //     http_response_code(400);
+    //     echo json_encode(['success' => false, 'message' => '닉네임은 최대 32바이트까지 입력 가능합니다.']);
+    //     exit;
+    // }
+
+    // // 2-2. 공백 포함 여부 검사
+    // if (strpos($nickname, ' ') !== false) {
+    //     http_response_code(400);
+    //     echo json_encode(['success' => false, 'message' => '닉네임에는 공백을 포함할 수 없습니다.']);
+    //     exit;
+    // }
 
     // 랭킹 데이터 삽입
     $stmt = $pdo->prepare("INSERT INTO rankings (nickname, turn, play_time) VALUES (?, ?, ?)");

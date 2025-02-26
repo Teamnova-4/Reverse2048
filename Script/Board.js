@@ -134,10 +134,11 @@ function setCurrentState(state) {
             break;
         case "FinishTurn":
             finishTurn();
-            // gameEnding();
+            gameEnding();
+            
             break
         case "End":
-            gameEnding();
+            // gameEnding();
             break;
     }
     DrawBoard();
@@ -147,16 +148,15 @@ function gameEnding() {
     console.log('게임이 끝났습니다!');
     // 게임 플레이시간 데이터
     const formattedTime = updateGameTimeDisplay()
-    console.log('turn값을 받아옵니다 ' + turn);
-    console.log('게임플레이시간을 받아옵니다1 : ' + updateGameTimeDisplay());
     // 클리어모달(화면)
     showGameClearModal(turn, formattedTime);
+
 }
 
 async function sendRankingData(nickname, turn, formattedTime) {
 
     try {
-        console.log('게임플레이시간을 받아옵니다2 : ' + updateGameTimeDisplay());
+
         const response = await fetch('./php/save_ranking.php', { // 경로 수정
             method: 'POST',
             headers: {
@@ -168,44 +168,19 @@ async function sendRankingData(nickname, turn, formattedTime) {
         const data = await response.json();
 
         if (data.success) {
-            console.log('랭킹 데이터 저장 성공');
-            // 랭킹 테이블을 새로고침 (ranking.js에 loadRankings 함수가 있어야 함)
+            console.log('[Board.js]랭킹 데이터 저장 성공');
             window.location.href = `ranking.html`;
 
         } else {
-            console.error('랭킹 데이터 저장 실패:', data.message);
-            alert(`데이터 저장 실패: ${data.message}`);
+            console.error('[Board.js]랭킹 데이터 저장 실패:', data.message);
+            alert(`[Board.js]데이터 저장 실패: ${data.message}`);
         }
     } catch (error) {
-        console.error('랭킹 데이터 전송 중 오류 발생:', error);
-        alert('데이터 전송 중 오류 발생:', error);
+        console.error('[Board.js]랭킹 데이터 전송 중 오류 발생:', error);
+        alert('[Board.js]데이터 전송 중 오류 발생:', error);
     }
 }
 
-// "Submit" 버튼 클릭 이벤트 처리: 닉네임 가져와서 sendRankingData 호출
-document.getElementById('submit-nickname').addEventListener('click', () => {
-    const nickname = document.getElementById('nickname-input').value;
-    if (nickname) {
-          // 유효성 검사
-    if (!nickname) {
-        alert("닉네임을 입력해주세요.");
-    } 
-    else if (/\s/.test(nickname)) { // 공백(스페이스바) 포함 여부 검사
-        alert("닉네임에는 공백을 포함할 수 없습니다.");
-    }
-    else if (getByteLength(nickname) > 32) {
-        alert("닉네임은 한글 최대 16자, 영어/숫자/특수문자 최대 32자까지 입력 가능합니다.");
-    } 
-    else {
-        sendRankingData(nickname, turn, updateGameTimeDisplay());
-        document.getElementById('submit-nickname').disabled = true;
-        document.getElementById('nickname-input').style.display = 'none';
-        document.getElementById('submit-nickname').style.display = 'none';
-    }
-    } else {
-        alert("닉네임을 입력해주세요."); // 닉네임 입력 안했을 때 알림
-    }
-});
 
 // 닉네임의 바이트 길이를 계산하는 함수
 function getByteLength(str) {
@@ -218,14 +193,86 @@ function getByteLength(str) {
     return byteLength;
 }
 
+async function checkrank_DB_userScore(turn, formattedTime) {
+    try {
+        const response = await fetch('./php/check_ranking.php', { // check_ranking.php 또는 canRegister.php
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ turn: turn, formattedTime: formattedTime })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        console.log('data.count: ' + data.count);
+        console.log('data.success: ' + data.success);
+        console.log('data.canRegister: ' + data.canRegister);
+
+        if (data.success && data.canRegister) {
+            // 순위가 확인이 됬으니 랭크 등록이 가능하다.
+            console.log('[Board.js] DB 100위 순위확인성공');
+
+            document.getElementById('view-ranking').style.display = 'none';
+            // 랭킹등록 버튼 활성화
+            document.getElementById('submit-nickname').disabled = false;
+            // 닉네임 입력창
+            document.getElementById('nickname-input').style.display = 'block';
+            // 랭킹등록 버튼
+            document.getElementById('submit-nickname').style.display = 'block';
+            // "Submit" 버튼 클릭 이벤트 처리: 닉네임 가져와서 sendRankingData 호출
+            document.getElementById('submit-nickname').addEventListener('click', () => {
+                const nickname = document.getElementById('nickname-input').value;
+                // 유효성 검사
+                if (!nickname) {
+                    alert("닉네임을 입력해주세요.");
+                } else if (/\s/.test(nickname)) { // 공백(스페이스바) 포함 여부 검사
+                    alert("닉네임에는 공백을 포함할 수 없습니다.");
+                } else if (getByteLength(nickname) > 32) {
+                    alert("닉네임이 너무 길어요, 조금 줄여주세요!!");
+                } else {
+                    // 순위가 확인됬으니 db에 저장하자
+                    sendRankingData(nickname, turn, updateGameTimeDisplay());
+                }
+            });
+        } else {
+            console.log('[Board.js]DB 순위권 미달 100등이상 : 타이틀로버튼, 랭킹보기버튼 보이기기');
+            // 랭킹등록 버튼 활성화
+            document.getElementById('submit-nickname').disabled = true;
+            // 닉네임 입력창
+            document.getElementById('nickname-input').style.display = 'none';
+            // 랭킹등록 버튼
+            document.getElementById('submit-nickname').style.display = 'none';
+            // 랭킹보기 버튼
+            document.getElementById('view-ranking').style.display = 'block';
+            // 랭킹보기 기능부여(랭크페이지 이동동)
+            document.getElementById('view-ranking').addEventListener('click', () => {
+                window.location.href = `ranking.html`;
+            });
+        }
+    } catch (error) {
+        console.error('[Board.js]DB 100위 순위 데이터 전송 중 오류 발생:', error);
+        alert('[Board.js]DB 100위 순위 전송 중 오류 발생:' + error);
+        return null; // 실패 시 null 반환
+    }
+}
+
 // 게임 클리어 모달 표시 (이름 변경, 칭찬 문구 수정)
-function showGameClearModal(turns, time) {
+async function showGameClearModal(turns, time) {
+    console.log('게임클리어화면시작!');
     document.getElementById('final-turns').textContent = turns;
     document.getElementById('final-time').textContent = time;
     document.getElementById('game-over-screen').classList.remove('hidden');
+    console.log('db에서 100위 확인시작!');
+    // 게임클리어 화면이 나오고 난 후 db에 100등에 들어가는지 조회합니다.
+    checkrank_DB_userScore(turns, time);
 }
 
-// 타이틀 이동 버튼튼 -> 
+// 타이틀 이동 버튼 -> 
 document.getElementById('go_title_1').addEventListener('click', () => {
     document.getElementById('game-over-screen').classList.add('hidden');  // ID 변경
     window.location.href = `ChoiseMode.html`;
@@ -591,7 +638,7 @@ function setSkillCoolTime() {
         case '미선택':
             playerSkillCoolTime = 0;
             break;
-        default :
+        default:
             playerSkillCoolTime = 1;
             break;
     }

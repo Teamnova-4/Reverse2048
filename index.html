@@ -43,7 +43,12 @@
         </div>
         <div class="container">
             <div class="cooltime-container">
-                <button onclick="clickSkill()" style="display: inline-block; padding: 7px 17px; background: #ffffff; border: 1px solid #999; border-radius: 4px; font-size: 30px; color: #333;">Space Bar</button>
+                <button onclick="clickSkill()" style="display: inline-block; 
+                padding: 7px 17px; background: 
+                #ffffff; border: 1px solid #999; 
+                border-radius: 4px; font-size: 30px; 
+                color: #333;">Space Bar</button>
+
                 <div class="skill-image-container">
                     <img id="skillImage" class="skill-image" src="" alt="스킬">
                     <div class="cooltime-overlay" id="cooltimeOverlay">
@@ -53,22 +58,18 @@
             </div>
         </div>
     </div>
-
     <div id="game-over-screen" class="hidden">
         <h2>게임 클리어!</h2>
     
-        <!-- 텍스트 컨테이너 -->
         <div class="text-container">
             <p>턴: <span id="final-turns"></span></p>
             <p>플레이시간: <span id="final-time"></span></p>
-            <label for="nickname-input"> 닉네임: </label>
         </div>
-    
-        <input type="text" id="nickname-input" placeholder="닉네임을 입력하세요!">
-    
-        <!-- 버튼 컨테이너 -->
+        <label for="nickname-input"></label>
+        <input type="text" id="nickname-input" placeholder="닉네임을 입력하세요!" maxlength="16">
         <div class="button-container">
             <button id="submit-nickname">랭킹 등록</button>
+            <button id="view-ranking" class="hidden">랭킹 보기</button>
             <button id="go_title_1">타이틀로</button>
         </div>
     </div>
