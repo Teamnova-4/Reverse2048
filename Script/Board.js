@@ -124,7 +124,7 @@ function setCurrentState(state) {
             break;
         case "FinishControl":
             clearInterval(timer);
-            setTimeout(() => { setCurrentState("Simulate") }, 1000);
+            setTimeout(() => { setCurrentState("Simulate") }, 500);
             break;
         case "Simulate":
             simulate()

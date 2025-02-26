@@ -349,12 +349,29 @@ body {
         --tile-size: 100px;
     }
 
+<<<<<<< HEAD
     .restart-button-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 0px 0px;
     }
+=======
+.newgame-button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 0px;
+}
+.newgame-button {
+    border: none;
+    border-radius: 2px;
+    background: #bbada0;
+    color: #997c61;
+    padding: 10px 20px;
+    font-size: large;
+    font-weight: bold;
+>>>>>>> 56aa52b5e5f5603221bbdbd92fbe675433f533e5
 
     .restart-button {
         border: none;
