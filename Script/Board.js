@@ -20,7 +20,8 @@ let gameTimer;
 
 //스킬 변수
 let playerSkill = localStorage.getItem('gameSkill');
-let playerSkillCoolTime = 1;
+let playerSkillCoolTime;
+setSkillCoolTime();
 let coolTime = 0;
 
 let isDouble = false;
@@ -536,6 +537,44 @@ function setGridSize() {
     
     // 타일 크기 동적 조정을 위한 CSS 변수 설정
     document.documentElement.style.setProperty('--tile-size', `${tileSize}px`);
+}
+
+function setSkillCoolTime() {
+    switch (playerSkill) {
+        case 'zeroTile':
+            playerSkillCoolTime = 12;
+            break;
+        case 'timeAmplification':
+            playerSkillCoolTime = 8;
+            break;
+        case 'shield':
+            playerSkillCoolTime = 10;
+            break;
+        case 'fullShield':
+            playerSkillCoolTime = 30;
+            break;
+        case 'bomb':
+            playerSkillCoolTime = 1;
+            break;
+        case 'fix':
+            playerSkillCoolTime = 5;
+            break;
+        case 'mindControl':
+            playerSkillCoolTime = 15;
+            break;
+        case 'double':
+            playerSkillCoolTime = 8;
+            break;
+        case 'sequence':
+            playerSkillCoolTime = 10;
+            break;
+        case '미선택':
+            playerSkillCoolTime = 0;
+            break;
+        default :
+            playerSkillCoolTime = 1;
+            break;
+    }
 }
 
 export { CurrentGameState, DrawBoard, explodeTile, setCurrentState };
