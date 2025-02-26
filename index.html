@@ -47,6 +47,38 @@
 
     <script>
         let skillName = localStorage.getItem('gameSkill');
+        switch (skillName) {
+                case 'zeroTile':
+                    skillName = "0타일";
+                    break;
+                case '시간 증폭':
+                    skillName = "시간 증폭";
+                    break;
+                case 'shield':
+                    skillName = "쉴드";
+                    break;
+                case 'fullShield':
+                    skillName = "전체 쉴드";
+                    break;
+                case 'bomb':
+                    skillName = "폭탄";
+                    break;
+                case 'fix':
+                    skillName = "고정";
+                    break;
+                case 'mindControl':
+                    skillName = "마인드 컨트롤";
+                    break;
+                case 'double':
+                    skillName = "타일 값 2배";
+                    break;
+                case 'sequence':
+                    skillName = "연속 공격";
+                    break;
+                case '미선택':
+                    skillName = "미선택";
+                    break;
+            }
         document.getElementById('skill').innerText = skillName;
     </script>
     <script type="module" src="./Script/Sound.js"></script>
