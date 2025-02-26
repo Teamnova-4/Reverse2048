@@ -125,8 +125,8 @@
     margin-top: 10px; /* 위쪽 여백 줄임 */
 }
 
-/* 랭킹 등록 버튼 */
-#submit-nickname {
+/* 버튼 공통 스타일 */
+#game-over-screen .button-container button {
     padding: 18px 40px;
     background: linear-gradient(135deg, #43a047, #1b5e20);
     color: white;
@@ -138,20 +138,7 @@
     transition: transform 0.2s, background 0.3s, box-shadow 0.2s;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     order: 1;
-}
-
-/* 다시 시작 버튼 */
-#restart-button {
-    padding: 15px 30px;
-    background: linear-gradient(135deg, #039be5, #0277bd);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.6rem;
-    cursor: pointer;
-    transition: transform 0.2s, background 0.3s, box-shadow 0.2s;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    order: 2;
+    box-sizing: border-box;
 }
 
 /* 버튼 호버 효과 (공통) */

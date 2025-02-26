@@ -44,10 +44,10 @@ function assignSkillMode(isSkillMode = true) {
     for (let r = 0; r < gridSize; r++) {
         for (let c = 0; c < gridSize; c++) {
             const tile = board[r][c];
-            if (isSkillMode){
+            if (isSkillMode) {
                 tile.div.classList.add("tile-skill-mode");
                 tile.div.classList.remove("tile");
-            }else{
+            } else {
                 tile.div.classList.remove("tile-skill-mode");
                 tile.div.classList.add("tile");
             }
@@ -55,7 +55,7 @@ function assignSkillMode(isSkillMode = true) {
     }
 }
 
-function clickSkill(){
+function clickSkill() {
     if (coolTime === 0) {
         coolTime = playerSkillCoolTime;
         UseSkill();
@@ -133,7 +133,9 @@ function setCurrentState(state) {
             move();
             break;
         case "FinishTurn":
+
             finishTurn();
+            gameEnding();
             break
         case "End":
             // gameEnding();
@@ -185,16 +187,37 @@ async function sendRankingData(nickname, turn, formattedTime) {
 document.getElementById('submit-nickname').addEventListener('click', () => {
     const nickname = document.getElementById('nickname-input').value;
     if (nickname) {
-        // sendRankingData 호출
+          // 유효성 검사
+    if (!nickname) {
+        alert("닉네임을 입력해주세요.");
+    } 
+    else if (/\s/.test(nickname)) { // 공백(스페이스바) 포함 여부 검사
+        alert("닉네임에는 공백을 포함할 수 없습니다.");
+    }
+    else if (getByteLength(nickname) > 32) {
+        alert("닉네임은 한글 최대 16자, 영어/숫자/특수문자 최대 32자까지 입력 가능합니다.");
+    } 
+    else {
         sendRankingData(nickname, turn, updateGameTimeDisplay());
-        // 랭킹 전송 후 추가 작업 (예: 버튼 비활성화, 메시지 표시 등)
-        document.getElementById('submit-nickname').disabled = true; // 버튼 비활성화
-        document.getElementById('nickname-input').style.display = 'none'; // 입력 필드 숨김
+        document.getElementById('submit-nickname').disabled = true;
+        document.getElementById('nickname-input').style.display = 'none';
         document.getElementById('submit-nickname').style.display = 'none';
+    }
     } else {
         alert("닉네임을 입력해주세요."); // 닉네임 입력 안했을 때 알림
     }
 });
+
+// 닉네임의 바이트 길이를 계산하는 함수
+function getByteLength(str) {
+    let byteLength = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        // 한글은 2바이트, 영어는 1바이트로 처리
+        byteLength += (char > 128) ? 2 : 1;
+    }
+    return byteLength;
+}
 
 // 게임 클리어 모달 표시 (이름 변경, 칭찬 문구 수정)
 function showGameClearModal(turns, time) {
@@ -203,10 +226,10 @@ function showGameClearModal(turns, time) {
     document.getElementById('game-over-screen').classList.remove('hidden');
 }
 
-// 모달 닫기 버튼 이벤트 처리
+// 타이틀 이동 버튼튼 -> 
 document.getElementById('restart-button').addEventListener('click', () => {
     document.getElementById('game-over-screen').classList.add('hidden');  // ID 변경
-    window.location.href = `ranking.html`;
+    window.location.href = `ChoiseMode.html`;
 });
 
 // (선택 사항) 모달 바깥 클릭 시 닫기
@@ -275,7 +298,7 @@ function divideAllTileByNumber() {
                         value.value = Math.floor(value.value / 2);
                         console.log(value.value);
                     }
-                } 
+                }
             }
         });
     });
@@ -526,15 +549,15 @@ function setGridSize() {
     const grid = document.getElementById('grid');
     const baseSize = 420; // 4x4 기준의 그리드 전체 크기 (padding 제외)
     const tileSize = Math.floor((baseSize - (10 * (gridSize - 1))) / gridSize); // gap 10px 고려
-    
+
     // 그리드 템플릿 설정
     grid.style.gridTemplateColumns = `repeat(${gridSize}, ${tileSize}px)`;
     grid.style.gridTemplateRows = `repeat(${gridSize}, ${tileSize}px)`;
-    
+
     // 전체 그리드 크기는 4x4 기준으로 고정
     grid.style.width = `${baseSize}px`;
     grid.style.height = `${baseSize}px`;
-    
+
     // 타일 크기 동적 조정을 위한 CSS 변수 설정
     document.documentElement.style.setProperty('--tile-size', `${tileSize}px`);
 }
