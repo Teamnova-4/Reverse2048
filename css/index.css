@@ -306,13 +306,13 @@ body {
     --tile-size: 100px;
 }
 
-.restart-button-container {
+.newgame-button-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0px 0px;
 }
-.restart-button {
+.newgame-button {
     border: none;
     border-radius: 2px;
     background: #bbada0;
