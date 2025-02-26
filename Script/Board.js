@@ -278,6 +278,7 @@ function divideAllTileByNumber() {
             }
         });
     });
+    playSound("emergency");
     DrawBoard();
 }
 
