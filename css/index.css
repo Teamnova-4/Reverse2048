@@ -33,22 +33,64 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 30px;
-    color: white;
+    font-size: 24px;
+    color: black;
     font-weight: bold;
     border-radius: 5px;
     transition: transform 0.2s ease-in-out;
     cursor: pointer;
     caret-color: transparent;
 }
+.tile-skill-mode {
+    width: var(--tile-size);
+    height: var(--tile-size);
+    background: #cdc1b4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: black;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    caret-color: transparent;
+}
+.tile:hover {
+    /* 호버 시 적용될 스타일 */
+    transform: scale(1.01); /* 105% 크기로 확대 */
+    box-shadow: 0 0 0 5px #888; /* 그림자를 사용한 stroke 효과, 원하는 색상과 두께 조절 가능 */
+
+    z-index: 1; /*다른 타일보다 앞에 오게 함*/
+}
+.tile-skill-mode:hover {
+    transform: scale(1.05); /* 105% 크기로 확대 */
+    box-shadow: 0 0 0 5px #e44747; /* 그림자를 사용한 stroke 효과, 원하는 색상과 두께 조절 가능 */
+
+    z-index: 1; /*다른 타일보다 앞에 오게 함*/
+}
+
 .turn {
     margin-bottom: 20px;
     font-size: 24px;
 }
-.cooltime {
-    margin-top: 20px;
-    font-size: 24px;
+.tile-fixed {
+    box-shadow: 0 0 0 5px #3cb842;
+    z-index: 1;
 }
+.tile-shield{
+    box-shadow: 0 0 0 5px #40caec;
+    z-index: 1;
+}
+.mind-control {
+    box-shadow: 0 0 0 5px #da4b4b;
+    z-index: 1;
+}
+.time-amplification {
+    box-shadow: 0 0 0 5px #448bdb;
+    z-index: 1;
+}
+
 @keyframes mergeEffect {
     0% { transform: scale(1); }
     50% { transform: scale(1.2); }
