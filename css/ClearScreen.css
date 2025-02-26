@@ -136,24 +136,3 @@
 #go_title_1:hover {
     background: linear-gradient(135deg, #a77044 0%, #915d33 100%);
 }
-
-/* 닫기 버튼 (X 버튼) 스타일 */
-#close-button {
-    position: absolute; /* 중요: game-over-screen 내에서 절대 위치 */
-    top: 15px;       /* 오른쪽 위에서 적절한 간격 */
-    right: 20px;
-    background-color: transparent;
-    border: none;
-    color: #704214;
-    font-size: 32px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s, color 0.3s;
-    z-index: 1010;   /* 중요: game-over-screen 보다 위에 표시 */
-}
-
-#close-button:hover {
-    transform: scale(1.1);
-    color: #915d33;
-    text-shadow: 0 0 8px rgba(112, 66, 20, 0.5);
-}
