@@ -120,8 +120,10 @@ function finishTurn() {
     turn += 1;
     document.getElementById("turn").innerText = turn;
     // 쿨타임 감소
-    if (coolTime > 0) { coolTime -= 1; }
-    document.getElementById("cooltime").innerText = coolTime;
+    if (coolTime > 0) { 
+        coolTime -= 1; 
+        updateCooltime();
+    }
     // 다음 턴 준비
     setCurrentState("Control");
 }
@@ -342,6 +344,7 @@ function UseSkill() {
         default:
     }
     DrawBoard();
+    updateCooltime();
 }
 
 function reduceCoolTime() {
@@ -368,6 +371,18 @@ function updateGameTimeDisplay() {
     minute = minute < 10 ? "0" + minute : minute;
     second = second < 10 ? "0" + second : second;
     document.getElementById('time').innerText = minute + ":" + second;
+}
+
+function updateCooltime() {
+    const overlay = document.getElementById('cooltimeOverlay');
+    const cooltimeSpan = document.getElementById('cooltime');
+    
+    if (coolTime > 0) {
+        overlay.classList.add('active');
+        cooltimeSpan.textContent = coolTime;
+    } else {
+        overlay.classList.remove('active');
+    }
 }
 
 export { setCurrentState, explodeTile, DrawBoard };
