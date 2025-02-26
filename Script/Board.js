@@ -161,7 +161,7 @@ function setCurrentState(state) {
             // gameEnding();
             break
         case "End":
-            // gameEnding();
+            gameEnding();
             break;
     }
     DrawBoard();
