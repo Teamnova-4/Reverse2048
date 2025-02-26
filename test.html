@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>2048 게임 종료</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #FAE3C6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .popup {
+            background: #FFCC99;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #5A3E36;
+        }
+        p {
+            font-size: 18px;
+            color: #704214;
+        }
+        .button {
+            background-color: #FF9966;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .button:hover {
+            background-color: #FF7043;
+        }
+        #namePopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #FFD4A3;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        #nameInput {
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #704214;
+        }
+    </style>
+</head>
+<body>
+
+<div class="popup">
+    <h1>게임 종료!</h1>
+    <p>점수: <span id="score">2048</span></p>
+    <p>턴 수: <span id="turns">32</span></p>
+    <button class="button">메인 화면으로</button>
+</div>
+
+<div id="namePopup">
+    <h2>이름을 입력하세요</h2>
+    <input type="text" id="nameInput" placeholder="이름 입력">
+    <button class="button" onclick="submitName()">확인</button>
+</div>
+
+<script>
+    checkHighScore();
+    function checkHighScore() {
+        let score = parseInt(document.getElementById('score').textContent);
+        if (score >= 1024) { // 예제: 점수가 1024 이상이면 이름 입력
+            document.getElementById('namePopup').style.display = 'block';
+        } else {
+            alert('메인 화면으로 이동합니다.');
+        }
+    }
+
+    function submitName() {
+        let name = document.getElementById('nameInput').value;
+        if (name.trim() !== "") {
+            alert(name + "님, 점수가 저장되었습니다!");
+            document.getElementById('namePopup').style.display = 'none';
+        } else {
+            alert('이름을 입력하세요.');
+        }
+    }
+</script>
+
+</body>
+</html>
