@@ -1,8 +1,11 @@
-html, body {
+@import url("./ClearScreen.css"); 
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* 스크롤 방지 */
+    overflow: hidden;
+    /* 스크롤 방지 */
 }
 
 body {
@@ -12,10 +15,12 @@ body {
     align-items: center;
     background: #faf8ef;
 }
+
 .container {
     text-align: center;
     color: #997c61;
 }
+
 .grid {
     display: grid;
     gap: 10px;
@@ -26,6 +31,7 @@ body {
     width: 400px;  /* 4x4 기준 크기 */
     height: 400px; /* 4x4 기준 크기 */
 }
+
 .tile {
     width: var(--tile-size);
     height: var(--tile-size);
@@ -56,6 +62,7 @@ body {
     cursor: pointer;
     caret-color: transparent;
 }
+
 .tile:hover {
     /* 호버 시 적용될 스타일 */
     transform: scale(1.01); /* 105% 크기로 확대 */
@@ -72,6 +79,11 @@ body {
 
 .turn {
     margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.cooltime {
+    margin-top: 20px;
     font-size: 24px;
 }
 .tile-fixed {
@@ -91,10 +103,19 @@ body {
     z-index: 1;
 }
 
+
 @keyframes mergeEffect {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 @keyframes moveTile {
@@ -115,7 +136,7 @@ body {
     margin-bottom: 10px;
     border-radius: 6px;
     color: white;
-    
+
 }
 
 .turn-label {
@@ -127,38 +148,57 @@ body {
     font-size: 25px;
     font-weight: bold;
 }
+
 .title-score {
     display: flex;
     justify-content: space-between;
     align-items: end;
 }
 
- /* 스피커 버튼 스타일 */
- .speaker-button {
-    position: fixed; /* 화면 고정 */
-    top: 10px;       /* 상단 여백 */
-    right: 10px;     /* 오른쪽 여백 */
-    width: 40px;     /* 너비 */
-    height: 40px;    /* 높이 */
-    background-color: #eee; /* 배경색 */
-    border-radius: 50%;   /* 둥근 모서리 */
-    display: flex;     /* 내부 요소 정렬 */
-    justify-content: center; /* 가로 가운데 정렬 */
-    align-items: center;   /* 세로 가운데 정렬 */
-    cursor: pointer;     /* 마우스 커서 변경 */
-    z-index: 1000;      /* 다른 요소 위에 표시 */
+/* 스피커 버튼 스타일 */
+.speaker-button {
+    position: fixed;
+    /* 화면 고정 */
+    top: 10px;
+    /* 상단 여백 */
+    right: 10px;
+    /* 오른쪽 여백 */
+    width: 40px;
+    /* 너비 */
+    height: 40px;
+    /* 높이 */
+    background-color: #eee;
+    /* 배경색 */
+    border-radius: 50%;
+    /* 둥근 모서리 */
+    display: flex;
+    /* 내부 요소 정렬 */
+    justify-content: center;
+    /* 가로 가운데 정렬 */
+    align-items: center;
+    /* 세로 가운데 정렬 */
+    cursor: pointer;
+    /* 마우스 커서 변경 */
+    z-index: 1000;
+    /* 다른 요소 위에 표시 */
 }
 
 .speaker-button:hover {
-    background-color: #ccc; /* 호버 효과 */
+    background-color: #ccc;
+    /* 호버 효과 */
 }
 
 .speaker-icon {
-    width: 24px;   /* 아이콘 너비 */
-    height: 24px;  /* 아이콘 높이 */
-    background-image: url('../assets/images/s_on.svg'); /* SVG 아이콘 */
-    background-size: cover; /* 이미지 크기 조절 */
-    background-repeat: no-repeat; /* 이미지 반복 방지 */
+    width: 24px;
+    /* 아이콘 너비 */
+    height: 24px;
+    /* 아이콘 높이 */
+    background-image: url('../assets/images/s_on.svg');
+    /* SVG 아이콘 */
+    background-size: cover;
+    /* 이미지 크기 조절 */
+    background-repeat: no-repeat;
+    /* 이미지 반복 방지 */
 }
 
 .cooltime-container {
@@ -168,8 +208,10 @@ body {
     gap: 10px;
     margin-top: 20px;
 }
+
 .skill-image-container {
-    width: 50px;  /* 버튼 크기 조정 */
+    width: 50px;
+    /* 버튼 크기 조정 */
     height: 50px;
     padding: 0px;
     margin: 5px;
@@ -183,12 +225,14 @@ body {
     overflow: hidden;
     position: relative;
 }
+
 .skill-image {
     width: 80%;
     height: 80%;
     object-fit: contain;
     border-radius: 5px;
 }
+
 .cooltime-overlay {
     position: absolute;
     top: 0;
@@ -203,12 +247,15 @@ body {
     font-size: 20px;
     font-weight: bold;
     border-radius: 5px;
-    opacity: 0; /* 기본적으로 숨김 */
+    opacity: 0;
+    /* 기본적으로 숨김 */
 }
+
 /* 쿨타임이 0보다 클 때 오버레이 표시 */
 .cooltime-overlay.active {
     opacity: 1;
 }
+
 
 #game-over-screen {
     position: fixed;

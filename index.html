@@ -55,11 +55,22 @@
     </div>
 
     <div id="game-over-screen" class="hidden">
-        <h2>게임을 끝냅니다.</h2>
-        <p>Your Score: <span id="final-score"></span></p>
-        <p>Turns: <span id="final-turns"></span></p>
-        <p>Time: <span id="final-time"></span></p>
-        <button id="restart-button">Play Again</button>
+        <h2>게임 클리어!</h2>
+    
+        <!-- 텍스트 컨테이너 -->
+        <div class="text-container">
+            <p>턴: <span id="final-turns"></span></p>
+            <p>플레이시간: <span id="final-time"></span></p>
+            <label for="nickname-input">닉네임:</label>
+        </div>
+    
+        <input type="text" id="nickname-input" placeholder="닉네임을 입력하세요!">
+    
+        <!-- 버튼 컨테이너 -->
+        <div class="button-container">
+            <button id="submit-nickname">랭킹 등록</button>
+            <button id="restart-button">다시 시작</button>
+        </div>
     </div>
 
     <script>
