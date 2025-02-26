@@ -7,6 +7,30 @@ body {
     padding: 0;
     overflow: hidden;
     /* 스크롤 방지 */
+
+    /* 우클릭 방지 */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Safari */
+    -khtml-user-select: none;    /* Konqueror HTML */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;           /* Non-prefixed version, currently supported by Chrome and Opera */
+    
+    /* 드래그 방지 */
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+}
+/* 이미지에 대한 드래그 방지 */
+img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    pointer-events: none;  /* 이미지 선택 방지 */
 }
 
 body {
@@ -365,6 +389,7 @@ body {
     padding: 10px 20px;
     font-size: large;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .show-space {

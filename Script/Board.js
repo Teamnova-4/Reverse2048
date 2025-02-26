@@ -135,7 +135,7 @@ function setCurrentState(state) {
         case "FinishTurn":
 
             finishTurn();
-            gameEnding();
+            // gameEnding();
             break
         case "End":
             // gameEnding();
