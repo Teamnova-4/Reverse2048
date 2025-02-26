@@ -164,7 +164,7 @@ function showHtmlTimeCount(countTime) {
     //console.log("ShowHtmlTimeCOunt " + countTime);
     // 턴마다 6초 제한 표시
     // 6초에서 카운트다운 되는 형식으로 제한시간 표시
-    let remainingTime = 6 - countTime;
+    let remainingTime = 6-countTime % 6;
     document.getElementById('limit').innerText= remainingTime;
 }
 

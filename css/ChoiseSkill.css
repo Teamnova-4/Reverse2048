@@ -39,24 +39,35 @@ main {
     margin-bottom: 50px; /* 버튼 아래쪽 여백 */
 }
 .skill-button {
-    background: #bbada0; /* 배경 색상 */
-    color: white; /* 글자 색상 */
-    border: none;
-    border-radius: 5px;
-    padding: 15px; /* 버튼 패딩 (상하좌우 동일하게 설정) */
-    font-size: 18px; /* 글자 크기 */
-    margin: 10px; /* 버튼 간격 */
-    cursor: pointer; /* 커서 모양 변경 */
-    transition: background 0.3s; /* 배경 색상 변화 효과 */
-    flex: 0 0 10%; /* 버튼 너비를 30%로 설정하여 3개씩 정렬 */
-    width: 100px;
-    height: 100px; /* 버튼 높이 설정 (원하는 높이로 조정 가능) */
+    width: 80px;  /* 버튼 크기 조정 */
+    height: 80px;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 2px solid #bbada0;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
 }
+
+.skill-button img {
+    width: 180%;
+    height: 180%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
 .skill-button:hover {
-    background: #f2b179; /* 호버 시 배경 색상 변화 */
+    transform: scale(1.1);
 }
+
 .skill-button.selected {
-    background: #d28265; /* 클릭 시 진한 색상 */
+    background: #f5f5f5;
 }
 
 .skills-container {
