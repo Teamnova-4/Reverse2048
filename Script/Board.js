@@ -19,8 +19,8 @@ let gameTime = 0;
 let gameTimer;
 
 //스킬 변수
-// let playerSkill = localStorage.getItem('gameSkill');
-let playerSkill = "fix"; 
+let playerSkill = localStorage.getItem('gameSkill');
+// let playerSkill = "fix"; 
 let playerSkillCoolTime = 1;
 let coolTime = 0;
 
@@ -36,14 +36,18 @@ let isMindControl = false;
  */
 document.addEventListener("keydown", (event) => {
     if (CurrentGameState === "Control" && event.key === " ") {
-        if (coolTime === 0) {
-            coolTime = playerSkillCoolTime;
-            UseSkill();
-        } else {
-            console.log(`coolTime : ${coolTime}`);
-        }
+        clickSkill();
     }
 });
+
+function clickSkill(){
+    if (coolTime === 0) {
+        coolTime = playerSkillCoolTime;
+        UseSkill();
+    } else {
+        console.log(`coolTime : ${coolTime}`);
+    }
+}
 
 
 function startGame() {

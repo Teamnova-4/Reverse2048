@@ -23,7 +23,7 @@
             <button class="skill-button" onclick="choiseSkill('zeroTile', this)">
                 <img src="Resources/zeroTile.png" alt="0타일">
             </button>
-            <button class="skill-button" onclick="choiseSkill('시간 증폭', this)">
+            <button class="skill-button" onclick="choiseSkill('timeAmplification', this)">
                 시간 증폭
             </button>
             <button class="skill-button" onclick="choiseSkill('shield', this)">
@@ -90,7 +90,7 @@
                     skillName = "0타일";
                     massage = "칸 채우기용 0타일 입니다. 0타일 끼리는 0 + 0 = 0 으로 합쳐질수 있습니다. (쿨타임: 12턴)";
                     break;
-                case '시간 증폭':
+                case 'timeAmplification':
                     skillName = "시간 증폭";
                     massage = "사용한 턴의 시간제한이 3배가 됩니다. (쿨타임 8턴)";
                     break;
@@ -112,7 +112,7 @@
                     break;
                 case 'mindControl':
                     skillName = "마인드 컨트롤";
-                    massage = "컴퓨터가 다음에 선택할 방향을 강제 지정합니다. (쿨타임 15턴)";
+                    massage = "컴퓨터가 가장 안좋은 수를 두도록 합니다. (쿨타임 15턴)";
                     break;
                 case 'double':
                     skillName = "타일 값 2배";

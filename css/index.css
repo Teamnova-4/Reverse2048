@@ -130,7 +130,6 @@ body {
     border-radius: 10px;
     border: 2px solid #bbada0;
     background: white;
-    cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     justify-content: center;
