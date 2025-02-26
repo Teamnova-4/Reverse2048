@@ -39,6 +39,21 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+function assignSkillMode(isSkillMode = true) {
+    for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c < gridSize; c++) {
+            const tile = board[r][c];
+            if (isSkillMode){
+                tile.div.classList.add("tile-skill-mode");
+                tile.div.classList.remove("tile");
+            }else{
+                tile.div.classList.remove("tile-skill-mode");
+                tile.div.classList.add("tile");
+            }
+        }
+    }
+}
+
 function clickSkill(){
     if (coolTime === 0) {
         coolTime = playerSkillCoolTime;
@@ -100,6 +115,10 @@ function setCurrentState(state) {
             timer = startTimer();
             insertTile = Math.random() < 0.9 ? 2 : 4;
             document.getElementById('next').innerText = insertTile;
+
+            const grid = document.getElementById("grid");
+            grid.classList.remove("mind-control");
+
             break;
         case "FinishControl":
             clearInterval(timer);
@@ -263,6 +282,7 @@ function simulate() {
     if (bestMoves.length > 0) {
         BestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
         if (isMindControl) {
+            isMindControl = false;
             BestMove = mostBedMove;
         }
         console.log("Best Move: ", BestMove);
@@ -338,6 +358,8 @@ function explodeTile(tile) {
 }
 
 function UseSkillToTile(tile) {
+    assignSkillMode(false);
+    clickMode = "insertMode";
     if (tile.value === null && CurrentGameState === "Control")
         return;
 
@@ -355,7 +377,7 @@ function UseSkillToTile(tile) {
             break;
         default:
     }
-    clickMode = "insertMode";
+
     DrawBoard();
 }
 
@@ -372,6 +394,7 @@ function UseSkill() {
         case "shield":
             // 선택필요 스킬
             clickMode = "skillMode";
+            assignSkillMode();
             break;
         case "fullShield":
             board.forEach(row => {
@@ -388,13 +411,17 @@ function UseSkill() {
         case "fix":
             // 선택필요 스킬
             clickMode = "skillMode";
+            assignSkillMode();
             break;
         case "mindControl":
+            const grid = document.getElementById("grid");
+            grid.classList.add("mind-control");
             isMindControl = true;
             break;
         case "double":
             // 선택필요 스킬
             clickMode = "skillMode";
+            assignSkillMode();
             break;
         case "sequence":
             isDouble = true;
