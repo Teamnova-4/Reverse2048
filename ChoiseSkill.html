@@ -23,17 +23,17 @@
             <button class="skill-button" onclick="choiseSkill('zeroTile', this)">
                 <img src="Resources/zeroTile.png" alt="0타일">
             </button>
-            <button class="skill-button" onclick="choiseSkill('시간 증폭', this)">
-                시간 증폭
+            <button class="skill-button" onclick="choiseSkill('timeAmplification', this)">
+                <img src="Resources/timeAmplification.png" alt="0타일">
             </button>
             <button class="skill-button" onclick="choiseSkill('shield', this)">
                 <img src="Resources/shield.png" alt="0타일">
             </button>
             <button class="skill-button" onclick="choiseSkill('fullShield', this)">
-                <img src="Resources/shield.png" alt="0타일">
+                <img src="Resources/fullShield.png" alt="0타일">
             </button>
             <button class="skill-button" onclick="choiseSkill('bomb', this)">
-                <img src="Resources/bomb.jpg" alt="0타일">
+                <img src="Resources/bomb.png" alt="0타일">
             </button>
             <button class="skill-button" onclick="choiseSkill('fix', this)">
                 <img src="Resources/fix.png" alt="0타일">
@@ -47,12 +47,14 @@
             <button class="skill-button" onclick="choiseSkill('sequence', this)">
                 <img src="Resources/sequence.png" alt="0타일">
             </button>
-            <button class="skill-button" onclick="choiseSkill('미선택', this)">미선택</button>
+            <button class="skill-button" onclick="choiseSkill('미선택', this)">
+                <img src="Resources/none.png" alt="0타일">
+            </button>
         </div>
         <div class="text-container">
             <p>선택된 스킬 [<span id="skill-name">0타일</span>]</p>
             <img src="">
-            <p id="skill-description">칸 채우기용 0타일 입니다. 0타일 끼리는 0 + 0 = 0 으로 합쳐질수 있습니다. (쿨타임: 12턴)</p>
+            <p id="skill-description">칸 채우기용 0타일을 배치합니다. 0타일 끼리는 0 + 0 = 0 으로 합쳐질수 있습니다. (쿨타임: 12턴)</p>
         </div>
         <div class="button-container">
             <button class="start-button" onclick="startGame()">게임 시작</button>
@@ -62,7 +64,7 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const setSize = localStorage.getItem('gameSize'); // localStorage에서 게임 사이즈 가져오기
-        const setSkill = '0타일';
+        const setSkill = 'zeroTile';
         let selectedSkillButton = null; // 현재 선택된 버튼을 저장할 변수
         // 게임 사이즈를 화면에 표시
         document.getElementById("map-size").textContent = `${setSize}x${setSize} 게임 모드`;
@@ -88,9 +90,9 @@
             switch (skill) {
                 case 'zeroTile':
                     skillName = "0타일";
-                    massage = "칸 채우기용 0타일 입니다. 0타일 끼리는 0 + 0 = 0 으로 합쳐질수 있습니다. (쿨타임: 12턴)";
+                    massage = "칸 채우기용 0타일을 배치합니다. 0타일 끼리는 0 + 0 = 0 으로 합쳐질수 있습니다. (쿨타임: 12턴)";
                     break;
-                case '시간 증폭':
+                case 'timeAmplification':
                     skillName = "시간 증폭";
                     massage = "사용한 턴의 시간제한이 3배가 됩니다. (쿨타임 8턴)";
                     break;
@@ -112,10 +114,10 @@
                     break;
                 case 'mindControl':
                     skillName = "마인드 컨트롤";
-                    massage = "컴퓨터가 다음에 선택할 방향을 강제 지정합니다. (쿨타임 15턴)";
+                    massage = "컴퓨터가 가장 안좋은 수를 두도록 합니다. (쿨타임 15턴)";
                     break;
                 case 'double':
-                    skillName = "타일 값 2배";
+                    skillName = "더블";
                     massage = "지정한 타일의 숫자를 2배 증가시킵니다. (쿨타임: 8턴)";
                     break;
                 case 'sequence':
