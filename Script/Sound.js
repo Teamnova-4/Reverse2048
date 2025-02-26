@@ -9,6 +9,7 @@ function initAudio() {
     // audioMap.set('merge', new Audio('./sound/병합.mp3'));
     audioMap.set('place', new Audio('../assets/sound/배치.mp3'));
     // audioMap.set('gameover', new Audio('./sound/게임오버.mp3'));
+    audioMap.set('emergency', new Audio('../assets/sound/주의신호.mp3'));
 
     // 각 오디오 객체에 볼륨 설정 (초기 설정)
     audioMap.forEach(sound => {
