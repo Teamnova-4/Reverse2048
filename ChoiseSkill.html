@@ -62,9 +62,26 @@
     </main>
 
     <script>
+        // 저장된 스킬 가져오기
+        const savedSkill = localStorage.getItem('gameSkill');
+        
+        // 페이지 로드 시 실행
+        window.onload = function() {
+            let skillToSelect = savedSkill || 'zeroTile'; // 저장된 스킬이 없으면 zeroTile 선택
+            
+            // 해당 스킬의 버튼 찾기
+            const buttons = document.querySelectorAll('.skill-button');
+            for(let button of buttons) {
+                if(button.getAttribute('onclick').includes(skillToSelect)) {
+                    // 스킬 선택 함수 호출
+                    choiseSkill(skillToSelect, button);
+                    break;
+                }
+            }
+        };
         const urlParams = new URLSearchParams(window.location.search);
         const setSize = localStorage.getItem('gameSize'); // localStorage에서 게임 사이즈 가져오기
-        const setSkill = 'zeroTile';
+        const setSkill = localStorage.getItem('gameSkill');
         let selectedSkillButton = null; // 현재 선택된 버튼을 저장할 변수
         // 게임 사이즈를 화면에 표시
         document.getElementById("map-size").textContent = `${setSize}x${setSize} 게임 모드`;
