@@ -1032,12 +1032,20 @@ function updateCooltime() {
 }
 
 function setGridSize() {
-    const grid = document.getElementById('grid');
-    
+
+    // 게임 사이즈 가져오기, 지정이 안되면 디폴트로 4로 지정  
+    if (isNaN(gridSize)) {
+        gridSize = 4; // 디폴트 값 설정
+        localStorage.setItem('gameSize', gridSize); // 로컬 스토리지에 저장
+    } else {
+        gridSize = parseInt(gridSize); // 문자열을 숫자로 변환
+    }
+
     // grid 사이즈별 클래스 추가 부여
+    const grid = document.getElementById('grid');
     grid.classList.add(`size-${gridSize}`);
 
-    
+
     // const baseSize = 420; // 4x4 기준의 그리드 전체 크기 (padding 제외)
     // const tileSize = Math.floor((baseSize - (10 * (gridSize - 1))) / gridSize); // gap 10px 고려
 
