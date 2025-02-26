@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #faf8ef;
+}
+.container {
+    text-align: center;
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-template-rows: repeat(4, 100px);
+    gap: 10px;
+    background: #bbada0;
+    padding: 10px;
+    border-radius: 10px;
+}
+.tile {
+    width: 100px;
+    height: 100px;
+    background: #cdc1b4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    caret-color: transparent;
+}
+.turn {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+.cooltime {
+    margin-top: 20px;
+    font-size: 24px;
+}
+@keyframes mergeEffect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@keyframes moveTile {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(var(--move-x), var(--move-y));
+    }
+}
+
+.turn-container {
+    position: relative;
+    display: inline-block;
+    background: #bbada0;
+    padding: 15px 25px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    color: white;
+    
+}
+
+.turn-label {
+    font-size: 20px;
+    color: #eee4da;
+}
+
+.turn-value {
+    font-size: 25px;
+    font-weight: bold;
+}
+.title-score {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+
+ /* 스피커 버튼 스타일 */
+ .speaker-button {
+    position: fixed; /* 화면 고정 */
+    top: 10px;       /* 상단 여백 */
+    right: 10px;     /* 오른쪽 여백 */
+    width: 40px;     /* 너비 */
+    height: 40px;    /* 높이 */
+    background-color: #eee; /* 배경색 */
+    border-radius: 50%;   /* 둥근 모서리 */
+    display: flex;     /* 내부 요소 정렬 */
+    justify-content: center; /* 가로 가운데 정렬 */
+    align-items: center;   /* 세로 가운데 정렬 */
+    cursor: pointer;     /* 마우스 커서 변경 */
+    z-index: 1000;      /* 다른 요소 위에 표시 */
+}
+
+.speaker-button:hover {
+    background-color: #ccc; /* 호버 효과 */
+}
+
+.speaker-icon {
+    width: 24px;   /* 아이콘 너비 */
+    height: 24px;  /* 아이콘 높이 */
+    background-image: url('../assets/images/s_on.svg'); /* SVG 아이콘 */
+    background-size: cover; /* 이미지 크기 조절 */
+    background-repeat: no-repeat; /* 이미지 반복 방지 */
+}

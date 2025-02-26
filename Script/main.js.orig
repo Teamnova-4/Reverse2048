@@ -1,0 +1,15 @@
+import { CurrentGameState, setCurrentState } from "./Board.js";
+import { Tile, Value } from "./Tile.js";
+<<<<<<< HEAD
+import { CurrentGameState } from "./Board.js";
+import { setCurrentState, explodeTile, DrawBoard } from "./Board.js";
+
+export { Tile, Value };
+export { CurrentGameState};
+export { setCurrentState, explodeTile, DrawBoard };
+=======
+
+export { CurrentGameState, setCurrentState, Tile, Value };
+>>>>>>> 4e5550edd5410456917f8823ab34b86540be71bf
+
+setCurrentState("Start");

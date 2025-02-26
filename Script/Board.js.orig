@@ -13,11 +13,16 @@ let board;
 let BestMove;
 
 let timer;
+<<<<<<< HEAD
+//스킬 변수
+let playerSkill = "bomb";
+=======
 let gameTime = 0;
 let gameTimer;
 
 //스킬 변수
 let playerSkill = localStorage.getItem('gameSkill');
+>>>>>>> 4e5550edd5410456917f8823ab34b86540be71bf
 let playerSkillCoolTime = 1;
 let coolTime = 0;
 
@@ -68,14 +73,20 @@ function initBoard() {
         for (let c = 0; c < gridSize; c++) {
             const cell = document.createElement("div");
             cell.className = "tile";
+<<<<<<< HEAD
             board[r][c] = new Tile(r, c, cell); 
             cell.addEventListener("click", () => {
                 if (clickMode === "insertMode"){
-                    playSound('place');
                     placeTile(board[r][c])
                 } else if (clickMode === "skillMode"){
                     UseSkillToTile(board[r][c]);
                 }
+=======
+            board[r][c] = new Tile(r, c, cell);
+            cell.addEventListener("click", () => {
+                playSound('place');
+                placeTile(board[r][c]);
+>>>>>>> 4e5550edd5410456917f8823ab34b86540be71bf
             });
             grid.appendChild(cell);
         }
@@ -150,8 +161,13 @@ function showHtmlTimeCount(countTime) {
     document.getElementById('limit').innerText= remainingTime;
 }
 
+<<<<<<< HEAD
 function placeTile(tile){
     if ( tile.value === null && CurrentGameState === "Control") {
+=======
+function placeTile(tile) {
+    if (tile.value === null && CurrentGameState === "Control") {
+>>>>>>> 4e5550edd5410456917f8823ab34b86540be71bf
         tile.insertTile(insertTile);
         if (isDouble) {
             isDouble = false;
@@ -333,6 +349,9 @@ function setSkill(param1, param2) {
     playerSkill = param1;
     playerSkillCoolTime = param2;
 }
+<<<<<<< HEAD
+export { setCurrentState, explodeTile, DrawBoard };
+=======
 
 
 function startGameTimer() {
@@ -352,5 +371,6 @@ function updateGameTimeDisplay() {
     document.getElementById('time').innerText = minute + ":" + second;
 }
 
-export { setCurrentState, explodeTile, DrawBoard };
+export { setCurrentState };
+>>>>>>> 4e5550edd5410456917f8823ab34b86540be71bf
 export { CurrentGameState };
