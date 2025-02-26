@@ -9,13 +9,20 @@ body {
     /* 스크롤 방지 */
 
     /* 드래그 방지 */
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none;   /* Safari */
-    -khtml-user-select: none;    /* Konqueror HTML */
-    -moz-user-select: none;      /* Firefox */
-    -ms-user-select: none;       /* Internet Explorer/Edge */
-    user-select: none;           /* Non-prefixed version, currently supported by Chrome and Opera */
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently supported by Chrome and Opera */
 }
+
 /* 이미지에 대한 드래그 방지 */
 img {
     -webkit-user-drag: none;
@@ -23,7 +30,8 @@ img {
     -moz-user-drag: none;
     -o-user-drag: none;
     user-drag: none;
-    pointer-events: none;  /* 이미지 선택 방지 */
+    pointer-events: none;
+    /* 이미지 선택 방지 */
 }
 
 body {
@@ -52,7 +60,7 @@ body {
     /* 4x4 기준 크기 */
 }
 
-.tile {
+/* .tile {
     width: var(--tile-size);
     height: var(--tile-size);
     background: #cdc1b4;
@@ -66,6 +74,44 @@ body {
     transition: transform 0.2s ease-in-out;
     cursor: pointer;
     caret-color: transparent;
+} */
+
+/* 타일 스타일 */
+
+.tile {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    transition: transform 0.2s ease-in-out;
+    width: 100px;
+    height: 100px;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 5px;
+    color: #000;
+    cursor: pointer;
+    caret-color: transparent;
+}
+
+.tile.merged {
+    animation: mergeAnimation 0.3s ease-in-out;
+}
+
+@keyframes mergeAnimation {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .tile-skill-mode {
@@ -105,7 +151,7 @@ body {
     object-fit: contain;
 }
 
-.tile:hover {
+.cell:hover {
     /* 호버 시 적용될 스타일 */
     transform: scale(1.01);
     /* 105% 크기로 확대 */
@@ -386,20 +432,54 @@ body {
 }
 
 .show-space {
-    display: inline-block; 
-    padding: 7px 17px; 
-    background: #ffffff; 
-    border: 1px solid #999; 
-    border-radius: 4px; 
-    font-size: 30px; 
+    display: inline-block;
+    padding: 7px 17px;
+    background: #ffffff;
+    border: 1px solid #999;
+    border-radius: 4px;
+    font-size: 30px;
     color: #333;
     cursor: pointer;
-    transition: all 0.3s ease; /* 상태 변화를 부드럽게 */
+    transition: all 0.3s ease;
+    /* 상태 변화를 부드럽게 */
 }
 
 .show-space.disable {
     background: #999;
-    color: #666; /* 텍스트 색상도 흐리게 */
-    cursor: not-allowed; /* 비활성화된 상태를 나타내는 커서 */
-    opacity: 0.7; /* 약간 투명하게 */
+    color: #666;
+    /* 텍스트 색상도 흐리게 */
+    cursor: not-allowed;
+    /* 비활성화된 상태를 나타내는 커서 */
+    opacity: 0.7;
+    /* 약간 투명하게 */
 }
+
+/* 빈칸 스타일 */
+.cell {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    background: #cdc1b4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    caret-color: transparent;
+}
+
+/* 타일 값에 따른 배경색 */
+.tile[data-value="0"] { background-color: transparent; }
+.tile[data-value="2"] { background-color: #eee4da; }
+.tile[data-value="4"] { background-color: #ede0c8; }
+.tile[data-value="8"] { background-color: #f2b179; color: #000; }
+.tile[data-value="16"] { background-color: #f59563; color: #000; }
+.tile[data-value="32"] { background-color: #f67c5f; color: #000; }
+.tile[data-value="64"] { background-color: #f65e3b; color: #000; }
+.tile[data-value="128"] { background-color: #edcf72; color: #000; }
+.tile[data-value="256"] { background-color: #edcc61; color: #000; }
+.tile[data-value="512"] { background-color: #edc850; color: #000; }
+.tile[data-value="1024"] { background-color: #edc53f; color: #000; }
+.tile[data-value="2048"] { background-color: #edc22e; color: #000; }
