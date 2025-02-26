@@ -1,5 +1,7 @@
 // 우클릭 방지
-document.oncontextmenu = function(){return false;}
+document.oncontextmenu = function () { return false; }
+
+let loadRankingsTimeout;
 
 // 랭킹 데이터를 가져와서 테이블에 표시하는 함수
 async function loadRankings() {
@@ -22,6 +24,8 @@ async function loadRankings() {
                 `;
                 tbody.appendChild(tr); // 생성된 행을 <tbody>에 추가
             });
+
+            document.querySelector('table').style.display = 'table';
         } else {
             // 랭킹 데이터 가져오기 실패 처리
             console.error('[ranking.js] DB에서 데이터 랭킹 로드 실패:', result.message);
@@ -34,33 +38,9 @@ async function loadRankings() {
     }
 }
 
-// 데이터 저장 함수
-// async function saveRanking(nickname, turn, playTime) {
-//     const data = {
-//         nickname: nickname,
-//         turn: turn,
-//         play_time: playTime
-//     };
-//     try {
-//         const response = await fetch('./php/save_ranking.php', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(data)
-//         });
-//         const result = await response.json();
-//         if (result.success) {
-//             alert('[ranking.js] 데이터 랭킹이 DB에 저장되었습니다!');
-//         } else {
-//             alert('[ranking.js] DB 저장 오류: ' + result.message);
-//         }
-//     } catch (error) {
-//         alert('[ranking.js] 서버 오류: ' + error.message);
-//     }
-// }
+function debouncedLoadRankings() {
+    clearTimeout(loadRankingsTimeout); // 이전 타이머 제거
+    loadRankingsTimeout = setTimeout(loadRankings, 500); // 500ms 후에 loadRankings 실행 (시간 조정 가능)
+}
 
-// 페이지 로드 시 랭킹 표시
-window.onload = function() {
-    loadRankings();
-};
+document.addEventListener('DOMContentLoaded', debouncedLoadRankings);
