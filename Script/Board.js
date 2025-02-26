@@ -136,10 +136,28 @@ function startTimer() {
         showHtmlTimeCount(countTime);
 
         if ((countTime % 6) == 0) {
-            //console.log("6초마다 event3 실행");
+            divideAllTileByNumber();
         }
     }, 1000);
     return timer;
+}
+
+function divideAllTileByNumber(){
+    board.forEach(line => {
+        line.forEach(tile =>{
+            const value = tile.value;
+            if (value !== null) {
+                if (value.value === 2) {
+                    // 2인 타일은 제거
+                    tile.value = null;
+                } else {
+                    value.value = Math.floor(value.value / 2);
+                    console.log(value.value);
+                }
+            }
+        });
+    });
+    DrawBoard();
 }
 
 function showHtmlTimeCount(countTime) {
