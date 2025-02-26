@@ -134,11 +134,11 @@ function setCurrentState(state) {
             break;
         case "FinishTurn":
             finishTurn();
-            gameEnding();
+            // gameEnding();
             
             break
         case "End":
-            // gameEnding();
+            gameEnding();
             break;
     }
     DrawBoard();
