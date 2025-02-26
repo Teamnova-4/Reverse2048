@@ -20,7 +20,6 @@ let gameTimer;
 
 //스킬 변수
 let playerSkill = localStorage.getItem('gameSkill');
-// let playerSkill = "fix"; 
 let playerSkillCoolTime = 1;
 let coolTime = 0;
 
@@ -115,7 +114,6 @@ function setCurrentState(state) {
             break;
         case "FinishTurn":
             finishTurn();
-            // gameEnding();
             break
         case "End":
             break;
@@ -199,13 +197,20 @@ function divideAllTileByNumber() {
         line.forEach(tile => {
             const value = tile.value;
             if (value !== null) {
-                if (value.value === 2) {
-                    // 2인 타일은 제거
-                    tile.value = null;
+                if (value.value === "bomb") {
+                    explodeTile(tile);
+                } else if (value.isFixed || value.isShield) {
+                    value.isFixed = false;
+                    value.isChanged = false;
                 } else {
-                    value.value = Math.floor(value.value / 2);
-                    console.log(value.value);
-                }
+                    if (value.value === 2 || value.value === 0) {
+                        // 2인 타일은 제거
+                        tile.value = null;
+                    } else {
+                        value.value = Math.floor(value.value / 2);
+                        console.log(value.value);
+                    }
+                } 
             }
         });
     });
