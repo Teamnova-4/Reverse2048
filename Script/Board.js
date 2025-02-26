@@ -114,6 +114,7 @@ function setCurrentState(state) {
             gameEnding();
             break
         case "End":
+            // gameEnding();
             break;
     }
     DrawBoard();
@@ -121,22 +122,18 @@ function setCurrentState(state) {
 
 function gameEnding() {
     console.log('게임이 끝났습니다!');
-    const nickname = prompt("닉네임을 입력하세요:");
-    if (nickname) {
-        const formattedTime = updateGameTimeDisplay()
-
-        console.log('닉네임이 입력되었습니다 ' + nickname);
-        console.log('turn값을 받아옵니다 ' + turn);
-        console.log('게임플레이시간을 받아옵니다1 : ' + formattedTime);
-
-        sendRankingData(nickname, turn, formattedTime); //  시간은 countTime
-    }
+    // 게임 플레이시간 데이터
+    const formattedTime = updateGameTimeDisplay()
+    console.log('turn값을 받아옵니다 ' + turn);
+    console.log('게임플레이시간을 받아옵니다1 : ' + updateGameTimeDisplay());
+    // 클리어모달(화면)
+    showGameClearModal(turn, formattedTime);
 }
 
 async function sendRankingData(nickname, turn, formattedTime) {
 
     try {
-        console.log('게임플레이시간을 받아옵니다2 : ' + formattedTime);
+        console.log('게임플레이시간을 받아옵니다2 : ' + updateGameTimeDisplay());
         const response = await fetch('./php/save_ranking.php', { // 경로 수정
             method: 'POST',
             headers: {
@@ -151,6 +148,7 @@ async function sendRankingData(nickname, turn, formattedTime) {
             console.log('랭킹 데이터 저장 성공');
             // 랭킹 테이블을 새로고침 (ranking.js에 loadRankings 함수가 있어야 함)
             window.location.href = `ranking.html`;
+
         } else {
             console.error('랭킹 데이터 저장 실패:', data.message);
             alert(`데이터 저장 실패: ${data.message}`);
@@ -160,6 +158,77 @@ async function sendRankingData(nickname, turn, formattedTime) {
         alert('데이터 전송 중 오류 발생:', error);
     }
 }
+
+// "Submit" 버튼 클릭 이벤트 처리: 닉네임 가져와서 sendRankingData 호출
+document.getElementById('submit-nickname').addEventListener('click', () => {
+    const nickname = document.getElementById('nickname-input').value;
+    if (nickname) {
+        // sendRankingData 호출
+        sendRankingData(nickname, turn, updateGameTimeDisplay());
+        // 랭킹 전송 후 추가 작업 (예: 버튼 비활성화, 메시지 표시 등)
+        document.getElementById('submit-nickname').disabled = true; // 버튼 비활성화
+        document.getElementById('nickname-input').style.display = 'none'; // 입력 필드 숨김
+        document.getElementById('submit-nickname').style.display = 'none';
+    } else {
+        alert("닉네임을 입력해주세요."); // 닉네임 입력 안했을 때 알림
+    }
+});
+
+// 게임 클리어 모달 표시 (이름 변경, 칭찬 문구 수정)
+function showGameClearModal(turns, time) {
+    document.getElementById('final-turns').textContent = turns;
+    document.getElementById('final-time').textContent = time;
+    document.getElementById('game-over-screen').classList.remove('hidden');
+}
+
+// 모달 닫기 버튼 이벤트 처리
+document.getElementById('restart-button').addEventListener('click', () => {
+    document.getElementById('game-over-screen').classList.add('hidden');  // ID 변경
+    window.location.href = `ranking.html`;
+});
+
+// (선택 사항) 모달 바깥 클릭 시 닫기
+window.addEventListener('click', (event) => {
+    if (event.target.id === 'game-over-screen') { // ID로 확인
+        event.target.classList.add('hidden');
+        window.location.href = `ranking.html`;
+    }
+});
+
+// 게임 클리어 처리 함수
+// function showGameClearScreen() {
+//     const gameOverScreen = document.getElementById("game-over-screen");
+//     const winSound = document.getElementById("win-sound");
+
+//     if (gameOverScreen) {
+//         gameOverScreen.classList.remove("hidden"); // 화면 표시
+
+//         // 🎆 폭죽 효과 실행
+//         setTimeout(() => {
+//             confetti({
+//                 particleCount: 100,  // 파티클 개수
+//                 spread: 270,          // 퍼지는 범위
+//                 startVelocity: 30,   // 처음 속도 (높을수록 강하게 튐)
+//                 scalar: 7.0,         // 💥 크기 조절 (기본값 1, 크게 하려면 1.5~2.0)
+//                 origin: { y: 0.6 }   // 시작 위치 (0.6은 화면 중앙에서 터짐)
+//             });
+//         }, 500); // 0.5초 후 실행
+
+//         // 🎶 효과음 실행
+//         if (winSound) {
+//             winSound.play();
+//         }
+//     }
+// }
+
+// 이벤트 리스너 추가
+document.addEventListener("DOMContentLoaded", function () {
+    // 게임 종료 시 showGameClearScreen()을 호출하도록 이벤트 트리거 추가
+    document.getElementById("restart-button").addEventListener("click", function () {
+        // 다시 시작 버튼 클릭 시 화면 숨기기
+        document.getElementById("game-over-screen").classList.add("hidden");
+    });
+});
 function finishTurn() {
     // 턴 증가
     turn += 1;
@@ -304,10 +373,6 @@ function move() {
 }
 
 
-function endGame() {
-
-}
-
 function explodeTile(tile) {
     const minX = Math.max(tile.x - 1, 0);
     const minY = Math.max(tile.y - 1, 0);
@@ -440,5 +505,4 @@ function updateCooltime() {
     }
 }
 
-export { setCurrentState, explodeTile, DrawBoard };
-export { CurrentGameState };
+export { CurrentGameState, DrawBoard, explodeTile, setCurrentState };
