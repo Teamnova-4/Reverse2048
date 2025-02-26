@@ -63,7 +63,7 @@ main {
     margin-bottom: 50px; /* 버튼 아래쪽 여백 */
 }
 .mode-button {
-    background: #bbada0; /* 배경 색상 */
+    background: #867c72; /* 배경 색상 */
     color: white; /* 글자 색상 */
     border: none;
     border-radius: 5px;
@@ -80,4 +80,5 @@ main {
 .mode-image {
     width: 200px;
     height: 200px;
+    border-radius: 10px;
 }
