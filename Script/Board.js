@@ -152,16 +152,15 @@ function gameEnding() {
 
 }
 
-async function sendRankingData(nickname, turn, formattedTime) {
+async function sendRankingData(nickname, turn, formattedTime, gameSize) {
 
     try {
-
         const response = await fetch('./php/save_ranking.php', { // 경로 수정
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ nickname, turn, formattedTime })
+            body: JSON.stringify({ nickname, turn, formattedTime, gameSize })
         });
 
         const data = await response.json();
@@ -191,7 +190,7 @@ function getByteLength(str) {
     }
     return byteLength;
 }
-
+// 100위권안에 들어가는지 확인합니다.
 async function checkrank_DB_userScore(turn, formattedTime) {
     try {
         const response = await fetch('./php/check_ranking.php', { // check_ranking.php 또는 canRegister.php
@@ -215,7 +214,7 @@ async function checkrank_DB_userScore(turn, formattedTime) {
         if (data.success && data.canRegister) {
             // 순위가 확인이 됬으니 랭크 등록이 가능하다.
             console.log('[Board.js] DB 100위 순위확인성공');
-
+            gameSizeCheck();
             document.getElementById('view-ranking').style.display = 'none';
             // 랭킹등록 버튼 활성화
             document.getElementById('submit-nickname').disabled = false;
@@ -235,7 +234,7 @@ async function checkrank_DB_userScore(turn, formattedTime) {
                     alert("닉네임이 너무 길어요, 조금 줄여주세요!!");
                 } else {
                     // 순위가 확인됬으니 db에 저장하자
-                    sendRankingData(nickname, turn, updateGameTimeDisplay());
+                    sendRankingData(nickname, turn, updateGameTimeDisplay(), gameSizeCheck());
                 }
             });
         } else {
@@ -257,6 +256,18 @@ async function checkrank_DB_userScore(turn, formattedTime) {
         console.error('[Board.js]DB 100위 순위 데이터 전송 중 오류 발생:', error);
         alert('[Board.js]DB 100위 순위 전송 중 오류 발생:' + error);
         return null; // 실패 시 null 반환
+    }
+}
+
+function gameSizeCheck() {
+    const gameSize = localStorage.getItem('gameSize');
+    if (!gameSize) {
+        console.error('[Board.js] 게임 크기를 알 수 없음');
+        alert('[Board.js] 게임 크기를 알 수 없음');
+        return; // 게임 크기를 알 수 없으면 저장 안 함
+    } else {
+        console.log('[Board.js] 게임 크기: ' + gameSize);
+        return gameSize;
     }
 }
 
