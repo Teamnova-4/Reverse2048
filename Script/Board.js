@@ -20,7 +20,7 @@ let gameTimer;
 
 //스킬 변수
 // let playerSkill = localStorage.getItem('gameSkill');
-let playerSkill = "fix"; 
+let playerSkill = "fix";
 let playerSkillCoolTime = 1;
 let coolTime = 0;
 
@@ -71,12 +71,11 @@ function initBoard() {
         for (let c = 0; c < gridSize; c++) {
             const cell = document.createElement("div");
             cell.className = "tile";
-            board[r][c] = new Tile(r, c, cell); 
+            board[r][c] = new Tile(r, c, cell);
             cell.addEventListener("click", () => {
-                if (clickMode === "insertMode"){
-                    playSound('place');
+                if (clickMode === "insertMode") {
                     placeTile(board[r][c])
-                } else if (clickMode === "skillMode"){
+                } else if (clickMode === "skillMode") {
                     UseSkillToTile(board[r][c]);
                 }
             });
@@ -97,7 +96,7 @@ function setCurrentState(state) {
         case "Control":
             timer = startTimer();
             insertTile = Math.random() < 0.9 ? 2 : 4;
-            document.getElementById('next').innerText= insertTile;
+            document.getElementById('next').innerText = insertTile;
             break;
         case "FinishControl":
             clearInterval(timer);
@@ -124,8 +123,8 @@ function finishTurn() {
     limitTime = baseLimitTime;
     document.getElementById("turn").innerText = turn;
     // 쿨타임 감소
-    if (coolTime > 0) { 
-        coolTime -= 1; 
+    if (coolTime > 0) {
+        coolTime -= 1;
         updateCooltime();
     }
     // 다음 턴 준비
@@ -148,9 +147,9 @@ function startTimer() {
     return timer;
 }
 
-function divideAllTileByNumber(){
+function divideAllTileByNumber() {
     board.forEach(line => {
-        line.forEach(tile =>{
+        line.forEach(tile => {
             const value = tile.value;
             if (value !== null) {
                 if (value.value === 2) {
@@ -171,11 +170,12 @@ function showHtmlTimeCount(countTime) {
     // 턴마다 6초 제한 표시
     // 6초에서 카운트다운 되는 형식으로 제한시간 표시
     let remainingTime = limitTime - countTime % limitTime;
-    document.getElementById('limit').innerText= remainingTime;
+    document.getElementById('limit').innerText = remainingTime;
 }
 
-function placeTile(tile){
-    if ( tile.value === null && CurrentGameState === "Control") {
+function placeTile(tile) {
+    if (tile.value === null && CurrentGameState === "Control") {
+        playSound('place');
         tile.insertTile(insertTile);
         if (isDouble) {
             isDouble = false;
@@ -184,7 +184,6 @@ function placeTile(tile){
         }
     }
 }
-
 
 function simulate() {
     const directions = ["up", "down", "left", "right"];
@@ -197,7 +196,7 @@ function simulate() {
         let tempBoard = board.map(row => [...row]);
         let tempScore = 0;
         tempScore = simulateDirection(tempBoard, direction);
-        if(tempScore < minMergeScore && tempScore >= 0){
+        if (tempScore < minMergeScore && tempScore >= 0) {
             mostBedMove = direction;
             minMergeScore = tempScore;
         }
@@ -211,7 +210,7 @@ function simulate() {
 
     if (bestMoves.length > 0) {
         BestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
-        if (isMindControl){
+        if (isMindControl) {
             BestMove = mostBedMove;
         }
         console.log("Best Move: ", BestMove);
@@ -265,7 +264,7 @@ function endGame() {
 
 }
 
-function explodeTile(tile){
+function explodeTile(tile) {
     const minX = Math.max(tile.x - 1, 0);
     const minY = Math.max(tile.y - 1, 0);
     const maxX = Math.min(tile.x + 1, gridSize - 1);
@@ -286,8 +285,8 @@ function explodeTile(tile){
     DrawBoard();
 }
 
-function UseSkillToTile(tile){
-    if ( tile.value === null && CurrentGameState === "Control") 
+function UseSkillToTile(tile) {
+    if (tile.value === null && CurrentGameState === "Control")
         return;
 
     switch (playerSkill) {
@@ -313,7 +312,7 @@ function UseSkill() {
     switch (playerSkill) {
         case "zeroTile":
             insertTile = 0;
-            document.getElementById('next').innerText= insertTile;
+            document.getElementById('next').innerText = insertTile;
             break;
         case "timeAmplification":
             limitTime = 15;
@@ -365,7 +364,7 @@ function setSkill(param1, param2) {
 
 function startGameTimer() {
     if (gameTimer) clearInterval(gameTimer);
-    
+
     gameTimer = setInterval(() => {
         gameTime++;
         updateGameTimeDisplay();
@@ -383,7 +382,7 @@ function updateGameTimeDisplay() {
 function updateCooltime() {
     const overlay = document.getElementById('cooltimeOverlay');
     const cooltimeSpan = document.getElementById('cooltime');
-    
+
     if (coolTime > 0) {
         overlay.classList.add('active');
         cooltimeSpan.textContent = coolTime;
@@ -392,5 +391,5 @@ function updateCooltime() {
     }
 }
 
-export { setCurrentState, explodeTile, DrawBoard };
-export { CurrentGameState };
+export { CurrentGameState, DrawBoard, explodeTile, setCurrentState };
+
