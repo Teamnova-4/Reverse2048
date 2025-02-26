@@ -1,6 +1,7 @@
 // 전역 변수로 오디오 객체들을 관리할 맵 추가
 const audioMap = new Map();
-let isSoundOn = true; // 사운드 켜짐/꺼짐 상태를 저장하는 변수
+// let isSoundOn = true; // 사운드 켜짐/꺼짐 상태를 저장하는 변수
+let isSoundOn = localStorage.getItem('isSoundOn') === 'true'; // 문자열 'true'와 비교
 
 // 오디오 파일과 효과음 이름 매칭
 function initAudio() {
@@ -55,7 +56,17 @@ export function toggleSound() {
     }
 }
 
+// DOMContentLoaded 이벤트에서 초기 설정 적용
 window.addEventListener('DOMContentLoaded', () => {
     window.toggleSound = toggleSound;
     initAudio(); // 오디오 초기화는 DOMContentLoaded 이벤트 내에서 실행
+    
+    // 초기 UI 상태 설정
+    let speakerIcon = document.getElementById('speakerIcon');
+    if (speakerIcon) {
+        speakerIcon.classList.toggle('muted', !isSoundOn);
+        speakerIcon.style.backgroundImage = isSoundOn
+            ? "url('../assets/images/s_on.svg')"
+            : "url('../assets/images/s_off.svg')";
+    }
 });

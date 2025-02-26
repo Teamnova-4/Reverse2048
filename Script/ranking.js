@@ -1,3 +1,6 @@
+// 우클릭 방지
+document.oncontextmenu = function(){return false;}
+
 // 랭킹 데이터를 가져와서 테이블에 표시하는 함수
 async function loadRankings() {
     try {

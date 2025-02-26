@@ -1,6 +1,8 @@
 import { Tile, Value } from "./Tile.js";
-import { CurrentGameState } from "./Board.js";
+import { CurrentGameState, clickSkill } from "./Board.js";
 import { setCurrentState, explodeTile, DrawBoard } from "./Board.js";
+
+window.clickSkill = clickSkill;
 
 export { Tile, Value };
 export { CurrentGameState};

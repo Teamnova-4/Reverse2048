@@ -135,7 +135,7 @@ function setCurrentState(state) {
         case "FinishTurn":
             finishTurn();
             // gameEnding();
-            
+\
             break
         case "End":
             gameEnding();
@@ -578,6 +578,12 @@ function updateGameTimeDisplay() {
 }
 
 function updateCooltime() {
+    const spaceButton = document.querySelector('.show-space');
+    if (coolTime > 0) {
+        spaceButton.classList.add('disable');
+    } else {
+        spaceButton.classList.remove('disable');
+    }
     const overlay = document.getElementById('cooltimeOverlay');
     const cooltimeSpan = document.getElementById('cooltime');
 
@@ -644,5 +650,5 @@ function setSkillCoolTime() {
     }
 }
 
-export { CurrentGameState, DrawBoard, explodeTile, setCurrentState };
+export { CurrentGameState, DrawBoard, explodeTile, setCurrentState, clickSkill };
 
