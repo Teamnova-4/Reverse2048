@@ -29,8 +29,8 @@ try {
     if (empty($data['turn'])) {
         $missingFields[] = 'turn';
     }
-    if (empty($data['playTime'])) {
-        $missingFields[] = 'playTime';
+    if (empty($data['formattedTime'])) {
+        $missingFields[] = 'formattedTime';
     }
 
     // 누락된 필드가 있으면 오류 응답
@@ -45,7 +45,7 @@ try {
 
     // 랭킹 데이터 삽입
     $stmt = $pdo->prepare("INSERT INTO rankings (nickname, turn, play_time) VALUES (?, ?, ?)");
-    $stmt->execute([$data['nickname'], $data['turn'], $data['playTime']]);
+    $stmt->execute([$data['nickname'], $data['turn'], $data['formattedTime']]);
 
     // 성공 응답
     echo json_encode(['success' => true]);
