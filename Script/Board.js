@@ -28,7 +28,7 @@ let isMindControl = false;
 /**
  * 플레이어 가 스페이스 바를 눌렀을떄 실행되고 각자
  * 다른 실행방식이 있다 
- * 현제 기간이 길지 않고
+ * 현제 기간이 길지 않고`
  * 스킬 개수의 증가 가능성이 0에 수렴하다 보니
  * 스파게티 코드 형식으로 만들겠다
  * 
@@ -149,10 +149,10 @@ function setCurrentState(state) {
             break;
         case "FinishTurn":
             finishTurn();
-            // gameEnding();
+            gameEnding();
             break
         case "End":
-            gameEnding();
+            // gameEnding();
             break;
     }
     DrawBoard();

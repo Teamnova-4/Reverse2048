@@ -29,6 +29,8 @@ async function loadRankings() {
         document.title = "전체 랭킹";
     }
 
+    console.log('gameSize: ' + gameSize);
+
     try {
         const response = await fetch('./php/get_ranking.php', {
             method: 'POST', // POST 요청으로 변경
