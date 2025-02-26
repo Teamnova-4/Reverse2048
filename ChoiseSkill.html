@@ -51,7 +51,7 @@
             </button>
         </div>
         <div class="text-container">
-            <p>선택된 스킬 [<span id="skill-name">0타일</span>]</p>
+            <p style="font-size: 30px; font-weight: bold;" id="skill-name"></p>
             <img src="">
             <p id="skill-description">칸 채우기용 0타일을 배치합니다. 0타일 끼리는 0 + 0 = 0 으로 합쳐질수 있습니다. (쿨타임: 12턴)</p>
         </div>
@@ -70,6 +70,19 @@
             
             // 해당 스킬의 버튼 찾기
             const buttons = document.querySelectorAll('.skill-button');
+            buttons.forEach(button =>{
+                //마우스가 버튼 위에 있을 때
+                button.addEventListener('mouseenter', () => {
+                    const skillName = button.getAttribute('onclick').match(/'([^']+)'/)[1];
+                    hoverSkillDescription(skillName)
+                });
+                //마우스가 버튼에서 벗어날 때
+                button.addEventListener('mouseleave', () => {
+                    //현재 선택된 스킬의 설명을 표시
+                    const selectedSkill = localStorage.getItem('gameSkill') || 'zeroTile';
+                    showSkillDescription(selectedSkill);
+                })
+            })
             for(let button of buttons) {
                 if(button.getAttribute('onclick').includes(skillToSelect)) {
                     // 스킬 선택 함수 호출
@@ -85,6 +98,9 @@
         // 게임 사이즈를 화면에 표시
         document.getElementById("map-size").textContent = `${setSize}x${setSize} 게임 모드`;
 
+        function hoverSkillDescription(skill) {
+            showSkillDescription(skill);
+        }
         function choiseSkill(skill, button) {
             // 이전에 선택된 버튼이 있다면 색상 원래대로 되돌리기
             if (selectedSkillButton) {
