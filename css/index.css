@@ -95,18 +95,7 @@ body {
     /* 원본 비율 유지 */
     object-fit: contain;
     /* 비율을 유지하면서 컨테이너에 맞춤 */
-    max-width: 80%;
-    /* 타일 너비의 80%로 제한 */
-    max-height: 80%;
-    /* 타일 높이의 80%로 제한 */
-    width: auto;
-    /* 원본 비율 유지 */
-    height: auto;
-    /* 원본 비율 유지 */
-    object-fit: contain;
-    /* 비율을 유지하면서 컨테이너에 맞춤 */
 }
-
 
 .tile-skill-mode img {
     max-width: 80%;
@@ -146,7 +135,6 @@ body {
     margin-top: 20px;
     font-size: 24px;
 }
-
 
 .tile-fixed {
     box-shadow: 0 0 0 5px #3cb842;
@@ -375,13 +363,9 @@ body {
     --tile-size: 100px;
 }
 
-    :root {
-        --tile-size: 100px;
-    }
-
-    :root {
-        --tile-size: 100px;
-    }
+:root {
+    --tile-size: 100px;
+}
 
 .newgame-button-container {
     display: flex;
@@ -398,6 +382,24 @@ body {
     padding: 10px 20px;
     font-size: large;
     font-weight: bold;
-
+    cursor: pointer;
 }
 
+.show-space {
+    display: inline-block; 
+    padding: 7px 17px; 
+    background: #ffffff; 
+    border: 1px solid #999; 
+    border-radius: 4px; 
+    font-size: 30px; 
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease; /* 상태 변화를 부드럽게 */
+}
+
+.show-space.disable {
+    background: #999;
+    color: #666; /* 텍스트 색상도 흐리게 */
+    cursor: not-allowed; /* 비활성화된 상태를 나타내는 커서 */
+    opacity: 0.7; /* 약간 투명하게 */
+}
