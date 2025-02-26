@@ -62,6 +62,20 @@ body {
     cursor: pointer;
     caret-color: transparent;
 }
+.tile img {
+    max-width: 80%;  /* 타일 너비의 80%로 제한 */
+    max-height: 80%; /* 타일 높이의 80%로 제한 */
+    width: auto;     /* 원본 비율 유지 */
+    height: auto;    /* 원본 비율 유지 */
+    object-fit: contain; /* 비율을 유지하면서 컨테이너에 맞춤 */
+}
+.tile-skill-mode img {
+    max-width: 80%;
+    max-height: 80%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
 
 .tile:hover {
     /* 호버 시 적용될 스타일 */
@@ -132,6 +146,7 @@ body {
     position: relative;
     display: inline-block;
     background: #bbada0;
+    width: 55px;
     padding: 15px 25px;
     margin-bottom: 10px;
     border-radius: 6px;
@@ -140,7 +155,8 @@ body {
 }
 
 .turn-label {
-    font-size: 20px;
+    font-size: 15px;
+    font-weight: bold;
     color: #eee4da;
 }
 
@@ -305,3 +321,4 @@ body {
     font-weight: bold;
 
 }
+
