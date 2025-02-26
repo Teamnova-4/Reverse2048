@@ -39,15 +39,55 @@
             <div class="grid" id="grid"></div>
         </div>
         <div class="container">
-            <div class="cooltime"><span
-                    style="display: inline-block; padding: 7px 17px; background: #e8e8e8; border: 1px solid #999; border-radius: 4px; font-size: 25px; color: #333;">Space
-                    Bar</span> <span id="skill">스킬명</span> [쿨타임 <span id="cooltime">0</span>]</div>
+            <div class="cooltime-container">
+                <span style="display: inline-block; padding: 7px 17px; background: #e8e8e8; border: 1px solid #999; border-radius: 4px; font-size: 25px; color: #333;">Space Bar</span>
+                <div class="skill-image-container">
+                    <img id="skillImage" class="skill-image" src="" alt="스킬">
+                    <div class="cooltime-overlay" id="cooltimeOverlay">
+                        <span id="cooltime">0</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         let skillName = localStorage.getItem('gameSkill');
-        document.getElementById('skill').innerText = skillName;
+        let skillImageSrc = '';
+        
+        switch (skillName) {
+            case 'zeroTile':
+                skillImageSrc = "Resources/zeroTile.png";
+                break;
+            case '시간 증폭':
+                skillImageSrc = "Resources/lock.png";
+                break;
+            case 'shield':
+                skillImageSrc = "Resources/shield.png";
+                break;
+            case 'fullShield':
+                skillImageSrc = "Resources/shield.png";
+                break;
+            case 'bomb':
+                skillImageSrc = "Resources/bomb.jpg";
+                break;
+            case 'fix':
+                skillImageSrc = "Resources/fix.png";
+                break;
+            case 'mindControl':
+                skillImageSrc = "Resources/mindControl.png";
+                break;
+            case 'double':
+                skillImageSrc = "Resources/double.png";
+                break;
+            case 'sequence':
+                skillImageSrc = "Resources/sequence.png";
+                break;
+            case '미선택':
+                skillImageSrc = "Resources/none.png";
+                break;
+        }
+        document.getElementById('skillImage').src = skillImageSrc;
     </script>
     <script type="module" src="./Script/Sound.js"></script>
 </body>
