@@ -600,5 +600,5 @@ function setSkillCoolTime() {
     }
 }
 
-export { CurrentGameState, DrawBoard, explodeTile, setCurrentState };
+export { CurrentGameState, DrawBoard, explodeTile, setCurrentState, clickSkill };
 
