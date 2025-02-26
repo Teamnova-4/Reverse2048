@@ -27,6 +27,7 @@
     display: none;
 }
 
+
 /* 페이드인 애니메이션 */
 @keyframes fadeIn {
     from {
@@ -153,6 +154,6 @@
 }
 
 /* 다시 시작 버튼 호버 */
-#restart-button:hover {
+#go_title_1:hover {
     background: linear-gradient(135deg, #0277bd, #039be5);
 }

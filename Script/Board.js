@@ -133,12 +133,11 @@ function setCurrentState(state) {
             move();
             break;
         case "FinishTurn":
-
             finishTurn();
-            gameEnding();
+            // gameEnding();
             break
         case "End":
-            // gameEnding();
+            gameEnding();
             break;
     }
     DrawBoard();
@@ -227,7 +226,7 @@ function showGameClearModal(turns, time) {
 }
 
 // 타이틀 이동 버튼튼 -> 
-document.getElementById('restart-button').addEventListener('click', () => {
+document.getElementById('go_title_1').addEventListener('click', () => {
     document.getElementById('game-over-screen').classList.add('hidden');  // ID 변경
     window.location.href = `ChoiseMode.html`;
 });
@@ -240,12 +239,10 @@ window.addEventListener('click', (event) => {
     }
 });
 
-
-
 // 이벤트 리스너 추가
 document.addEventListener("DOMContentLoaded", function () {
     // 게임 종료 시 showGameClearScreen()을 호출하도록 이벤트 트리거 추가
-    document.getElementById("restart-button").addEventListener("click", function () {
+    document.getElementById("go_title_1").addEventListener("click", function () {
         // 다시 시작 버튼 클릭 시 화면 숨기기
         document.getElementById("game-over-screen").classList.add("hidden");
     });
