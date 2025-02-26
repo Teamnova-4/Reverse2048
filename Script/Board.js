@@ -113,15 +113,6 @@ function initBoard() {
                 }
             });
 
-            cell.addEventListener("click", () => {
-                if (clickMode === "insertMode") {
-                    // 클릭된 빈칸의 그리드 좌표 가져오기
-                    const clickedCell = e.currentTarget;
-                    placeTile(clickedCell); // 타일 배치
-                } else if (clickMode === "skillMode") {
-                    UseSkillToTile(board[r][c]);
-                }
-            });
             grid.appendChild(cell);
         }
     }
@@ -810,7 +801,6 @@ function finishMove(grid, mergedPositions) {
                 tile.dataset.value = value;
                 const positionKey = `${i}-${j}`;
                 if (mergedPositions.has(positionKey)) {
-                    console.log('merged 추가');
                     tile.classList.add('merged');
                 }
                 // tile.style.transform = 'translate(0, 0)';
