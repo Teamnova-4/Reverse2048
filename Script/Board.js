@@ -78,7 +78,6 @@ function initBoard() {
             board[r][c] = new Tile(r, c, cell);
             cell.addEventListener("click", () => {
                 if (clickMode === "insertMode") {
-                    playSound('place');
                     placeTile(board[r][c])
                 } else if (clickMode === "skillMode") {
                     UseSkillToTile(board[r][c]);
@@ -223,6 +222,7 @@ function showHtmlTimeCount(countTime) {
 
 function placeTile(tile) {
     if (tile.value === null && CurrentGameState === "Control") {
+        playSound('place');
         tile.insertTile(insertTile);
         if (isDouble) {
             isDouble = false;
@@ -231,7 +231,6 @@ function placeTile(tile) {
         }
     }
 }
-
 
 function simulate() {
     const directions = ["up", "down", "left", "right"];
@@ -444,5 +443,5 @@ function updateCooltime() {
     }
 }
 
-export { setCurrentState, explodeTile, DrawBoard };
-export { CurrentGameState };
+export { CurrentGameState, DrawBoard, explodeTile, setCurrentState };
+
