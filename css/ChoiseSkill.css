@@ -10,11 +10,29 @@ body {
 head {
     width: 80%;
     max-width: 1200px;
+    display: flex;
+    justify-content: flex-start;
+    padding: 20px 0;
 }
 main {
     width: 80%;
     max-width: 1200px;
 }
+.choiseMode-btn {
+    font-size: 20px;
+    display: inline-block;
+    background: #bbada0;
+    border: none;
+    border-radius: 2px;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+}
+
+.choiseMode-btn:hover {
+    background: #a49288;
+}
+
 /* 텍스트 스타일 */
 .text-container {
     margin: 20px; /* 텍스트 박스의 여백 */

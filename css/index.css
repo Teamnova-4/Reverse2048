@@ -17,16 +17,17 @@ body {
 }
 .grid {
     display: grid;
-    grid-template-columns: repeat(4, 100px);
-    grid-template-rows: repeat(4, 100px);
     gap: 10px;
     background: #bbada0;
     padding: 10px;
     border-radius: 10px;
+    margin: 0 auto;
+    width: 400px;  /* 4x4 기준 크기 */
+    height: 400px; /* 4x4 기준 크기 */
 }
 .tile {
-    width: 100px;
-    height: 100px;
+    width: var(--tile-size);
+    height: var(--tile-size);
     background: #cdc1b4;
     display: flex;
     justify-content: center;
@@ -118,7 +119,7 @@ body {
 
 .cooltime-container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 10px;
     margin-top: 20px;
@@ -139,8 +140,8 @@ body {
     position: relative;
 }
 .skill-image {
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    height: 80%;
     object-fit: contain;
     border-radius: 5px;
 }
@@ -192,3 +193,7 @@ body {
     border: none;
     cursor: pointer;
   }
+
+:root {
+    --tile-size: 100px;
+}
