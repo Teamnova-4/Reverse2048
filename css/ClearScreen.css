@@ -1,0 +1,171 @@
+/* 게임 클리어 모달 */
+#game-over-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #333d58, #09041d1c);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center;  이제 필요 없음 */
+    align-items: center; /* 가로축 중앙 정렬은 유지 */
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    z-index: 1000;
+    animation: fadeIn 0.5s ease-in-out;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    padding: 30px;
+     overflow-y: auto;
+}
+
+/* 숨기기 */
+#game-over-screen.hidden {
+    display: none;
+}
+
+/* 페이드인 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 반짝이는 효과 */
+@keyframes glowText {
+    0% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #a19cd1, 0 0 20px #ff00de;
+    }
+
+    50% {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #a19cd1, 0 0 40px #ff00de;
+    }
+
+    100% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #a19cd1, 0 0 20px #ff00de;
+    }
+}
+
+/* 클리어 메시지 */
+#game-over-screen h2 {
+    font-size: 4rem;
+    font-weight: bold;
+    animation: glowText 2s infinite alternate;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+    text-align: center;
+    /* color: white;  기존 색상 */
+    color: black; /* 밝은 노란색 (예시) */
+    /* color: #ffeb3b;  조금 더 진한 노란색 (예시) */
+    /* color: gold;  금색 (HTML 색상 이름) */
+    /* 원하는 색상 코드를 여기에 넣으세요 */
+}
+
+/* 텍스트 컨테이너 (턴, 플레이시간, 닉네임) */
+#game-over-screen .text-container {
+    text-align: left; /* 왼쪽 정렬 */
+    margin-bottom: 20px; /* 아래쪽 여백 */
+    width: 80%;
+    max-width: 400px;
+}
+
+/* 턴, 시간 표시 */
+#game-over-screen p {
+    font-size: calc(1.5rem + 1vw);
+    margin-bottom: 10px; /* 간격 줄임 */
+    color: #eee;
+}
+
+/* 닉네임 입력 필드 레이블 */
+#game-over-screen label {
+    font-size: 1.8rem;
+    margin-top: 100px;
+    margin-bottom: 20px;
+    color: #ddd;
+    display: block;
+    text-align: left; /* 왼쪽 정렬 */
+}
+
+/* 닉네임 입력 필드 */
+#nickname-input {
+    padding: 18px;
+    border-radius: 12px;
+    border: 2px solid #9c27b0;
+    font-size: 1.8rem;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    margin-top: 10px; /* 위쪽 여백 줄임 */
+    margin-bottom: 20px;/*아래쪽 여백 추가*/
+    width: auto; /* 부모 요소에 맞게 너비 조정 */
+    max-width: none; /* 최대 너비 제한 제거 */
+    box-sizing: border-box;
+}
+
+#nickname-input::placeholder {
+    color: #777;
+}
+
+/* 버튼 컨테이너 (두 버튼을 감싸는 div) */
+#game-over-screen .button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px; /* 위쪽 여백 줄임 */
+}
+
+/* 랭킹 등록 버튼 */
+#submit-nickname {
+    padding: 18px 40px;
+    background: linear-gradient(135deg, #43a047, #1b5e20);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s, box-shadow 0.2s;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    order: 1;
+}
+
+/* 다시 시작 버튼 */
+#restart-button {
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #039be5, #0277bd);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    order: 2;
+}
+
+/* 버튼 호버 효과 (공통) */
+#game-over-screen button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 랭킹 등록 버튼 호버 */
+#submit-nickname:hover {
+    background: linear-gradient(135deg, #1b5e20, #43a047);
+}
+
+/* 다시 시작 버튼 호버 */
+#restart-button:hover {
+    background: linear-gradient(135deg, #0277bd, #039be5);
+}
