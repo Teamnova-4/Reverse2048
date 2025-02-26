@@ -25,8 +25,9 @@ async function loadRankings() {
         h1Element.textContent = '[5X5] 랭킹 화면';
         document.title = "[5x5] 랭킹";
     } else {
-        h1Element.textContent = '전체 랭킹 화면'; // gameSize가 null이거나 'all'인 경우
-        document.title = "전체 랭킹";
+        // 기본값은 4*4로 설정한다.
+        h1Element.textContent = '[4X4] 랭킹 화면';
+        document.title = "[4x4] 랭킹";
     }
 
     console.log('gameSize: ' + gameSize);
@@ -44,6 +45,7 @@ async function loadRankings() {
 
         if (result.success) {
             displayRankings(result.data);
+            // localStorage.removeItem('gameSize');
         } else {
             // 랭킹 데이터 가져오기 실패 처리
             console.error('[ranking.js] DB에서 데이터 랭킹 로드 실패:', result.message);
