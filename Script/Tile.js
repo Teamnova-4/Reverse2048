@@ -31,6 +31,7 @@ export class Tile {
         this.value = null;
 
         Tile.isChanged = false;
+
     }
 
     useSkill(skill) {
@@ -55,14 +56,55 @@ export class Tile {
         this.assignValue();
     }
 
+    getTileColor(num){
+        const colors = {
+            0: "#EEE4DA",
+            2: "#EEE4DA",
+            4: "#EDE0C8",
+            8: "#F2B179",
+            16: "#F59563",
+            32: "#F67C5F",
+            64: "#F65E3B",
+            128: "#EDCF72",
+            256: "#EDCC61",
+            512: "#EDC850",
+            1024: "#EDC53F",
+            2048: "#EDC22E",
+        };
+    
+        // 숫자가 2048 초과일 경우 같은 색 유지 (또는 추가 변형 가능)
+        return colors[num] || "#3C3A32"; // 2048 이상은 어두운 색
+    };
+
     assignValue() {
+        this.div.innerHTML = ""; // 기존 내용 지우기
+        this.div.classList.remove("tile-fixed", "tile-shield"); // 기존 클래스 제거 추가
         if(this.value === null) {
             this.div.textContent = null;
+            this.div.style.backgroundColor = "#cdc1b4";
             return;
         }
 
-        this.div.textContent = this.value.value;
-        this.div.style=`color: ${this.value.isShield ? "red" : "black"}`;
+        if (this.value.value === "bomb") {
+            const img = document.createElement("img");
+            this.div.style.backgroundColor = "#EEE4DA";
+            img.src = "Resources/bomb.png"; // 이미지 경로 설정
+            img.alt = "Bomb"; // 이미지 대체 텍스트
+            img.className = "tile-shield"; // 클래스 추가
+            this.div.appendChild(img);
+        } else {
+            if(this.value.isFixed) {
+                console.log(this.value);
+                this.div.classList.add("tile-fixed");
+            } else if(this.value.isShield) {
+                console.log(this.value);
+                this.div.classList.add("tile-shield");
+            }
+
+            this.div.textContent = this.value.value;
+
+            this.div.style.backgroundColor = this.getTileColor(this.value.value);
+        }
     }
 
     mergeEffect() {

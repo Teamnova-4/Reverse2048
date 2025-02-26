@@ -40,9 +40,7 @@
         </div>
         <div class="container">
             <div class="cooltime-container">
-                <span
-                    style="display: inline-block; padding: 7px 17px; background: #e8e8e8; border: 1px solid #999; border-radius: 4px; font-size: 25px; color: #333;">Space
-                    Bar</span>
+                <button onclick="clickSkill()" style="display: inline-block; padding: 7px 17px; background: #ffffff; border: 1px solid #999; border-radius: 4px; font-size: 30px; color: #333;">Space Bar</button>
                 <div class="skill-image-container">
                     <img id="skillImage" class="skill-image" src="" alt="스킬">
                     <div class="cooltime-overlay" id="cooltimeOverlay">
@@ -80,8 +78,8 @@
             case 'zeroTile':
                 skillImageSrc = "Resources/zeroTile.png";
                 break;
-            case '시간 증폭':
-                skillImageSrc = "Resources/lock.png";
+            case 'timeAmplification':
+                skillImageSrc = "Resources/timeAmplification.png";
                 break;
             case 'shield':
                 skillImageSrc = "Resources/shield.png";
@@ -90,7 +88,7 @@
                 skillImageSrc = "Resources/shield.png";
                 break;
             case 'bomb':
-                skillImageSrc = "Resources/bomb.jpg";
+                skillImageSrc = "Resources/bomb.png";
                 break;
             case 'fix':
                 skillImageSrc = "Resources/fix.png";

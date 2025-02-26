@@ -7,7 +7,7 @@ let insertTile;
 let turn = 0;
 let CurrentGameState;
 
-let gridSize = 4;
+let gridSize = parseInt(localStorage.getItem('gameSize'));
 let board;
 
 let BestMove;
@@ -19,8 +19,7 @@ let gameTime = 0;
 let gameTimer;
 
 //스킬 변수
-// let playerSkill = localStorage.getItem('gameSkill');
-let playerSkill = "fix";
+let playerSkill = localStorage.getItem('gameSkill');
 let playerSkillCoolTime = 1;
 let coolTime = 0;
 
@@ -36,18 +35,37 @@ let isMindControl = false;
  */
 document.addEventListener("keydown", (event) => {
     if (CurrentGameState === "Control" && event.key === " ") {
-        if (coolTime === 0) {
-            coolTime = playerSkillCoolTime;
-            UseSkill();
-        } else {
-            console.log(`coolTime : ${coolTime}`);
-        }
+        clickSkill();
     }
 });
 
+function assignSkillMode(isSkillMode = true) {
+    for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c < gridSize; c++) {
+            const tile = board[r][c];
+            if (isSkillMode){
+                tile.div.classList.add("tile-skill-mode");
+                tile.div.classList.remove("tile");
+            }else{
+                tile.div.classList.remove("tile-skill-mode");
+                tile.div.classList.add("tile");
+            }
+        }
+    }
+}
+
+function clickSkill(){
+    if (coolTime === 0) {
+        coolTime = playerSkillCoolTime;
+        UseSkill();
+    } else {
+        console.log(`coolTime : ${coolTime}`);
+    }
+}
+
 
 function startGame() {
-
+    setGridSize();
     initSkill();
     initBoard();
 }
@@ -74,7 +92,6 @@ function initBoard() {
             board[r][c] = new Tile(r, c, cell);
             cell.addEventListener("click", () => {
                 if (clickMode === "insertMode") {
-                    playSound('place');
                     placeTile(board[r][c])
                 } else if (clickMode === "skillMode") {
                     UseSkillToTile(board[r][c]);
@@ -90,6 +107,7 @@ function setCurrentState(state) {
     console.log(CurrentGameState);
     switch (CurrentGameState) {
         case "Start":
+            setGridSize();
             startGameTimer();
             initBoard();
             setCurrentState("Control");
@@ -98,6 +116,10 @@ function setCurrentState(state) {
             timer = startTimer();
             insertTile = Math.random() < 0.9 ? 2 : 4;
             document.getElementById('next').innerText = insertTile;
+
+            const grid = document.getElementById("grid");
+            grid.classList.remove("mind-control");
+
             break;
         case "FinishControl":
             clearInterval(timer);
@@ -111,7 +133,6 @@ function setCurrentState(state) {
             break;
         case "FinishTurn":
             finishTurn();
-            gameEnding();
             break
         case "End":
             // gameEnding();
@@ -195,31 +216,7 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// 게임 클리어 처리 함수
-// function showGameClearScreen() {
-//     const gameOverScreen = document.getElementById("game-over-screen");
-//     const winSound = document.getElementById("win-sound");
 
-//     if (gameOverScreen) {
-//         gameOverScreen.classList.remove("hidden"); // 화면 표시
-
-//         // 🎆 폭죽 효과 실행
-//         setTimeout(() => {
-//             confetti({
-//                 particleCount: 100,  // 파티클 개수
-//                 spread: 270,          // 퍼지는 범위
-//                 startVelocity: 30,   // 처음 속도 (높을수록 강하게 튐)
-//                 scalar: 7.0,         // 💥 크기 조절 (기본값 1, 크게 하려면 1.5~2.0)
-//                 origin: { y: 0.6 }   // 시작 위치 (0.6은 화면 중앙에서 터짐)
-//             });
-//         }, 500); // 0.5초 후 실행
-
-//         // 🎶 효과음 실행
-//         if (winSound) {
-//             winSound.play();
-//         }
-//     }
-// }
 
 // 이벤트 리스너 추가
 document.addEventListener("DOMContentLoaded", function () {
@@ -264,13 +261,20 @@ function divideAllTileByNumber() {
         line.forEach(tile => {
             const value = tile.value;
             if (value !== null) {
-                if (value.value === 2) {
-                    // 2인 타일은 제거
-                    tile.value = null;
+                if (value.value === "bomb") {
+                    explodeTile(tile);
+                } else if (value.isFixed || value.isShield) {
+                    value.isFixed = false;
+                    value.isChanged = false;
                 } else {
-                    value.value = Math.floor(value.value / 2);
-                    console.log(value.value);
-                }
+                    if (value.value === 2 || value.value === 0) {
+                        // 2인 타일은 제거
+                        tile.value = null;
+                    } else {
+                        value.value = Math.floor(value.value / 2);
+                        console.log(value.value);
+                    }
+                } 
             }
         });
     });
@@ -288,6 +292,7 @@ function showHtmlTimeCount(countTime) {
 
 function placeTile(tile) {
     if (tile.value === null && CurrentGameState === "Control") {
+        playSound('place');
         tile.insertTile(insertTile);
         if (isDouble) {
             isDouble = false;
@@ -296,7 +301,6 @@ function placeTile(tile) {
         }
     }
 }
-
 
 function simulate() {
     const directions = ["up", "down", "left", "right"];
@@ -324,6 +328,7 @@ function simulate() {
     if (bestMoves.length > 0) {
         BestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
         if (isMindControl) {
+            isMindControl = false;
             BestMove = mostBedMove;
         }
         console.log("Best Move: ", BestMove);
@@ -395,6 +400,8 @@ function explodeTile(tile) {
 }
 
 function UseSkillToTile(tile) {
+    assignSkillMode(false);
+    clickMode = "insertMode";
     if (tile.value === null && CurrentGameState === "Control")
         return;
 
@@ -412,7 +419,7 @@ function UseSkillToTile(tile) {
             break;
         default:
     }
-    clickMode = "insertMode";
+
     DrawBoard();
 }
 
@@ -429,6 +436,7 @@ function UseSkill() {
         case "shield":
             // 선택필요 스킬
             clickMode = "skillMode";
+            assignSkillMode();
             break;
         case "fullShield":
             board.forEach(row => {
@@ -445,13 +453,17 @@ function UseSkill() {
         case "fix":
             // 선택필요 스킬
             clickMode = "skillMode";
+            assignSkillMode();
             break;
         case "mindControl":
+            const grid = document.getElementById("grid");
+            grid.classList.add("mind-control");
             isMindControl = true;
             break;
         case "double":
             // 선택필요 스킬
             clickMode = "skillMode";
+            assignSkillMode();
             break;
         case "sequence":
             isDouble = true;
@@ -505,4 +517,22 @@ function updateCooltime() {
     }
 }
 
+function setGridSize() {
+    const grid = document.getElementById('grid');
+    const baseSize = 420; // 4x4 기준의 그리드 전체 크기 (padding 제외)
+    const tileSize = Math.floor((baseSize - (10 * (gridSize - 1))) / gridSize); // gap 10px 고려
+    
+    // 그리드 템플릿 설정
+    grid.style.gridTemplateColumns = `repeat(${gridSize}, ${tileSize}px)`;
+    grid.style.gridTemplateRows = `repeat(${gridSize}, ${tileSize}px)`;
+    
+    // 전체 그리드 크기는 4x4 기준으로 고정
+    grid.style.width = `${baseSize}px`;
+    grid.style.height = `${baseSize}px`;
+    
+    // 타일 크기 동적 조정을 위한 CSS 변수 설정
+    document.documentElement.style.setProperty('--tile-size', `${tileSize}px`);
+}
+
 export { CurrentGameState, DrawBoard, explodeTile, setCurrentState };
+
