@@ -534,6 +534,12 @@ function updateGameTimeDisplay() {
 }
 
 function updateCooltime() {
+    const spaceButton = document.querySelector('.show-space');
+    if (coolTime > 0) {
+        spaceButton.classList.add('disable');
+    } else {
+        spaceButton.classList.remove('disable');
+    }
     const overlay = document.getElementById('cooltimeOverlay');
     const cooltimeSpan = document.getElementById('cooltime');
 
