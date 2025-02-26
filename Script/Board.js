@@ -7,7 +7,7 @@ let insertTile;
 let turn = 0;
 let CurrentGameState;
 
-let gridSize = 4;
+let gridSize = parseInt(localStorage.getItem('gameSize'));
 let board;
 
 let BestMove;
@@ -65,7 +65,7 @@ function clickSkill(){
 
 
 function startGame() {
-
+    setGridSize();
     initSkill();
     initBoard();
 }
@@ -107,6 +107,7 @@ function setCurrentState(state) {
     console.log(CurrentGameState);
     switch (CurrentGameState) {
         case "Start":
+            setGridSize();
             startGameTimer();
             initBoard();
             setCurrentState("Control");
@@ -473,6 +474,23 @@ function updateCooltime() {
     } else {
         overlay.classList.remove('active');
     }
+}
+
+function setGridSize() {
+    const grid = document.getElementById('grid');
+    const baseSize = 420; // 4x4 기준의 그리드 전체 크기 (padding 제외)
+    const tileSize = Math.floor((baseSize - (10 * (gridSize - 1))) / gridSize); // gap 10px 고려
+    
+    // 그리드 템플릿 설정
+    grid.style.gridTemplateColumns = `repeat(${gridSize}, ${tileSize}px)`;
+    grid.style.gridTemplateRows = `repeat(${gridSize}, ${tileSize}px)`;
+    
+    // 전체 그리드 크기는 4x4 기준으로 고정
+    grid.style.width = `${baseSize}px`;
+    grid.style.height = `${baseSize}px`;
+    
+    // 타일 크기 동적 조정을 위한 CSS 변수 설정
+    document.documentElement.style.setProperty('--tile-size', `${tileSize}px`);
 }
 
 export { CurrentGameState, DrawBoard, explodeTile, setCurrentState };
