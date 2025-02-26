@@ -67,11 +67,16 @@ main {
     border: none;
     border-radius: 5px;
     padding: 15px 30px; /* 버튼 패딩 */
-    font-size: 18px; /* 글자 크기 */
+    font-size: 25px; /* 글자 크기 */
     margin: 0 10px; /* 버튼 간격 */
     cursor: pointer; /* 커서 모양 변경 */
     transition: background 0.3s; /* 배경 색상 변화 효과 */
 }
 .mode-button:hover {
     background: #f2b179; /* 호버 시 배경 색상 변화 */
+}
+
+.mode-image {
+    width: 200px;
+    height: 200px;
 }
