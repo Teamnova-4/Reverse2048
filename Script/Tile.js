@@ -1,9 +1,11 @@
-import { CurrentGameState } from "./main.js";
+import { CurrentGameState, DrawBoard, explodeTile } from "./main.js";
 
 export class Value {
     constructor(value) {
         this.value = value;
         this.isShield = false;
+        this.isFixed = false;
+        this.isExplode = false;
     }
 
 
@@ -20,15 +22,10 @@ export class Value {
 export class Tile {
     static isChanged;
 
-    constructor(x, y, div) {
+    constructor(y, x, div) {
         this.x = x;
         this.y = y;
         this.div = div;
-
-        this.topTile = null;
-        this.bottomTile = null;
-        this.rightTile = null;
-        this.leftTile = null;
 
         this.isNumber = true;
         this.value = null;
@@ -36,36 +33,15 @@ export class Tile {
         Tile.isChanged = false;
     }
 
-    setTile(direction, tile){
-        switch(direction){
-            case "right":
-                this.rightTile = tile;
-                tile.leftTile = this;
-                break;
-            case "left":
-                this.leftTile = tile;
-                tile.rightTile = this;
-                break;
-            case "top":
-                this.topTile = tile;
-                tile.bottomTile = this;
-                break;
-            case "bottom":
-                this.bottomTile = tile;
-                tile.topTile = this;
-                break;
-            default:
-                console.error(`failed to set tile ${this}  ${direction}`)
-
-        }
-    }
-
     useSkill(skill) {
 
     }
 
     insertTile(value) {
-        this.setValue(new Value(value));
+        const val = new Value(value)
+        if(val.value === "bomb")
+            val.isExplode = true;
+        this.setValue(val);
     }
 
     setValue(value){
@@ -75,13 +51,17 @@ export class Tile {
         }else {
             this.div.textContent = value.value;
         }
+
         this.assignValue();
     }
 
     assignValue() {
-        if(this.value === null)
+        if(this.value === null) {
+            this.div.textContent = null;
             return;
+        }
 
+        this.div.textContent = this.value.value;
         this.div.style=`color: ${this.value.isShield ? "red" : "black"}`;
     }
 
@@ -130,7 +110,12 @@ export class Tile {
         let result = null; 
         let score = 0;
         if (isNaN(tile1Val.value)){
-            switch(tile1Val){
+            switch(tile1Val.value){
+                case "bomb":
+                    result = new Value("bomb");
+                    result.isExplode = true;
+                    score = Number.MAX_VALUE / 2;
+                    break;
             }
         } else {
             result = new Value(tile1Val.value + tile2Val.value);
@@ -151,6 +136,7 @@ export class Tile {
             }
             return acc;
         }, []);
+        let explodeTileArr = [];
         
         // 2. 좌측부터 인접한 같은 숫자 병합 (한 번 병합된 값은 재병합 불가)
         const mergedValues = [];
@@ -158,6 +144,9 @@ export class Tile {
             if (i < nonNullValues.length - 1 && nonNullValues[i].isEqual(nonNullValues[i + 1])) {
                 //쉴드 스킬 사용 체크
                 if(!(nonNullValues[i].isShield || nonNullValues[i+1].isShield)){
+                    if (nonNullValues[i].isExplode){
+                        explodeTileArr.push(arr[mergedValues.length]);
+                    }
                     mergedValues.push(Tile.merge(nonNullValues[i], nonNullValues[i + 1]).result);
                 } else {
                     //쉴드 제거
@@ -177,6 +166,10 @@ export class Tile {
         for (let i = 0; i < arr.length; i++) {
             arr[i].setValue((i < mergedValues.length) ? mergedValues[i] : null);
         }
+        explodeTileArr.forEach(tile => {
+            explodeTile(tile);
+        });
+
         return arr;
     }
 

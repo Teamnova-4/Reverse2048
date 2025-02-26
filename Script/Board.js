@@ -1,5 +1,6 @@
 import { Tile } from './main.js';
 
+let clickMode = "insertMode";
 let insertTile;
 
 let turn
@@ -11,11 +12,13 @@ let board;
 let BestMove;
 
 let timer;
-
 //스킬 변수
-let playerSkill = "fullShield";
+let playerSkill = "bomb";
 let playerSkillCoolTime = 1;
 let coolTime = 0;
+
+let isDouble = false;
+let isMindControl = false;
 /**
  * 플레이어 가 스페이스 바를 눌렀을떄 실행되고 각자
  * 다른 실행방식이 있다 
@@ -61,7 +64,13 @@ function initBoard() {
             const cell = document.createElement("div");
             cell.className = "tile";
             board[r][c] = new Tile(r, c, cell); 
-            cell.addEventListener("click", () => placeTile(board[r][c]));
+            cell.addEventListener("click", () => {
+                if (clickMode === "insertMode"){
+                    placeTile(board[r][c])
+                } else if (clickMode === "skillMode"){
+                    UseSkillToTile(board[r][c]);
+                }
+            });
             grid.appendChild(cell);
         }
     }
@@ -125,9 +134,13 @@ function showHtmlTimeCount(countTime){
 }
 
 function placeTile(tile){
-    if ( tile.value === null&& CurrentGameState === "Control") {
+    if ( tile.value === null && CurrentGameState === "Control") {
         tile.insertTile(insertTile);
-        setCurrentState("FinishControl");
+        if (isDouble) {
+            isDouble = false;
+        } else {
+            setCurrentState("FinishControl");
+        }
     }
 }
 
@@ -136,11 +149,17 @@ function simulate() {
     const directions = ["up", "down", "left", "right"];
     let maxMergeScore = 0;
     let bestMoves = [];
+    let minMergeScore = Number.MAX_VALUE;
+    let mostBedMove;
 
     directions.forEach(direction => {
         let tempBoard = board.map(row => [...row]);
         let tempScore = 0;
         tempScore = simulateDirection(tempBoard, direction);
+        if(tempScore < minMergeScore && tempScore >= 0){
+            mostBedMove = direction;
+            minMergeScore = tempScore;
+        }
         if (tempScore > maxMergeScore) {
             maxMergeScore = tempScore;
             bestMoves = [direction];
@@ -151,6 +170,9 @@ function simulate() {
 
     if (bestMoves.length > 0) {
         BestMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+        if (isMindControl){
+            BestMove = mostBedMove;
+        }
         console.log("Best Move: ", BestMove);
         setCurrentState("Move");
     } else {
@@ -201,6 +223,49 @@ function endGame(){
 
 }
 
+function explodeTile(tile){
+    const minX = Math.max(tile.x - 1, 0);
+    const minY = Math.max(tile.y - 1, 0);
+    const maxX = Math.min(tile.x + 1, gridSize - 1);
+    const maxY = Math.min(tile.y + 1, gridSize - 1);
+    console.log(`center x: ${tile.x}, center y: ${tile.y}`);
+    console.log(`minX: ${minX}, minY: ${minY}, maxX: ${maxX}, maxY: ${maxY}`);
+
+    console.log(board);
+    for (let x = minX; x <= maxX; x++) {
+        for (let y = minY; y <= maxY; y++) {
+            console.log(board[y][x]);
+            board[y][x].value = null;
+        }
+    }
+    tile.value = null;
+    console.log("Bomb explode");
+
+    DrawBoard();
+}
+
+function UseSkillToTile(tile){
+    if ( tile.value === null && CurrentGameState === "Control") 
+        return;
+
+    switch (playerSkill) {
+        case "shield":
+            // 선택필요 스킬
+            tile.value.isShield = true;
+            break;
+        case "fix":
+            tile.value.isFixed = true;
+            // 선택필요 스킬
+            break;
+        case "double":
+            tile.value.value *= 2;
+            break;
+        default:
+    }
+    clickMode = "insertMode";
+    DrawBoard();
+}
+
 //스킬 사용 함수
 function UseSkill() {
     switch (playerSkill) {
@@ -209,6 +274,7 @@ function UseSkill() {
             break;
         case "shield":
             // 선택필요 스킬
+            clickMode = "skillMode";
             break;
         case "fullShield":
             board.forEach(row => { 
@@ -224,15 +290,17 @@ function UseSkill() {
             break;
         case "fix":
             // 선택필요 스킬
+            clickMode = "skillMode";
             break;
         case "mindControl":
             // 선택필요 스킬
+            isMindControl = true;
             break;
         case "double":
             // 선택필요 스킬
             break;
         case "sequence":
-            // 기존 시스탬 변경필요 
+            isDouble = true;
             break;
         default:
     }
@@ -246,5 +314,5 @@ function setSkill(param1, param2) {
     playerSkill = param1;
     playerSkillCoolTime = param2;
 }
-export { setCurrentState };
+export { setCurrentState, explodeTile, DrawBoard };
 export { CurrentGameState };
