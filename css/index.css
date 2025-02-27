@@ -271,8 +271,8 @@ body {
     font-size: 15px;
     font-weight: bold;
     color: #eee4da;
-    white-space: nowrap;
     /* 줄바꿈 방지 */
+    white-space: nowrap;
 }
 
 .turn-value {
