@@ -54,6 +54,7 @@
                     <div class="cooltime-overlay" id="cooltimeOverlay">
                         <span id="cooltime">0</span>
                     </div>
+                    <div id="skill-tooltip" class="skill-tooltip"></div>
                 </div>
             </div>
         </div>
@@ -88,44 +89,86 @@
             }, 100);
         }
 
-        let skillName = localStorage.getItem('gameSkill');
-        let skillImageSrc = '';
+        // DOM이 로드된 후 실행되도록 변경
+        document.addEventListener('DOMContentLoaded', () => {
+            let skillName = localStorage.getItem('gameSkill');
+            let skillImageSrc = '';
+            let skillDescription = '';
+            
+            switch (skillName) {
+                case 'zeroTile':
+                    skillImageSrc = "Resources/zeroTile.png";
+                    skillDescription = "칸 채우기용 0타일을 배치합니다. <br>0타일끼리는 합쳐질 수 있습니다.<br>(쿨타임: 12턴)";
+                    break;
+                case 'timeAmplification':
+                    skillImageSrc = "Resources/timeAmplification.png";
+                    skillDescription = "사용한 턴의 시간제한이 3배가 됩니다.<br>(쿨타임 8턴)";
+                    break;
+                case 'shield':
+                    skillImageSrc = "Resources/shield.png";
+                    skillDescription = "선택한 블럭이 한번 합쳐지는 것을 방지합니다.<br>(쿨타임: 10턴)";
+                    break;
+                case 'fullShield':
+                    skillImageSrc = "Resources/shield.png";
+                    skillDescription = "모든 블럭이 한번 합쳐지는 것을 방지합니다.<br>(쿨타임: 30턴)";
+                    break;
+                case 'bomb':
+                    skillImageSrc = "Resources/bomb.png";
+                    skillDescription = "폭탄끼리 합쳐 지는 경우 병합위치 포함 주변 9칸의 블럭을 제거합니다.<br>(쿨타임: 1턴)";
+                    break;
+                case 'fix':
+                    skillImageSrc = "Resources/fix.png";
+                    skillDescription = "선택한 블럭을 한 턴 동안 해당 위치에 고정 시킵니다.<br>(쿨타임: 5턴)";
+                    break;
+                case 'mindControl':
+                    skillImageSrc = "Resources/mindControl.png";
+                    skillDescription = "컴퓨터가 가장 안좋은 수를 두도록 합니다.<br>(쿨타임 15턴)";
+                    break;
+                case 'double':
+                    skillImageSrc = "Resources/double.png";
+                    skillDescription = "지정한 타일의 숫자를 2배 증가시킵니다.<br>(쿨타임: 8턴)";
+                    break;
+                case 'sequence':
+                    skillImageSrc = "Resources/sequence.png";
+                    skillDescription = "플레이어가 연속으로 블럭을 2번 배치할 수 있습니다.<br>(쿨타임: 10턴)";
+                    break;
+                case '미선택':
+                    skillImageSrc = "Resources/none.png";
+                    skillDescription = "아무것도 선택하지 않으셨습니다.";
+                    break;
+            }
+            
+            const skillContainer = document.querySelector('.skill-image-container');
+            const tooltip = document.getElementById('skill-tooltip');
+            
+            if (skillContainer && tooltip) {
+                skillContainer.addEventListener('mousemove', (e) => {
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = (e.clientX + 10) + 'px';
+                    tooltip.style.top = (e.clientY + 10) + 'px';
+                });
 
-        switch (skillName) {
-            case 'zeroTile':
-                skillImageSrc = "Resources/zeroTile.png";
-                break;
-            case 'timeAmplification':
-                skillImageSrc = "Resources/timeAmplification.png";
-                break;
-            case 'shield':
-                skillImageSrc = "Resources/shield.png";
-                break;
-            case 'fullShield':
-                skillImageSrc = "Resources/shield.png";
-                break;
-            case 'bomb':
-                skillImageSrc = "Resources/bomb.png";
-                break;
-            case 'fix':
-                skillImageSrc = "Resources/fix.png";
-                break;
-            case 'mindControl':
-                skillImageSrc = "Resources/mindControl.png";
-                break;
-            case 'double':
-                skillImageSrc = "Resources/double.png";
-                break;
-            case 'sequence':
-                skillImageSrc = "Resources/sequence.png";
-                break;
-            case '미선택':
-                skillImageSrc = "Resources/none.png";
-                break;
-        }
-        document.getElementById('skillImage').src = skillImageSrc;
+                skillContainer.addEventListener('mouseleave', () => {
+                    tooltip.style.display = 'none';
+                });
+            }
 
-    
+            const skillImage = document.getElementById('skillImage');
+            if (skillImage) {
+                skillImage.src = skillImageSrc;
+            }
+            if (tooltip) {
+                tooltip.innerHTML = skillDescription;
+            }
+            
+            // 디버깅을 위한 콘솔 로그
+            console.log('Skill Image:', skillImage);
+            console.log('Tooltip:', tooltip);
+            console.log('Skill Name:', skillName);
+            console.log('Skill Description:', skillDescription);
+
+            
+        });
     </script>
     <script type="module" src="./Script/main.js"></script>
 </body>

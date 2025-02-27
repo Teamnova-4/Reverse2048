@@ -383,7 +383,7 @@ function startTimer() {
     showHtmlTimeCount(countTime);
 
     if (countTime % limitTime == 0) {
-      //   divideAllTileByNumber();
+        divideAllTileByNumber();
     }
   }, 1000);
   return timer;
