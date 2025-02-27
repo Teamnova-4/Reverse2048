@@ -12,23 +12,30 @@
 </head>
 
 <body>
-    <button onclick="location.href='ChoiseMode.html'" id="go_title">타이틀로 이동</button>
-    <h1>랭킹 화면</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>등수</th>
-                <th>이름</th>
-                <th>사용한 턴 수</th>
-                <th>클리어까지 걸린시간</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>100</td><td>이름</td><td>턴 수</td><td>클리어 일시</td></tr>
-        </tbody>
-    </table>
+    <div class="container"> <!-- 전체 내용을 감싸는 div 추가 -->
+        <button onclick="location.href='ChoiseMode.html'" id="go_title">타이틀로 이동</button>
+        <h1>랭킹 화면</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>등수</th>
+                    <th>이름</th>
+                    <th>사용한 턴 수</th>
+                    <th>클리어까지 걸린시간</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>100</td>
+                    <td>이름</td>
+                    <td>턴 수</td>
+                    <td>클리어 일시</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <script src="./Script/ranking.js"></script>
-    <button onclick="location.href='ChoiseMode.html'" id="go_title">타이틀로 이동</button>
+    <!-- <button onclick="location.href='ChoiseMode.html'" id="go_title">타이틀로 이동</button> -->
 </body>
 
 </html>
