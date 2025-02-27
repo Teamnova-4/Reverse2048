@@ -6,8 +6,17 @@
     <title>리버스 2048</title>
     <link rel="stylesheet" href="./css/base.css">
     <link rel="stylesheet" href="./css/ChoiseMode.css">
+    <link rel="stylesheet" href="./css/speaker.css">
+    <script type="module">
+        import { playSound } from './Script/Sound.js';
+        window.playSound = playSound;  // 전역으로 사용할 수 있게 설정
+    </script>
 </head>
 <body>
+    <!-- 스피커 버튼 -->
+    <div class="speaker-button" onclick="toggleSound()">
+        <div class="speaker-icon" id="speakerIcon"></div>
+    </div>
     <head>
         <div class="top-button-container">
             <button class="mode-button" onclick="location.href='ranking.html'">랭킹</button>
@@ -42,6 +51,8 @@
         document.oncontextmenu = function(){return false;}
 
         function setMode(size) {
+
+            playSound('place');
             
             // 게임 사이즈를 localStorage에 저장
             localStorage.setItem('gameSize', size);
