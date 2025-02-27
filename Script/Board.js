@@ -18,8 +18,7 @@ let gameTime = 0;
 let gameTimer;
 
 //스킬 변수
-// let playerSkill = localStorage.getItem("gameSkill");
-let playerSkill = "shield";
+let playerSkill = localStorage.getItem("gameSkill");
 let playerSkillCoolTime;
 setSkillCoolTime();
 let coolTime = 0;
@@ -407,7 +406,7 @@ function divideAllTileByNumber() {
           // 값이 2인 타일 제거
           cell.innerHTML = ""; // 셀에서 타일 제거
         } else if (Number.parseInt(value) === -10){
-            
+            explodeTile(i, j);
         } else {
           // 나머지 타일은 값을 절반으로 나눔 (소수점 버림)
           const dividedValue = Math.floor(value / 2);
