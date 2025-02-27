@@ -439,6 +439,9 @@ function placeTile(cell) {
     if (cell.innerHTML.trim() === "" && CurrentGameState === "Control") {
         // 선택된 타일에 insertTile 변수에 저장된 값(2 또는 4)을 삽입합니다.
 
+        // 배치 사운드 추가
+        playSound('place');
+
         // 주어진 빈칸 태그 내부에 타일 태그 추가
         const tileTag = document.createElement("div");
         tileTag.className = "tile";             // 클래스

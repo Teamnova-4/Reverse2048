@@ -183,6 +183,8 @@
             document.getElementById('skill-name').innerText = skillName;
         }
         function startGame() {
+            // 게임 시작 시 사운드 재생
+            playSound('place');
             // 인게임 화면으로 이동
             window.location.href = `index.html`;
         }
