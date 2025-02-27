@@ -76,9 +76,9 @@ button {
 
 /* 모드 선택 버튼 */
 .mode-button {
-    padding: 30px 45px;
+    padding: 30px 35px;
     font-size: 25px;
-    margin: 0 10px;
+    margin: 0 20px;
     text-align: center;
 }
 .mode-button:hover {
