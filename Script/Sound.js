@@ -11,6 +11,7 @@ function initAudio() {
     audioMap.set('place', new Audio('../assets/sound/배치.mp3'));
     // audioMap.set('gameover', new Audio('./sound/게임오버.mp3'));
     audioMap.set('emergency', new Audio('../assets/sound/주의신호.mp3'));
+    audioMap.set('bomb', new Audio('../assets/sound/폭탄.mp3'));
 
     // 각 오디오 객체에 볼륨 설정 (초기 설정)
     audioMap.forEach(sound => {
@@ -21,7 +22,7 @@ function initAudio() {
 // 소리를 재생하는 함수
 // soundType은 Sound.js의 initAudio에 등록되어 있음
 export function playSound(soundType) {
-    console.log(soundType, isSoundOn);
+    // console.log(soundType, isSoundOn);
     if (!isSoundOn) return; // 사운드가 꺼져있으면 재생하지 않음
 
     const sound = audioMap.get(soundType);

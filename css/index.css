@@ -179,9 +179,9 @@ body {
     object-fit: contain;
 }
 
-.cell:hover {
+.insert-mode-cell:hover{
     /* 호버 시 적용될 스타일 */
-    transform: scale(1.01);
+    transform: scale(0.95);
     /* 105% 크기로 확대 */
     box-shadow: 0 0 0 5px #888;
     /* 그림자를 사용한 stroke 효과, 원하는 색상과 두께 조절 가능 */
@@ -189,9 +189,8 @@ body {
     z-index: 1;
     /*다른 타일보다 앞에 오게 함*/
 }
-
-.tile-skill-mode:hover {
-    transform: scale(1.05);
+.skill-mode-cell:hover{
+    transform: scale(0.95);
     /* 105% 크기로 확대 */
     box-shadow: 0 0 0 5px #e44747;
     /* 그림자를 사용한 stroke 효과, 원하는 색상과 두께 조절 가능 */
@@ -484,8 +483,12 @@ body {
 }
 
 /* 타일 값에 따른 배경색 */
+.tile[data-value="-10"] {
+    background-color: #e25454;
+}
+
 .tile[data-value="0"] {
-    background-color: transparent;
+    background-color: #acacac;
 }
 
 .tile[data-value="2"] {
@@ -539,4 +542,104 @@ body {
 .tile[data-value="2048"] {
     background-color: #edc22e;
     color: #000;
+}
+
+.tile[data-value="4096"] {
+    background-color: #3e3933;
+    color: #fff;
+}
+
+.tile[data-value="8192"] {
+    background-color: #2e2a25;
+    color: #fff;
+}
+
+.tile[data-value="16384"] {
+    background-color: #1f1b16;
+    color: #fff;
+}
+
+.tile[data-value="32768"] {
+    background-color: #17130f;
+    color: #fff;
+}
+
+.tile[data-value="65536"] {
+    background-color: #0f0c09;
+    color: #fff;
+}
+
+.tile[data-value="131072"] {
+    background-color: #080605;
+    color: #fff;
+}
+
+.tile[data-value="262144"] {
+    background-color: #050403;
+    color: #fff;
+}
+
+.tile[data-value="524288"] {
+    background-color: #030201;
+    color: #fff;
+}
+
+.tile[data-value="1048576"] {
+    background-color: #020100;
+    color: #fff;
+}
+
+.tile[data-value="2097152"] {
+    background-color: #010000;
+    color: #fff;
+}
+
+.tile[data-value="4194304"] {
+    background-color: #000000;
+    color: #ffcc00; /* 노란색 글씨 */
+}
+
+.tile[data-value="8388608"] {
+    background-color: #000000;
+    color: #ff6600; /* 주황색 글씨 */
+}
+
+.tile[data-value="16777216"] {
+    background-color: #000000;
+    color: #ff0000; /* 빨간색 글씨 */
+}
+
+.tile[data-value="33554432"] {
+    background-color: #000000;
+    color: #800080; /* 보라색 글씨 */
+}
+
+.tile[data-value="67108864"] {
+    background-color: #000000;
+    color: #00ffff; /* 청록색 글씨 */
+}
+
+.tile[data-value="134217728"] {
+    background-color: #000000;
+    color: #ffffff; /* 흰색 글씨 */
+}
+
+.tile[data-value="268435456"] {
+    background-color: #000000;
+    color: #ff00ff; /* 핑크색 글씨 */
+}
+
+.tile[data-value="536870912"] {
+    background-color: #000000;
+    color: #00ff00; /* 초록색 글씨 */
+}
+
+.tile[data-value="1073741824"] {
+    background-color: #000000;
+    color: #0000ff; /* 파란색 글씨 */
+}
+
+.tile[data-value="2147483648"] {
+    background-color: #000000;
+    color: #ffcccc; /* 연한 빨강 글씨 */
 }
