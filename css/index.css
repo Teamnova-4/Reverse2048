@@ -30,7 +30,6 @@ img {
     -moz-user-drag: none;
     -o-user-drag: none;
     user-drag: none;
-    pointer-events: none;
     /* 이미지 선택 방지 */
 }
 
@@ -596,4 +595,17 @@ body {
 .tile[data-value="2147483648"] {
     background-color: #000000;
     color: #ffcccc; /* 연한 빨강 글씨 */
+}
+
+.skill-tooltip {
+    display: none;
+    position: fixed;  /* fixed로 변경하여 viewport 기준으로 위치 지정 */
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    max-width: 200px;
+    z-index: 1000;
+    white-space: normal;
 }

@@ -23,7 +23,6 @@ img {
     -moz-user-drag: none;
     -o-user-drag: none;
     user-drag: none;
-    pointer-events: none;  /* 이미지 선택 방지 */
 }
 header {
     width: 80%;
