@@ -403,7 +403,7 @@ function divideAllTileByNumber() {
       if (tile) {
         // 타일이 존재하는 경우만 처리
         const value = tile.dataset.value; // 현재 타일 값
-        if (Number.parseInt(value) === 2 || Number.parseInt(value)) {
+        if (Number.parseInt(value) === 2 || Number.parseInt(value) === 0) {
           // 값이 2인 타일 제거
           cell.innerHTML = ""; // 셀에서 타일 제거
         } else if (Number.parseInt(value) === -10){
