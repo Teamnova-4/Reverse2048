@@ -1,19 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>랭킹 화면</title>
     <link rel="stylesheet" href="./css/ranking.css">
-    <style>
-
-    </style>
 </head>
-
 <body>
-    <div class="container"> <!-- 전체 내용을 감싸는 div 추가 -->
-        <button onclick="location.href='ChoiseMode.html'" id="go_title">타이틀로 이동</button>
+    <div class="container">
+        <div class="button-container">
+            <button onclick="location.href='ChoiseMode.html'" id="go_title">타이틀로 이동</button>
+            <div class="dropdown">
+                <button class="ranking-button">다른 랭킹 보기</button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="setRankingSize(3)">3x3 랭킹</a>
+                    <a href="#" onclick="setRankingSize(4)">4x4 랭킹</a>
+                    <a href="#" onclick="setRankingSize(5)">5x5 랭킹</a>
+                </div>
+            </div>
+        </div>
+
         <h1>랭킹 화면</h1>
         <table>
             <thead>
@@ -35,7 +41,5 @@
         </table>
     </div>
     <script src="./Script/ranking.js"></script>
-    <!-- <button onclick="location.href='ChoiseMode.html'" id="go_title">타이틀로 이동</button> -->
 </body>
-
 </html>

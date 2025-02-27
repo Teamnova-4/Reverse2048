@@ -61,7 +61,7 @@ async function loadRankings() {
 }
 
 function displayRankings(rankings) {
-    
+
     const tbody = document.querySelector('tbody');
     tbody.innerHTML = '';
 
@@ -82,5 +82,28 @@ function debouncedLoadRankings() {
     clearTimeout(loadRankingsTimeout); // 이전 타이머 제거
     loadRankingsTimeout = setTimeout(loadRankings, 500); // 500ms 후에 loadRankings 실행 (시간 조정 가능)
 }
+
+
+// 랭킹 크기 설정 및 페이지 새로고침
+function setRankingSize(size) {
+    localStorage.setItem('gameSize', size);
+    console.log(`Ranking size set to ${size}x${size}, stored in localStorage as: ${localStorage.getItem('gameSize')}`);
+    location.reload();
+}
+
+// 드롭다운 토글 기능
+document.querySelector('.ranking-button').addEventListener('click', function (event) {
+    event.stopPropagation();
+    const dropdownContent = document.querySelector('.dropdown-content');
+    dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+});
+
+// 드롭다운 외부 클릭 시 닫기
+document.addEventListener('click', function (event) {
+    const dropdown = document.querySelector('.dropdown');
+    if (!dropdown.contains(event.target)) {
+        document.querySelector('.dropdown-content').style.display = 'none';
+    }
+});
 
 document.addEventListener('DOMContentLoaded', debouncedLoadRankings);

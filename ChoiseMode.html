@@ -6,18 +6,28 @@
     <title>리버스 2048</title>
     <link rel="stylesheet" href="./css/base.css">
     <link rel="stylesheet" href="./css/ChoiseMode.css">
+    <link rel="stylesheet" href="./css/speaker.css">
+    <script type="module">
+        import { playSound } from './Script/Sound.js';
+        window.playSound = playSound;
+    </script>
 </head>
 <body>
     <div class="top-button-container">
         <div class="dropdown">
-            <button class="ranking-button">랭킹</button>
-            <div class="dropdown-content">
+            <button class="ranking-button" onclick="location.href='ranking.html'">랭킹</button>
+            <!-- <div class="dropdown-content">
                 <a href="#" onclick="setRankingSize(3)">3x3 랭킹</a>
                 <a href="#" onclick="setRankingSize(4)">4x4 랭킹</a>
                 <a href="#" onclick="setRankingSize(5)">5x5 랭킹</a>
-            </div>
+            </div> -->
         </div>
     </div>
+
+    <div class="speaker-button" onclick="toggleSound()">
+        <div class="speaker-icon" id="speakerIcon"></div>
+    </div>
+
     <main>
         <div class="text-container">
             <h2>리버스 2048</h2>
@@ -43,29 +53,26 @@
     </main>
 
     <script>
-        // 우클릭 방지
         document.oncontextmenu = function(){return false;}
 
         function setMode(size) {
+            playSound('place');
             localStorage.setItem('gameSize', size);
             window.location.href = `ChoiseSkill.html`;
         }
 
-        // 랭킹 크기 설정 및 페이지 이동
         function setRankingSize(size) {
             localStorage.setItem('gameSize', size);
             console.log(`Ranking size set to ${size}x${size}, stored in localStorage as: ${localStorage.getItem('gameSize')}`);
             window.location.href = 'ranking.html';
         }
 
-        // 드롭다운 토글 기능
         document.querySelector('.ranking-button').addEventListener('click', function(event) {
             event.stopPropagation();
             const dropdownContent = document.querySelector('.dropdown-content');
             dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
         });
 
-        // 드롭다운 외부 클릭 시 닫기
         document.addEventListener('click', function(event) {
             const dropdown = document.querySelector('.dropdown');
             if (!dropdown.contains(event.target)) {
