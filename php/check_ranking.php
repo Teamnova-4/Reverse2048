@@ -40,9 +40,6 @@ try {
     // 클라이언트로부터 받은 formattedTime 값을 playTime 변수에 저장 (문자열)
     $playTime = $data['formattedTime'];
 
-    // 랭킹 등록 가능 여부 초기값 (true: 등록 가능)
-    
-
     // 100위 안에 드는 기록의 개수를 세는 쿼리
     $stmt = $pdo->prepare("SELECT COUNT(*) as cnt 
     FROM rankings 

@@ -12,6 +12,8 @@ async function loadRankings() {
     isload = true;
     // 로컬 스토리지에서 맵 크기 가져옴
     const gameSize = localStorage.getItem('gameSize');
+    // 각 랭킹별 100개순위 제한 
+    const limit = 100; 
 
     // h1 요소의 텍스트 내용 설정 (맵 크기에 따라)
     const h1Element = document.querySelector('h1');
@@ -38,14 +40,14 @@ async function loadRankings() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ gameSize: gameSize }), // 요청 본문에 gameSize 추가
+            body: JSON.stringify({ gameSize: gameSize, limit: limit }), // 요청 본문에 gameSize 추가
         });
 
         const result = await response.json();
 
         if (result.success) {
             displayRankings(result.data);
-            // localStorage.removeItem('gameSize');
+        
         } else {
             // 랭킹 데이터 가져오기 실패 처리
             console.error('[ranking.js] DB에서 데이터 랭킹 로드 실패:', result.message);

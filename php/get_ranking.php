@@ -20,20 +20,29 @@ try {
 
     // 1. POST 요청의 body에서 gameSize 가져오기
     $requestData = json_decode(file_get_contents('php://input'), true);
-    $gameSize = $requestData['gameSize'] ?? null; // 'gameSize' 키가 없으면 null
+    $mapSize = $requestData['gameSize'] ?? null; // 'gameSize' 키가 없으면 null
+    $limit = $requestData['limit'] ?? 100; // 100등 제한
+
+
+    // 입력값 검증
+    if (!is_numeric($limit) || $limit <= 0) {
+        die(json_encode(['success' => false, 'message' => 'Invalid limit value']));
+    }
 
     // 2. 기본 쿼리 (전체 랭킹)
     $sql = "SELECT nickname, turn, play_time, created_at, mapSize FROM rankings";
     $params = [];
 
     // 3. gameSize가 있고, 'all'이 아니면 WHERE 절 추가
-    if ($gameSize && $gameSize !== 'all') {
+    if ($mapSize && $mapSize !== 'all') {
         $sql .= " WHERE mapSize = :size";
-        $params[':size'] = $gameSize;
+        $params[':size'] = $mapSize;
     }
 
     // 4. 정렬 및 LIMIT
-    $sql .= " ORDER BY turn ASC, play_time ASC, created_at ASC LIMIT 100";
+    // play_time이 MM:SS 형식이므로 STR_TO_DATE('%i:%s') 사용
+    $sql .= " ORDER BY turn ASC, STR_TO_DATE(play_time, '%i:%s') ASC, created_at ASC LIMIT :limit";
+    $params[':limit'] = $limit; // limit 파라미터 바인딩
 
     // 5. Prepared Statement 실행
     $stmt = $pdo->prepare($sql);
@@ -41,7 +50,6 @@ try {
 
     $rankings = $stmt->fetchAll();
 
-    // 6. 순위 추가
     foreach ($rankings as $index => &$ranking) {
         $ranking['rank'] = $index + 1;
     }

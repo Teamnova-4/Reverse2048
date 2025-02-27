@@ -150,10 +150,10 @@ function setCurrentState(state) {
             break;
         case "FinishTurn":
             finishTurn();
-            gameEnding();
+            // gameEnding();
             break
         case "End":
-            // gameEnding();
+            gameEnding();
             break;
     }
     DrawBoard();
@@ -250,7 +250,7 @@ async function checkrank_DB_userScore(turn, formattedTime) {
                     alert("닉네임이 너무 길어요, 조금 줄여주세요!!");
                 } else {
                     // 순위가 확인됬으니 db에 저장하자
-                    sendRankingData(nickname, turn, updateGameTimeDisplay(), gameSizeCheck());
+                    sendRankingData(nickname, turn, formattedTime, gameSizeCheck());
                 }
             });
         } else {
