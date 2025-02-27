@@ -18,7 +18,8 @@ let gameTime = 0;
 let gameTimer;
 
 //스킬 변수
-let playerSkill = localStorage.getItem("gameSkill");
+// let playerSkill = localStorage.getItem("gameSkill");
+let playerSkill = "shield";
 let playerSkillCoolTime;
 setSkillCoolTime();
 let coolTime = 0;
@@ -383,7 +384,7 @@ function startTimer() {
     showHtmlTimeCount(countTime);
 
     if (countTime % limitTime == 0) {
-      //   divideAllTileByNumber();
+        divideAllTileByNumber();
     }
   }, 1000);
   return timer;
@@ -402,9 +403,11 @@ function divideAllTileByNumber() {
       if (tile) {
         // 타일이 존재하는 경우만 처리
         const value = tile.dataset.value; // 현재 타일 값
-        if (Number.parseInt(value) === 2) {
+        if (Number.parseInt(value) === 2 || Number.parseInt(value)) {
           // 값이 2인 타일 제거
           cell.innerHTML = ""; // 셀에서 타일 제거
+        } else if (Number.parseInt(value) === -10){
+            
         } else {
           // 나머지 타일은 값을 절반으로 나눔 (소수점 버림)
           const dividedValue = Math.floor(value / 2);
@@ -825,7 +828,7 @@ function applyAnimation(animations) {
         function handler() {
           // 각 타일의 이동 애니메이션이 끝나면 실행할 이벤트 리스너를 추가합니다.
           tile.removeEventListener("transitionend", handler); // 이벤트 핸들러를 제거합니다.
-          if (removeAfter) tile.remove(); // 기존 타일을 DOM에서 제거합니다.
+          //if (removeAfter) tile.remove(); // 기존 타일을 DOM에서 제거합니다.
           completedAnimations++; // 완료된 애니메이션 수를 증가시킵니다.
           if (completedAnimations === totalAnimations) finishMove(animations); // 모든 애니메이션이 완료되면 finishMove 함수를 호출합니다.
         },
@@ -844,12 +847,37 @@ function applyAnimation(animations) {
  */
 function finishMove(animations) {
   // 모든 셀의 기존 타일 제거(병합되서 겹쳐진거 제거)
-  document.querySelectorAll(".cell .tile").forEach((tile) => tile.remove());
+  //document.querySelectorAll(".cell .tile").forEach((tile) => tile.remove());
 
+    if (animations !== undefined && animations !== null ){
+        animations.forEach((animation) => {
+            const { fromCol, fromRow, toRow, toCol } = animation;
+            const cell1 = getGridElement(fromRow, fromCol);
+            const cell2 = getGridElement(toRow, toCol);
+            const tile1 = cell1.children[0];
+        
+            tile1.removeAttribute("style");
+
+            cell2.innerHTML = cell1.innerHTML;
+            cell1.innerHTML = "";
+            
+            const tile2 = cell2.children[0];
+
+            if (mergedPositions.has(`${cell2.dataset.row}-${cell2.dataset.col}`)) {
+                tile2.classList.add('merged');
+                tile2.addEventListener('animationend', () => {
+                    tile2.classList.remove('merged');
+                });
+                tile2.dataset.value = animation.newValue;
+            }
+        });
+    }
+/*
   // 모든 셀에 새 타일 추가
   for (let i = 0; i < gridSize; i++) {
     for (let j = 0; j < gridSize; j++) {
-      const value = valueGrid[i][j];
+        // 현재 위치의 계산된 숫자 결과
+        const value = valueGrid[i][j];
       if (value !== null) {
         const cell = document.querySelector(
           `.cell[data-row="${i}"][data-col="${j}"]`
@@ -859,9 +887,17 @@ function finishMove(animations) {
         tile.className = "tile";
         tile.innerText = value;
         tile.dataset.value = value;
+
+        // 현재 이동한 타일의 dataset속성 복사
+        // const foundAnimation = animations.find(anim => anim.toRow === i && anim.toCol === j);
+        // for(const key in foundAnimation.tile.dataset){
+
+        //     // tile.dataset[key] =  foundAnimation.tile.dataset[key];
+        // }
+
         const positionKey = `${i}-${j}`;
         if (mergedPositions.has(positionKey)) {
-          tile.classList.add("merged");
+            tile.classList.add('merged');
         }
         // tile.style.transform = 'translate(0, 0)';
         if (cell.querySelector(".tile") === null) {
@@ -871,6 +907,7 @@ function finishMove(animations) {
       }
     }
   }
+    */
   setCurrentState("FinishTurn");
 }
 
@@ -881,28 +918,94 @@ function finishMove(animations) {
  * 시뮬레이션할 한 줄, 쉴드 적용 여부, 시뮬레이션할 줄의 셀 태그 리스트
  */
 function simulateMergeList(line, applyShield = false, cellArr = [], caller = "") {
-  if (applyShield) console.log("simulateMergeList", applyShield, cellArr, caller);
-  let score = 0; // 병합으로 얻는 총 점수
-  let result = []; // 병합 후의 타일 값들을 저장할 배열
-  let canMerge = true; // 현재 위치의 타일이 병합 가능한지 여부 (연속 병합 방지)
-  const targetLength = line.length; // 원래 배열의 길이를 저장 (결과 배열의 길이를 맞추기 위함)
-  let movements = []; // 각 타일의 이동 및 병합 정보를 저장할 배열
+    if (applyShield) console.log("simulateMergeList", applyShield, cellArr, caller);
+    let score = 0; // 병합으로 얻는 총 점수
+    let result = []; // 병합 후의 타일 값들을 저장할 배열
+    let canMerge = true; // 현재 위치의 타일이 병합 가능한지 여부 (연속 병합 방지)
+    const targetLength = line.length; // 원래 배열의 길이를 저장 (결과 배열의 길이를 맞추기 위함)
+    let movements = []; // 각 타일의 이동 및 병합 정보를 저장할 배열
+    // 결과 배열의 각 타일이 실드인지 여부를 저장하는 배열
+    let shieldTiles = [];
+    if (applyShield) {
 
-  // 실드 고려한 결과 반환
-  if (applyShield) {
-    for (let i = 0; i < line.length; i++) {
+  
+      for (let i = 0; i < line.length; i++) {
         if (line[i] === null) continue;
   
         // 현재 타일이 실드 타일인지 확인
-        const isShield = cellArr[i]?.children[0]?.dataset.isShield === 'true';
+        const isShield = cellArr[i]?.children[0]?.dataset.isShield === 'true' ||
+                         cellArr[i - 1]?.children[0]?.dataset.isShield === 'true';
+
+  
+        // 병합 조건: 이전 타일 존재, 값이 같고, 연속 병합 가능하며, 현재 타일과 이전 타일 모두 실드가 아닌 경우
+        const isMergeAble = result.length > 0 && result[result.length - 1] === line[i] && canMerge;
+        console.log(isShield)
+        if (
+            isMergeAble &&
+            !isShield &&
+            !shieldTiles[shieldTiles.length - 1] // 이전 타일이 실드가 아니어야 함
+        ) {
+          // 병합 처리
+          const mergedValue = result[result.length - 1] * 2;
+          result[result.length - 1] = mergedValue;
+          score += mergedValue;
+          canMerge = false;
+  
+          console.log(result, line);
+          if (line[i] === -10) {
+            score += 2147483658;
+          }
+  
+          const toIndex = result.length - 1;
+          movements.push({
+            from: i,
+            to: toIndex,
+            value: line[i],
+            mergedWith: toIndex,
+            newValue: mergedValue,
+          });
+  
+          const lastMovement = movements.find(
+            (m) => m.to === toIndex && !m.mergedWith
+          );
+          if (lastMovement) {
+            lastMovement.mergedWith = i;
+            lastMovement.newValue = mergedValue;
+          }
+          // 기존 타일은 실드가 아니었으므로 shieldMarkers는 그대로 유지합니다.
+        } else {
+          // 병합 조건에 해당하지 않거나 현재 타일이 실드인 경우, 결과에 단순 추가
+          result.push(line[i]);
+          if (isShield && isMergeAble){
+            console.log("실드 타일 모모모");
+            shieldTiles.push(cellArr[i].children[0]); // 실드 여부 기록
+            shieldTiles.push(cellArr[i - 1].children[0]); // 실드 여부 기록
+            // 실드 타일이면 이후 병합을 막기 위해 canMerge을 false로 설정
+            canMerge = false;
+          } else {
+            shieldTiles.push(null);
+          }
+
+  
+          movements.push({
+            from: i,
+            to: result.length - 1,
+            value: line[i],
+            mergedWith: undefined,
+            newValue: line[i],
+          });
+        }
+      }
+    } else {
+      // 실드를 고려하지 않은 결과 반환 (기존 로직)
+      for (let i = 0; i < line.length; i++) {
+        if (line[i] === null) continue;
   
         if (
           result.length > 0 &&
           result[result.length - 1] === line[i] &&
-          canMerge &&
-          !isShield // 실드 타일이 아니어야 병합 가능
+          canMerge
         ) {
-          // 병합 처리 (실드 타일이 아닌 경우 기존 로직과 동일)
           const mergedValue = result[result.length - 1] * 2;
           result[result.length - 1] = mergedValue;
           score += mergedValue;
@@ -930,7 +1033,6 @@ function simulateMergeList(line, applyShield = false, cellArr = [], caller = "")
             lastMovement.newValue = mergedValue;
           }
         } else {
-          // 병합 조건에 해당하지 않거나 실드 타일인 경우 타일 추가
           result.push(line[i]);
           canMerge = true;
   
@@ -943,78 +1045,114 @@ function simulateMergeList(line, applyShield = false, cellArr = [], caller = "")
           });
         }
       }
-    
-  } else {
-    // 실드를 고려하지 않은 결과 반환
-    
-    // 주어진 줄(line)의 각 타일에 대해 반복
-    for (let i = 0; i < line.length; i++) {
-      if (line[i] === null) continue; // 현재 위치가 빈칸(null)이면 다음 타일로 넘어감
-
-      // 현재 타일(line[i])이 병합 가능한지 검사
-      if (
-        result.length > 0 && // 결과 배열(result)에 하나 이상의 값이 이미 존재하고
-        result[result.length - 1] === line[i] && // 직전에 추가된 값과 현재 값이 같고
-        canMerge // canMerge가 true인 경우 (직전 값이 병합된 직후가 아닐 경우)
-      ) {
-        // 병합 처리
-        const mergedValue = result[result.length - 1] * 2; // 병합된 값은 기존 값의 2배
-        result[result.length - 1] = mergedValue; // 병합된 값을 결과 배열에 갱신
-        score += mergedValue; // 병합된 값만큼 점수 증가
-        canMerge = false; // 연속 병합을 막기 위해 canMerge를 false로 설정
-
-        //폭탄인 경우 점수 증가 (css 최대 블록 값)
-        console.log(result, line);
-        if (line[i] === -10) {
-          score += 2147483658;
-        }
-
-        // 병합 정보 기록
-        const toIndex = result.length - 1; // 병합된 위치 인덱스
-        // 병합시 일어난 이동정보 기록
-        movements.push({
-          // 어디서, 어디로, 무슨값이, 병합 위치, 병합된 값
-          from: i,
-          to: toIndex,
-          value: line[i],
-          mergedWith: toIndex,
-          newValue: mergedValue,
-        });
-
-        // 직전 타일의 이동 정보 업데이트
-        // 이동없이 병합된 타일의 movement 찾기
-        const lastMovement = movements.find(
-          (m) => m.to === toIndex && !m.mergedWith
-        );
-        if (lastMovement) {
-          lastMovement.mergedWith = i; // 직전 타일과 현재 타일(i)이 병합되었음을 기록
-          lastMovement.newValue = mergedValue; // 직전 타일의 병합 결과를 기록
-        }
-      } else {
-        // 병합 조건에 해당하지 않으면 타일 추가
-        result.push(line[i]); // 현재 타일을 결과 배열에 추가
-        canMerge = true; // 현재 타일이 추가되었으므로, 다음 타일과 병합 가능
-
-        // 이동 정보 기록
-        movements.push({
-          from: i, // 이동 전 인덱스
-          to: result.length - 1, // 이동 후 인덱스
-          value: line[i], // 이동 전 값
-          mergedWith: undefined, // 병합되지 않았으므로 undefined
-          newValue: line[i], // 이동 후 값은 동일
-        });
-      }
     }
+
+    shieldTiles.forEach((tile) => {
+        if (tile) {
+            delete tile.dataset.isShield;
+            tile.classList.remove("tile-shield");
+        }
+
+    });
+  
+    // 결과 배열의 길이를 원래 배열의 길이와 동일하게 조정 (빈 칸은 null로 채움)
+    while (result.length < targetLength) {
+      result.push(null);
+    }
+  
+    return { result, score, movements };
   }
 
-  // 결과 배열의 길이를 원래 배열의 길이와 동일하게 조정 (빈 칸을 null로 채움)
-  while (result.length < targetLength) {
-    result.push(null); // 빈 칸은 null로 채움
-  }
+  // 그록
+  function simulateMergeList2(line, applyShield = false, cellArr = [], caller = "") {
+    if (applyShield) console.log("simulateMergeList called by", caller, "with", line, cellArr);
 
-  // 결과 배열(result), 점수(score), 이동 정보(movements)를 객체 형태로 반환
-  return { result, score, movements };
+    let score = 0;
+    let result = [];
+    let canMerge = true;
+    const targetLength = line.length;
+    let movements = [];
+    let shieldTiles = []; // 실드 타일 객체 저장
+
+    for (let i = 0; i < line.length; i++) {
+        if (line[i] === null) continue;
+
+        // 실드 타일 여부 확인
+        const isShield = applyShield && cellArr[i]?.children?.[0]?.dataset?.isShield === 'true';
+        console.log(`Index ${i}: Value=${line[i]}, isShield=${isShield}, canMerge=${canMerge}`);
+
+        // 병합 조건
+        const isMergeAble = result.length > 0 && result[result.length - 1] === line[i] && canMerge;
+
+        if (isMergeAble && !isShield && (applyShield ? !shieldTiles[shieldTiles.length - 1] : true)) {
+            // 병합 처리
+            const mergedValue = result[result.length - 1] * 2;
+            result[result.length - 1] = mergedValue;
+            score += mergedValue;
+            canMerge = false;
+
+            if (line[i] === -10) score += 2147483658;
+
+            const toIndex = result.length - 1;
+            movements.push({
+                from: i,
+                to: toIndex,
+                value: line[i],
+                mergedWith: toIndex,
+                newValue: mergedValue,
+            });
+
+            const lastMovement = movements.find((m) => m.to === toIndex && !m.mergedWith);
+            if (lastMovement) {
+                lastMovement.mergedWith = i;
+                lastMovement.newValue = mergedValue;
+            }
+            shieldTiles.push(null); // 병합된 경우 실드 없음
+            console.log(`Merged at ${i}: result=${result}, score=${score}`);
+        } else {
+            // 병합 불가 또는 실드 타일
+            result.push(line[i]);
+
+            if (isShield && isMergeAble) {
+                // 실드가 병합 방어
+                console.log(`Shield at ${i} blocked merge`);
+                shieldTiles.push(cellArr[i].children[0]); // 병합 방어한 실드 기록
+            } else {
+                shieldTiles.push(null); // 실드 없거나 병합 불가
+            }
+
+            movements.push({
+                from: i,
+                to: result.length - 1,
+                value: line[i],
+                mergedWith: undefined,
+                newValue: line[i],
+            });
+            canMerge = true; // 다음 병합 가능
+            console.log(`Added at ${i}: result=${result}`);
+        }
+    }
+
+    // 실드 제거
+    shieldTiles.forEach((tile, index) => {
+        if (tile) {
+            console.log(`Removing shield at original index ${index}`);
+            delete tile.dataset.isShield;
+            tile.classList.remove("tile-shield");
+        }
+    });
+
+    // 결과 배열 길이 조정
+    while (result.length < targetLength) {
+        result.push(null);
+    }
+
+    console.log("Final result:", { result, score, movements });
+    return { result, score, movements };
 }
+
+
+  
 
 function explodeTile(r, c) {
   const grid = document.getElementById("grid");
@@ -1052,6 +1190,7 @@ function UseSkillToTile(cell) {
     case "shield":
       // 선택필요 스킬
       tile.dataset.isShield = "true";
+      tile.classList.add('tile-shield');
       break;
     case "fix":
       tile.dataset.isFixed = "true";
