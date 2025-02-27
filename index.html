@@ -7,6 +7,10 @@
     <title>리버스 2048</title>
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/speaker.css">
+    <script type="module">
+        import { playSound } from './Script/Sound.js';
+        window.playSound = playSound;  // 전역으로 사용할 수 있게 설정
+    </script>
 </head>
 <script type="module" src="./Script/main.js"></script>
 
@@ -20,7 +24,7 @@
         <div class="container">
             <div class="newgame-button-container">
                 <h2 style="font-size: 50px; margin: 10px auto;">리버스 2048</h2>
-                <button class="newgame-button" onclick="location.reload(true)">NEW GAME</button>
+                <button class="newgame-button" onclick="reload()">NEW GAME</button>
             </div>
             <div class="title-score">
                 <div class="turn-container">
@@ -74,6 +78,16 @@
         // 우클릭 방지
         document.oncontextmenu = function(){return false;}
 
+        function reload(){
+            // 게임 시작 시 사운드 재생
+            playSound('place');
+            console.log('재시작사운드')
+            setTimeout(() => {
+                // 인게임 화면으로 이동
+                window.location.href = `index.html`;
+            }, 100);
+        }
+
         let skillName = localStorage.getItem('gameSkill');
         let skillImageSrc = '';
 
@@ -110,8 +124,10 @@
                 break;
         }
         document.getElementById('skillImage').src = skillImageSrc;
+
+    
     </script>
-    <script type="module" src="./Script/Sound.js"></script>
+    <script type="module" src="./Script/main.js"></script>
 </body>
 
 </html>
