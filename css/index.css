@@ -259,10 +259,11 @@ body {
     position: relative;
     display: inline-block;
     background: #bbada0;
+    width: 20%;
+    min-width: 50px;
     padding: 15px 25px;
     height: 50px;
     border-radius: 6px;
-    margin-bottom: 20px;
     color: white;
 }
 
@@ -337,7 +338,6 @@ body {
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin-top: 20px;
 }
 
 .skill-image-container {

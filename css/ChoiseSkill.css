@@ -127,6 +127,7 @@ main {
     transition: background 0.3s; /* 배경 색상 변화 효과 */
     display: flex;
     justify-content: center;
-
-    
+}
+.start-button:hover {
+    background: #a49288;
 }

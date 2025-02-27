@@ -351,29 +351,54 @@ function startTimer() {
 }
 
 function divideAllTileByNumber() {
-    board.forEach(line => {
-        line.forEach(tile => {
-            const value = tile.value;
-            if (value !== null) {
-                if (value.value === "bomb") {
-                    explodeTile(tile);
-                } else if (value.isFixed || value.isShield) {
-                    value.isFixed = false;
-                    value.isChanged = false;
+    // board.forEach(line => {
+    //     line.forEach(tile => {
+    //         const value = tile.value;
+    //         if (value !== null) {
+    //             if (value.value === "bomb") {
+    //                 explodeTile(tile);
+    //             } else if (value.isFixed || value.isShield) {
+    //                 value.isFixed = false;
+    //                 value.isChanged = false;
+    //             } else {
+    //                 if (value.value === 2 || value.value === 0) {
+    //                     // 2인 타일은 제거
+    //                     tile.value = null;
+    //                 } else {
+    //                     value.value = Math.floor(value.value / 2);
+    //                     console.log(value.value);
+    //                 }
+    //             }
+    //         }
+    //     });
+    // });
+
+    // 2차원 상태 배열 순회
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            // 각 칸을 가져오기
+            const cell = document.querySelector(`.cell[data-row="${i}"][data-col="${j}"]`);
+            const tile = cell.querySelector('.tile');
+
+            if (tile) { // 타일이 존재하는 경우만 처리
+                const value = tile.dataset.value; // 현재 타일 값
+                if (Number.parseInt(value) === 2) {
+                    // 값이 2인 타일 제거
+                    cell.innerHTML = ""; // 셀에서 타일 제거
                 } else {
-                    if (value.value === 2 || value.value === 0) {
-                        // 2인 타일은 제거
-                        tile.value = null;
-                    } else {
-                        value.value = Math.floor(value.value / 2);
-                        console.log(value.value);
-                    }
+                    // 나머지 타일은 값을 절반으로 나눔 (소수점 버림)
+                    const dividedValue = Math.floor(value / 2);
+
+                    // DOM 업데이트
+                    // 기존 타일이 있으면 값 갱신
+                    tile.innerText = dividedValue;
+                    tile.dataset.value = dividedValue;
                 }
             }
-        });
-    });
+        }
+    }
     playSound("emergency");
-    DrawBoard();
+    // DrawBoard();
 }
 
 function showHtmlTimeCount(countTime) {
@@ -381,6 +406,11 @@ function showHtmlTimeCount(countTime) {
     // 턴마다 6초 제한 표시
     // 6초에서 카운트다운 되는 형식으로 제한시간 표시
     let remainingTime = limitTime - countTime % limitTime;
+    if(remainingTime <= 2){
+        document.getElementById('limit').style.color = '#ea6357';
+    } else {
+        document.getElementById('limit').style.color = 'white';
+    }
     document.getElementById('limit').innerText = remainingTime;
 
 };
