@@ -422,12 +422,18 @@ function divideAllTileByNumber() {
 }
 
 function showHtmlTimeCount(countTime) {
-  //console.log("ShowHtmlTimeCOunt " + countTime);
-  // 턴마다 6초 제한 표시
-  // 6초에서 카운트다운 되는 형식으로 제한시간 표시
-  let remainingTime = limitTime - (countTime % limitTime);
-  document.getElementById("limit").innerText = remainingTime;
-}
+    //console.log("ShowHtmlTimeCOunt " + countTime);
+    // 턴마다 6초 제한 표시
+    // 6초에서 카운트다운 되는 형식으로 제한시간 표시
+    let remainingTime = limitTime - countTime % limitTime;
+    if(remainingTime <= 2){
+        document.getElementById('limit').style.color = '#ea6357';
+    } else {
+        document.getElementById('limit').style.color = 'white';
+    }
+    document.getElementById('limit').innerText = remainingTime;
+
+};
 
 // function placeTile(tile) {
 //     if (tile.value === null && CurrentGameState === "Control") {

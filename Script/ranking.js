@@ -12,6 +12,8 @@ async function loadRankings() {
     isload = true;
     // 로컬 스토리지에서 맵 크기 가져옴
     const gameSize = localStorage.getItem('gameSize');
+    // 각 랭킹별 100개순위 제한 
+    const limit = 100; 
 
     // h1 요소의 텍스트 내용 설정 (맵 크기에 따라)
     const h1Element = document.querySelector('h1');
@@ -38,14 +40,14 @@ async function loadRankings() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ gameSize: gameSize }), // 요청 본문에 gameSize 추가
+            body: JSON.stringify({ gameSize: gameSize, limit: limit }), // 요청 본문에 gameSize 추가
         });
 
         const result = await response.json();
 
         if (result.success) {
             displayRankings(result.data);
-            // localStorage.removeItem('gameSize');
+        
         } else {
             // 랭킹 데이터 가져오기 실패 처리
             console.error('[ranking.js] DB에서 데이터 랭킹 로드 실패:', result.message);
@@ -61,7 +63,7 @@ async function loadRankings() {
 }
 
 function displayRankings(rankings) {
-    
+
     const tbody = document.querySelector('tbody');
     tbody.innerHTML = '';
 
@@ -82,5 +84,28 @@ function debouncedLoadRankings() {
     clearTimeout(loadRankingsTimeout); // 이전 타이머 제거
     loadRankingsTimeout = setTimeout(loadRankings, 500); // 500ms 후에 loadRankings 실행 (시간 조정 가능)
 }
+
+
+// 랭킹 크기 설정 및 페이지 새로고침
+function setRankingSize(size) {
+    localStorage.setItem('gameSize', size);
+    console.log(`Ranking size set to ${size}x${size}, stored in localStorage as: ${localStorage.getItem('gameSize')}`);
+    location.reload();
+}
+
+// 드롭다운 토글 기능
+document.querySelector('.ranking-button').addEventListener('click', function (event) {
+    event.stopPropagation();
+    const dropdownContent = document.querySelector('.dropdown-content');
+    dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+});
+
+// 드롭다운 외부 클릭 시 닫기
+document.addEventListener('click', function (event) {
+    const dropdown = document.querySelector('.dropdown');
+    if (!dropdown.contains(event.target)) {
+        document.querySelector('.dropdown-content').style.display = 'none';
+    }
+});
 
 document.addEventListener('DOMContentLoaded', debouncedLoadRankings);

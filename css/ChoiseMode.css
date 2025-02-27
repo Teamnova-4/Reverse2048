@@ -1,101 +1,135 @@
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    flex-direction: column; /* 세로 방향으로 정렬 */
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background: #faf8ef;
-    overflow: hidden; /* 스크롤 방지 */
-
-    /* 드래그 방지 */
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none;   /* Safari */
-    -khtml-user-select: none;    /* Konqueror HTML */
-    -moz-user-select: none;      /* Firefox */
-    -ms-user-select: none;       /* Internet Explorer/Edge */
-    user-select: none;           /* Non-prefixed version, currently supported by Chrome and Opera */
+    overflow: hidden;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-/* 이미지에 대한 드래그 방지 */
+
 img {
     -webkit-user-drag: none;
     -khtml-user-drag: none;
     -moz-user-drag: none;
     -o-user-drag: none;
     user-drag: none;
-    pointer-events: none;  /* 이미지 선택 방지 */
+    pointer-events: none;
 }
-head {
-    width: 80%;
-    max-width: 1200px;
-}
-main {
+
+head, main {
     width: 80%;
     max-width: 1200px;
 }
 
-.container {
+.top-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 auto;
+    position: fixed;
+    top: 20px;
+    left: 0;
+    right: 0;
+    max-width: 1200px;
+    background: #faf8ef;
+    z-index: 10;
+}
+
+.text-container {
+    margin: 20px;
     text-align: center;
 }
-
-/* 상단 버튼 스타일 */
-.top-button-container {
-    display: flex; /* 버튼을 가로로 배치 */
-    justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
-    margin: 0 auto; /* 중앙 정렬을 위해 자동 여백 설정 */
-    position: fixed; /* 스크롤 시에도 항상 상단에 고정 */
-    top: 20px; /* 상단에서 20px 떨어지도록 설정 */
-    left: 0; /* 왼쪽에 붙도록 설정 */
-    right: 0; /* 오른쪽에 붙도록 설정 */
-    max-width: 1200px; /* 최대 너비 설정 */
-    background: #faf8ef; /* 배경색 설정 (필요에 따라 조정) */
-    z-index: 10; /* 다른 요소 위에 표시되도록 설정 */
-}
-
-.top-button-container button {
-    margin-left: 10px; /* 버튼 간격 설정 */
-}
-
-/* 텍스트 스타일 */
-.text-container {
-    margin: 20px; /* 텍스트 박스의 여백 */
-    text-align: center; /* 텍스트 중앙 정렬 */
-}
 .text-container h2 {
-    font-size: 50px; /* 제목 글자 크기 */
-    color: #7d7267; /* 제목 글자 색상 */
-    margin-bottom: 10px; /* 제목 아래 여백 */
+    font-size: 50px;
+    color: #7d7267;
+    margin-bottom: 10px;
 }
 .text-container p {
-    font-size: 24px; /* 본문 글자 크기 */
-    color: #bbada0; /* 본문 글자 색상 */
-    line-height: 1.5; /* 줄 간격 */
+    font-size: 24px;
+    color: #bbada0;
+    line-height: 1.5;
 }
 
-/* 중앙 게임모드 선택 버튼 스타일 */
 .gamemode-container {
     display: flex;
     justify-content: center;
-    margin-top: 50px; /* 버튼 위쪽 여백 */
-    margin-bottom: 50px; /* 버튼 아래쪽 여백 */
+    margin-top: 50px;
+    margin-bottom: 50px;
 }
-.mode-button {
-    background: #867c72; /* 배경 색상 */
-    color: white; /* 글자 색상 */
+
+/* 공통 버튼 스타일 */
+button {
+    background: #867c72;
+    color: white;
     border: none;
     border-radius: 15px;
-    padding: 15px 30px; /* 버튼 패딩 */
-    font-size: 25px; /* 글자 크기 */
-    margin: 0 10px; /* 버튼 간격 */
-    cursor: pointer; /* 커서 모양 변경 */
-    transition: background 0.3s; /* 배경 색상 변화 효과 */
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+/* 모드 선택 버튼 */
+.mode-button {
+    padding: 30px 35px;
+    font-size: 25px;
+    margin: 0 20px;
+    text-align: center;
 }
 .mode-button:hover {
-    background: #f2b179; /* 호버 시 배경 색상 변화 */
+    background: #f2b179;
 }
 
 .mode-image {
     width: 200px;
     height: 200px;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+/* 랭킹 버튼 */
+.ranking-button {
+    padding: 15px 30px; /* 모드 버튼과 동일 */
+    font-size: 25px; /* 모드 버튼과 동일 */
+}
+.ranking-button:hover {
+    background: #f2b179;
+}
+
+/* 드롭다운 스타일 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #faf8ef;
+    min-width: 120px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: #7d7267;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    font-size: 18px;
+    transition: background 0.3s;
+}
+
+.dropdown-content a:hover {
+    background-color: #f2b179;
+    color: white;
     border-radius: 10px;
 }

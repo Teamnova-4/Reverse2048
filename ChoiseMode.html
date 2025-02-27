@@ -6,14 +6,24 @@
     <title>리버스 2048</title>
     <link rel="stylesheet" href="./css/base.css">
     <link rel="stylesheet" href="./css/ChoiseMode.css">
+    <link rel="stylesheet" href="./css/speaker.css">
+    <script type="module">
+        import { playSound } from './Script/Sound.js';
+        window.playSound = playSound;
+    </script>
 </head>
 <body>
-    <head>
-        <div class="top-button-container">
-            <button class="mode-button" onclick="location.href='ranking.html'">랭킹</button>
-            <button class="mode-button">옵션</button>
+    <div class="top-button-container">
+        <div class="dropdown">
+            <button class="ranking-button" onclick="location.href='ranking.html'">랭킹</button>
+ 
         </div>
-    </head>
+    </div>
+
+    <div class="speaker-button" onclick="toggleSound()">
+        <div class="speaker-icon" id="speakerIcon"></div>
+    </div>
+
     <main>
         <div class="text-container">
             <h2>리버스 2048</h2>
@@ -39,17 +49,32 @@
     </main>
 
     <script>
-        // 우클릭 방지
         document.oncontextmenu = function(){return false;}
-        
+
         function setMode(size) {
-            
-            // 게임 사이즈를 localStorage에 저장
+            playSound('place');
             localStorage.setItem('gameSize', size);
-            
-            // 스킬 선택 화면으로 이동
             window.location.href = `ChoiseSkill.html`;
         }
+
+        function setRankingSize(size) {
+            localStorage.setItem('gameSize', size);
+            console.log(`Ranking size set to ${size}x${size}, stored in localStorage as: ${localStorage.getItem('gameSize')}`);
+            window.location.href = 'ranking.html';
+        }
+
+        document.querySelector('.ranking-button').addEventListener('click', function(event) {
+            event.stopPropagation();
+            const dropdownContent = document.querySelector('.dropdown-content');
+            dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.dropdown');
+            if (!dropdown.contains(event.target)) {
+                document.querySelector('.dropdown-content').style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
