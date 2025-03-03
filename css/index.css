@@ -268,7 +268,6 @@ body {
     border-radius: 6px;
     color: white;
 }
-
 .turn-label {
     font-size: 15px;
     font-weight: bold;
@@ -276,17 +275,19 @@ body {
     /* 줄바꿈 방지 */
     white-space: nowrap;
 }
-
 .turn-value {
     font-size: 25px;
     font-weight: bold;
 }
-
 .title-score {
     display: flex;
     gap: 10px;
     justify-content: space-between;
     align-items: end;
+}
+
+.turn-container.emphasis {
+    background-color: red; /* 배경색으로 강조 */
 }
 
 .cooltime-container {

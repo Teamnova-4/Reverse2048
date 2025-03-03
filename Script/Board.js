@@ -28,6 +28,9 @@ let coolTime = 0;
 
 let isSequence = false;
 let isMindControl = false;
+
+let idleTimer; // 타이머 변수 추가
+
 /**
  * 플레이어 가 스페이스 바를 눌렀을떄 실행되고 각자
  * 다른 실행방식이 있다
@@ -103,6 +106,22 @@ function setCurrentState(state) {
       break;
     case "Control":
       timer = startTimer();
+      document.getElementById('nextnumber-container').classList.remove('emphasis');
+      clearTimeout(idleTimer); // 이전 타이머 클리어
+      idleTimer = setTimeout(() => {
+        Cell.GridForEach(cell => {
+          if (cell.tile) {
+            const randomValue = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048];
+            const randomIndex = Math.floor(Math.random() * randomValue.length);
+            const displayedValue = randomValue[randomIndex]; // 랜덤 숫자 생성
+
+            cell.tile.html.textContent = displayedValue; // 랜덤 숫자 표시
+            cell.tile.html.dataset.value = displayedValue; // data-value 설정
+
+          }
+        });
+      }, 2000); // 2초 후 랜덤 숫자 표시
+
       insertTile = Math.random() < 0.9 ? 2 : 4;
       document.getElementById("next").innerText = insertTile;
 
@@ -365,8 +384,9 @@ function divideAllTileByNumber() {
             cell.draw();
         }
     });
-    const tileNumbers = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048];
+    const tileNumbers = [16, 32, 64];
     const randomNumber = Math.floor(Math.random() * tileNumbers.length);
+    document.getElementById('nextnumber-container').classList.add('emphasis');
 
     insertTile = tileNumbers[randomNumber];
     document.getElementById("next").innerText = insertTile;
@@ -399,6 +419,11 @@ function showHtmlTimeCount(countTime) {
 function placeTile(cell) {
     if (cell.html.innerHTML.trim() === "" && CurrentGameState === "Control") {
         cell.placeTile(insertTile);
+
+        // 타일 설치 시 랜덤 페이크 숫자를 원래 숫자로 되돌리기
+        if (cell.tile) {
+            cell.tile.html.textContent = cell.tile.value; // 원래 숫자 표시
+        }
 
         if (isSequence) {
             isSequence = false;
