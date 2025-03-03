@@ -1,4 +1,4 @@
-import { playSound } from "./Sound.js";
+import { playSound, Cell } from "./main.js";
 
 let clickMode = "insertMode";
 let insertTile;
@@ -71,67 +71,23 @@ function clickSkill() {
   }
 }
 
-function startGame() {
-  setGridSize();
-  initSkill();
-  initBoard();
-}
 
-function initSkill() {}
 function DrawBoard() {
-  console.log("DrawBoard 호출");
-  const grid = document.getElementById("grid").children;
-  Array.from(grid).forEach((cell, index) => {
-    const tile = cell.children.length === 1 ? cell.children[0] : null;
-    if (tile) {
-      if (tile.dataset.value === "-10") {
-        tile.innerHTML = "";
-        const img = document.createElement("img");
-        img.src = "Resources/bomb.png";
-        img.style.width = "100%";
-        tile.appendChild(img);
-      } else {
-        tile.textContent = tile.dataset.value;
-      }
-    }
-  });
+    Cell.DrawAll();
 }
 
 /**
  * 게임 보드를 초기화하는 함수
  */
 function initBoard() {
-  board = new Array(gridSize).fill(null).map(() => new Array(gridSize).fill(0));
-  const grid = document.getElementById("grid");
-
-  grid.innerHTML = ""; // 기존 게임 보드를 지웁니다.
-
-  for (let r = 0; r < gridSize; r++) {
-    for (let c = 0; c < gridSize; c++) {
-      // 그리드에 빈칸 생성
-      const cell = document.createElement("div");
-      cell.className = "cell insert-mode-cell";
-
-      // div 태그 별로 자신의 좌표 기록
-      cell.dataset.row = r;
-      cell.dataset.col = c;
-
-      // 타일 클릭 이벤트 리스너를 추가합니다.
-      cell.addEventListener("click", (e) => {
-        // 클릭된 빈칸의 그리드 좌표 가져오기
-        const clickedCell = e.currentTarget;
+    Cell.InitCells(gridSize, gridSize, (cell)=> {
         if (clickMode === "insertMode") {
-          // 클릭 모드가 "insertMode"이면
-          placeTile(clickedCell); // 타일 배치
+            placeTile(cell);
         } else if (clickMode === "skillMode") {
-          // 클릭 모드가 "skillMode"이면
-          UseSkillToTile(clickedCell); // 타일에 스킬 적용
+            UseSkillToTile(cell)
         }
-      });
-
-      grid.appendChild(cell);
-    }
-  }
+    });
+    DrawBoard();
 }
 
 function setCurrentState(state) {
@@ -166,7 +122,6 @@ function setCurrentState(state) {
       move();
       break;
     case "FinishTurn":
-      console.log(valueGrid);
       finishTurn();
       // gameEnding();
       break;
@@ -348,29 +303,28 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 function finishTurn() {
-  //폭탄 터짐 처리
-  if (playerSkill === "bomb") {
-    getCurrentBoard().forEach((row, rowIndex) => {
-      row.forEach((cell, colIndex) => {
-        if (cell === -20) {
-          playSound("bomb");
-          explodeTile(rowIndex, colIndex);
-        }
-      });
-    });
-  }
 
-  // 턴 증가
-  turn += 1;
-  limitTime = baseLimitTime;
-  document.getElementById("turn").innerText = turn;
-  // 쿨타임 감소
-  if (coolTime > 0) {
-    coolTime -= 1;
-    updateCooltime();
-  }
-  // 다음 턴 준비
-  setCurrentState("Control");
+    Cell.GridForEach((cell)=>{
+        if (cell.tile) {
+            cell.tile.isMerged = false;
+
+            if(cell.tile.isExplode) {
+                explodeTile(cell.row, cell.col);
+            }
+        }
+    });
+
+    // 턴 증가
+    turn += 1;
+    limitTime = baseLimitTime;
+    document.getElementById("turn").innerText = turn;
+    // 쿨타임 감소
+    if (coolTime > 0) {
+        coolTime -= 1;
+        updateCooltime();
+    }
+    // 다음 턴 준비
+    setCurrentState("Control");
 }
 
 function startTimer() {
@@ -383,7 +337,7 @@ function startTimer() {
     showHtmlTimeCount(countTime);
 
     if (countTime % limitTime == 0) {
-        divideAllTileByNumber();
+      //   divideAllTileByNumber();
     }
   }, 1000);
   return timer;
@@ -402,11 +356,11 @@ function divideAllTileByNumber() {
       if (tile) {
         // 타일이 존재하는 경우만 처리
         const value = tile.dataset.value; // 현재 타일 값
-        if (Number.parseInt(value) === 2 || Number.parseInt(value) === 0) {
+        if (Number.parseInt(value) === 2 || Number.parseInt(value)) {
           // 값이 2인 타일 제거
           cell.innerHTML = ""; // 셀에서 타일 제거
         } else if (Number.parseInt(value) === -10){
-            explodeTile(i, j);
+            
         } else {
           // 나머지 타일은 값을 절반으로 나눔 (소수점 버림)
           const dividedValue = Math.floor(value / 2);
@@ -437,60 +391,21 @@ function showHtmlTimeCount(countTime) {
 
 };
 
-// function placeTile(tile) {
-//     if (tile.value === null && CurrentGameState === "Control") {
-//         playSound('place');
-//         tile.insertTile(insertTile);
-//         if (isDouble) {
-//             isDouble = false;
-//         } else {
-//             setCurrentState("FinishControl");
-//         }
-//     }
-// }
-
 /**
  * 빈 칸에 타일을 배치하는 함수입니다.
  *
  * @param {cell} cell - 타일을 배치할 빈칸 태그
  */
 function placeTile(cell) {
-  // console.log("placeTile : ", cell);
+    if (cell.html.innerHTML.trim() === "" && CurrentGameState === "Control") {
+        cell.placeTile(insertTile);
 
-  // 현재 게임 상태가 "Control" (플레이어의 턴)이고, 선택된 타일이 비어있는 경우에만 타일을 배치합니다.
-  if (cell.innerHTML.trim() === "" && CurrentGameState === "Control") {
-    // 선택된 타일에 insertTile 변수에 저장된 값(2 또는 4)을 삽입합니다.
-
-    playSound('place');
-
-    // 주어진 빈칸 태그 내부에 타일 태그 추가
-    const tileTag = document.createElement("div");
-    tileTag.className = "tile"; // 클래스
-    tileTag.innerText = insertTile; // 사용자에게 보여질 값
-    tileTag.dataset.value = insertTile; //  data-value에 저장된 값
-
-    // TODO: 폭탄 스킬을 사용하면 insertTile = "bomb"이 된다. 이에 대응할 것
-    if (insertTile === "bomb") {
-      const img = document.createElement("img");
-      img.src = "/Resources/bomb.png";
-      img.className = "bomb"; // 클래스
-      img.innerHTML = ""; // 사용자에게 보여질 값
-      tileTag.appendChild(img);
+        if (isSequence) {
+            isSequence = false;
+        } else {
+            setCurrentState("FinishControl");
+        }
     }
-
-    cell.appendChild(tileTag);
-
-    // isDouble 변수는 연속 타일 배치 스킬이 활성화되었는지 여부를 나타냅니다.
-    // 만약 연속 타일 배치 스킬이 활성화되어 있다면 (isDouble === true)
-    // 스킬 효과를 적용한 후 isDouble 변수를 false로 설정합니다.
-    if (isSequence) {
-      isSequence = false;
-    } else {
-      // 연속 타일 배치 스킬이 활성화되어 있지 않다면,
-      // setCurrentState 함수를 호출하여 게임 상태를 "FinishControl" (플레이어 턴 종료)로 변경합니다.
-      setCurrentState("FinishControl");
-    }
-  }
 }
 
 /**
@@ -501,655 +416,105 @@ function placeTile(cell) {
  * 이번 이동의 방향(BestMove) 를 "up", "down", "left", "right" 중 하나로 할당합니다.
  */
 function simulate() {
-  const directions = ["up", "down", "left", "right"]; // 가능한 이동 방향들
-  let maxMergeScore = 0; // 최대 병합 점수
-  let bestMergeMoves = []; // 최고 병합 점수를 가진 방향들
-  let possibleMoves = []; // 이동 가능한 방향들 (병합 없이 단순 이동 포함)
+    const directions = ["up", "down", "left", "right"]; // 가능한 이동 방향들
+    let maxMergeScore = 0; // 최대 병합 점수
+    let bestMove = []; // 최고 병합 점수를 가진 방향들
 
-  let mostBadMove;
-  let minMergeScore = Number.MAX_SAFE_INTEGER;
+    let worstMove = [];
+    let minMergeScore = Number.MAX_SAFE_INTEGER;
 
-  // 게임 판 정보 배열에 저장
-  const gridArray = getCurrentBoard();
 
-  // 각 방향에 대해 시뮬레이션을 진행합니다.
-  directions.forEach((direction) => {
-    const result = simulateDirection(gridArray, direction); // 점수와 이동 가능 여부 반환
-    const tempScore = result.score; // 병합 점수
-    const canMove = result.canMove; // 이동 가능 여부
 
-    // 병합 점수가 있는 경우
-    if (tempScore > 0) {
-      if (tempScore > maxMergeScore) {
-        maxMergeScore = tempScore;
-        bestMergeMoves = [direction]; // 최고 점수 방향으로 갱신
-      } else if (tempScore === maxMergeScore) {
-        bestMergeMoves.push(direction); // 동일 점수 방향 추가
-      }
-    }
+    directions.forEach((direction) => {
+        let simulateList = [];
 
-    // 병합은 없지만 이동 가능한 경우
-    if (tempScore === 0 && canMove) {
-      possibleMoves.push(direction);
-    }
-    if (canMove && tempScore < minMergeScore) {
-      minMergeScore = tempScore;
-      mostBadMove = direction;
-    }
-  });
+        for (let i = 0; i < gridSize; i++) {
+            switch (direction) {
+                case "up":
+                    simulateList.push(Cell.GridCol(i));
+                    break;
+                case "down":
+                    simulateList.push(Cell.GridCol(i).reverse());
+                    break;
+                case "left":
+                    simulateList.push(Cell.GridRow(i));
+                    break;
+                case "right":
+                    simulateList.push(Cell.GridRow(i).reverse());
+                    break;
+            }
+        }
 
-  // 이동 방향 결정
-  if (isMindControl && mostBadMove !== null) {
-    isMindControl = false;
-    BestMove = mostBadMove;
-    setCurrentState("Move");
-  } else if (bestMergeMoves.length > 0) {
-    // 병합 가능한 방향 중 랜덤 선택
-    BestMove =
-      bestMergeMoves[Math.floor(Math.random() * bestMergeMoves.length)];
-    console.log("Best Move (merge): ", BestMove);
-    setCurrentState("Move");
-  } else if (possibleMoves.length > 0) {
-    // 병합은 없지만 이동 가능한 방향 중 랜덤 선택
-    BestMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-    console.log("Best Move (no merge): ", BestMove);
-    setCurrentState("Move");
-  } else {
-    // 이동 불가능한 경우
-    console.log("No valid moves");
-    setCurrentState("End");
-  }
-}
+        const totalScore = simulateList.reduce((total, line) => {
+            return total + Cell.getLineScore(line);
+        }, 0);
 
-function simulateDirection(tempBoard, direction) {
-  // 디버깅용 예시
-  // tempBoard = [
-  //     [2, 2, 2, 2],
-  //     [null, null, null, null],
-  //     [null, null, null, null],
-  //     [null, null, null, null]
-  // ];
-  // console.log("디버깅용 예시");
-  // console.log(tempBoard);
+        console.log(direction, totalScore, simulateList);
+        /*
+        const totalScore = simulateList.reduce((total, line) => {
+            return total + Cell.mergeCellListToTileList(line)
+                .filter(tile => tile !== null)
+                .map(tile => tile.score())
+                .reduce((sum, value) => sum + value, Cell.isMoveAbleList(line) ? 1: 0);
+        }, 0);
+        */
 
-  // 병합 점수와 이동 가능 여부를 계산하는 함수
-  let tempScore = 0; // 병합으로 얻을 수 있는 점수를 저장
-  let canMoveFlag = false; // 해당 방향으로 이동(병합 또는 단순 이동)이 가능한지 여부
+        if (totalScore === 0) {
+        } else if (totalScore > maxMergeScore) {
+            maxMergeScore = totalScore;
+            bestMove = [direction];
+        } else if (totalScore === maxMergeScore) {
+            bestMove.push(direction);
+        } else if (totalScore < minMergeScore) {
+            minMergeScore = totalScore;
+            worstMove = [direction];
+        } else if (totalScore === minMergeScore) {
+            worstMove.push(direction);
+        }
+    });
 
-  // 각 줄(행 또는 열)을 순회하며 처리
-  for (let i = 0; i < gridSize; i++) {
-    let line = []; // 현재 처리할 줄을 저장
-
-    // 방향에 따라 줄을 추출: 열(상하) 또는 행(좌우)
-    if (direction === "up" || direction === "down") {
-      // 상하 이동: 열 단위로 추출
-      line = tempBoard.map((row) => row[i]);
+    if (isMindControl && worstMove !== null) {
+        isMindControl = false;
+        BestMove = worstMove;
+        setCurrentState("Move");
+    } else if (bestMove.length > 0) {
+        // 병합 가능한 방향 중 랜덤 선택
+        BestMove = bestMove[Math.floor(Math.random() * bestMove.length)];
+        console.log("Best Move (merge): ", BestMove);
+        setCurrentState("Move");
     } else {
-      // 좌우 이동: 행 단위로 추출
-      line = tempBoard[i];
+        // 이동 불가능한 경우
+        console.log("No valid moves");
+        setCurrentState("End");
     }
-
-    // 오른쪽 또는 아래로 이동 시 줄을 뒤집어 병합 방향을 통일
-    if (direction === "right" || direction === "down") {
-      line = line.slice().reverse(); // 원본 보존을 위해 복사 후 뒤집기
-    }
-
-    // 병합 시뮬레이션 실행 및 점수 합산
-    const mergeResult = simulateMergeList(line);
-    // console.log(mergeResult);
-    tempScore += mergeResult.score;
-
-    // 이동 가능 여부 확인
-    if (mergeResult.score === 0) {
-      // 병합이 없으면 단순 이동 가능성 확인
-      const originalLine = line.slice(); // 원본 줄 복사
-      const movedLine = simulateMoveOnly(line); // 단순 이동 결과
-      // 원본과 이동 후가 다르면 이동 가능
-      if (JSON.stringify(originalLine) !== JSON.stringify(movedLine)) {
-        canMoveFlag = true;
-      }
-    } else {
-      // 병합이 발생하면 이동 가능
-      canMoveFlag = true;
-    }
-  }
-
-  // 결과 출력 및 반환
-  // console.log("병합점수: ", tempScore, "이동가능여부: ", canMoveFlag, direction);
-  return {
-    score: tempScore, // 병합 점수
-    canMove: canMoveFlag, // 이동 가능 여부
-  };
 }
 
-// 타일 병합 없이 단순 이동만 시뮬레이션하는 함수
-function simulateMoveOnly(line) {
-  const result = line.slice(); // 원본 줄 복사
-  const filtered = result.filter((val) => val !== null); // null 제거
-  const padded = [
-    ...filtered,
-    ...Array(line.length - filtered.length).fill(null),
-  ]; // 빈 공간 null로 채움
-  return padded; // 이동 후 결과 반환
-}
-
-/**
- * 현재 게임 보드의 상태를 2차원 배열로 가져오는 함수.
- * 각 셀의 타일 값을 배열에 저장하며, 타일이 없으면 null로 저장합니다.
- *
- * @returns {Array<Array<number|null>>} - 게임 보드의 현재 상태를 나타내는 2차원 배열.
- *                                         각 요소는 타일의 값(number) 또는 타일이 없는 경우 null입니다.
- */
-function getCurrentBoard() {
-  const gridArray = Array.from({ length: gridSize }, () =>
-    Array(gridSize).fill(null)
-  ); // gridSize x gridSize 크기의 2차원 배열을 생성하고 null로 초기화합니다.
-  document.querySelectorAll(".cell").forEach((cell) => {
-    // 모든 "cell" 클래스를 가진 DOM 요소를 선택하여 반복합니다.
-    const row = parseInt(cell.dataset.row); // 현재 셀의 행(row) 인덱스를 가져옵니다.
-    const col = parseInt(cell.dataset.col); // 현재 셀의 열(col) 인덱스를 가져옵니다.
-
-    // 만약 cell 내부에 타일이 있다면 값을 저장
-    const tile = cell.querySelector(".tile"); // 현재 셀 내부에 "tile" 클래스를 가진 DOM 요소를 찾습니다.
-    gridArray[row][col] = tile ? parseInt(tile.dataset.value) : null; // 타일이 있으면 해당 타일의 data-value 값을 정수로 변환하여 gridArray에 저장하고, 타일이 없으면 null을 저장합니다.
-  });
-  return gridArray; // 생성된 2차원 배열을 반환합니다.
-}
-
-let valueGrid;
-let mergedPositions;
 
 function move() {
-  playSound("move"); // 이동 사운드를 재생합니다.
-  const animations = []; // 이동 및 병합 애니메이션 정보를 저장할 배열입니다.
-  const grid = document.getElementById("grid"); // 게임 보드 DOM 요소를 가져옵니다.
-  valueGrid = getCurrentBoard(); // 현재 게임 보드 상태를 2차원 배열로 가져옵니다.
-  mergedPositions = new Set();
+    playSound("move"); // 이동 사운드를 재생합니다.
 
-  // 게임 보드의 각 줄(행 또는 열)에 대해 반복합니다.
-  for (let i = 0; i < gridSize; i++) {
-    let line = []; // 현재 처리 중인 줄을 저장할 배열입니다.
-    let originalLine = []; // 현재 처리 중인 줄의 원본 상태를 저장할 배열입니다.
-    let cellArr = [...document.getElementById("grid").children]; // 각 빈칸들을 담은 배열
-    let simulateCell = []; // 시뮬레이션에 사용되는 셀의 배열
+    // 게임 보드의 각 줄(행 또는 열)에 대해 반복합니다.
+    for (let i = 0; i < gridSize; i++) {
+        let simulateList = []; // 시뮬레이션에 사용되는 셀의 배열
 
-    // 이동 방향(BestMove)에 따라 줄(행 또는 열)을 추출합니다.
-    if (BestMove === "up" || BestMove === "down") {
-      // 위 또는 아래로 이동: 열 단위로 추출
-      for (let j = 0; j < gridSize; j++) {
-        line.push(valueGrid[j][i]); // 각 행에서 i번째 열의 값을 가져와 배열로 만듭니다.
-        // cellPositions.push({ row: j, col: i }); // 해당 셀의 위치 정보 저장
-        simulateCell.push(cellArr[j * gridSize + i]);
-      }
-      originalLine = line.slice(); // 현재 줄의 원본 상태를 복사하여 저장합니다.
-    } else {
-      // 좌 또는 우로 이동: 행 단위로 추출
-      line = valueGrid[i]; // i번째 행을 가져옵니다.
-      for (let j = 0; j < gridSize; j++) {
-        //    cellPositions.push({row: i, col: j}); // 해당 셀의 위치 정보 저장
-        simulateCell.push(cellArr[i * gridSize + j]);
-      }
-      originalLine = line.slice(); // 현재 줄의 원본 상태를 복사하여 저장합니다..
-    }
-
-    // 우측 또는 하단으로 이동하는 경우, 배열을 뒤집어서 이동 및 병합 로직을 재활용합니다.
-    let isReversed = false; // 줄이 뒤집혔는지 여부를 저장할 변수
-    if (BestMove === "right" || BestMove === "down") {
-      line = line.slice().reverse(); // 원본 보존을 위해 복사 후 뒤집습니다.
-      //   cellPositions = cellPositions.slice().reverse(); // 셀 위치 정보도 뒤집습니다.
-      simulateCell = simulateCell.slice().reverse();
-      originalLine = originalLine.slice().reverse(); // 원본 줄도 뒤집어줍니다.
-      isReversed = true; // 줄이 뒤집혔음을 표시합니다.
-    }
-
-    // 병합 및 이동을 수행합니다. (simulateMergeList 함수가 이동 및 병합을 모두 처리)
-    const mergeResult = simulateMergeList(line, true, simulateCell, ""); // 현재 줄에 대해 병합을 수행합니다.
-    let updatedLine = mergeResult.result; // 병합 및 이동 결과가 담긴 배열입니다.
-    const movements = mergeResult.movements; // 병합 및 이동에 대한 상세 정보(from, to, value, mergedWith, newValue)를 담고 있습니다.
-
-    // 우측 또는 하단으로 이동하는 경우, 배열을 다시 뒤집어 원래 순서로 복원합니다.
-    if (isReversed) {
-      updatedLine = updatedLine.slice().reverse(); // 병합 및 이동 결과를 뒤집어 원래 순서로 복원합니다.
-
-      // movements 배열의 from, to, mergedWith 값도 gridSize 기준으로 뒤집어야합니다.
-      movements.forEach((move) => {
-        move.from = gridSize - 1 - move.from; // from 인덱스를 보정합니다. 3-1-1 = 1
-        move.to = gridSize - 1 - move.to; // to 인덱스를 보정합니다.
-        if (move.mergedWith !== undefined) {
-          move.mergedWith = gridSize - 1 - move.mergedWith; // 병합된 위치(mergedWith)를 보정합니다.
+        switch (BestMove) {
+            case "up":
+                simulateList = Cell.GridCol(i);
+                break;
+            case "down":
+                simulateList = Cell.GridCol(i).reverse();
+                break;
+            case "left":
+                simulateList = Cell.GridRow(i);
+                break;
+            case "right":
+                simulateList = Cell.GridRow(i).reverse();
+                break;
         }
-      });
+        Cell.mergeLine(simulateList)
     }
-    for (let move of movements) {
-      // 애니메이션에 필요한 정보를 수집합니다.
-      const info = generateAnimationInfo(move, i);
-      if (info !== null) {
-        animations.push(info.animationInfo);
-        mergedPositions.add(info.mergedInfo);
-      }
-    }
-    // 게임 보드(grid)를 업데이트합니다.
-    if (BestMove === "up" || BestMove === "down") {
-      for (let j = 0; j < gridSize; j++) valueGrid[j][i] = updatedLine[j]; // 열을 기준으로 업데이트합니다.
-    } else {
-      for (let j = 0; j < gridSize; j++) valueGrid[i][j] = updatedLine[j]; // 행을 기준으로 업데이트합니다.
-    }
-  }
-
-  console.log("move: 이동완료 결과", valueGrid);
-
-  applyAnimation(animations);
+    setTimeout(() => { setCurrentState("FinishTurn"); }, 500);
 }
-
-function generateAnimationInfo(moveInfo, lineIndex) {
-  const cellSize = 110; // 셀 크기(100px) + 간격(10px) = 110px, 타일 이동 거리 계산에 사용됩니다.
-  let fromIndex = moveInfo.from; // 이동 전 인덱스
-  let toIndex = moveInfo.to; // 이동 후 인덱스
-  const value = moveInfo.value; // 이동 전 값
-  const newValue = moveInfo.newValue; // 이동 후 값 (병합된 경우 새로운 값)
-  const isMerged = moveInfo.mergedWith !== undefined; // 병합 여부
-
-  let animationInfo = null;
-  let mergedInfo = null;
-
-  // 이동 방향에 따라 fromRow, fromCol, toRow, toCol 값을 설정합니다.
-  let fromRow, fromCol, toRow, toCol;
-  if (BestMove === "up" || BestMove === "down") {
-    // 위 또는 아래로 이동: 열 단위
-    fromRow = fromIndex; // 이동 전 행 위치
-    fromCol = lineIndex; // 이동 전 열 위치 (i번째 열)
-    toRow = toIndex; // 이동 후 행 위치
-    toCol = lineIndex; // 이동 후 열 위치 (i번째 열)
-  } else {
-    // 좌 또는 우로 이동: 행 단위
-    fromRow = lineIndex; // 이동 전 행 위치 (i번째 행)
-    fromCol = fromIndex; // 이동 전 열 위치
-    toRow = lineIndex; // 이동 후 행 위치 (i번째 행)
-    toCol = toIndex; // 이동 후 열 위치
-  }
-
-  // 현재 위치에 있는 타일 엘리먼트를 가져옵니다.
-  const tile = document.querySelector(
-    `.cell[data-row="${fromRow}"][data-col="${fromCol}"] .tile`
-  );
-  // 타일이 있고, 이동이 일어난 경우에만 애니메이션 정보를 배열에 추가합니다.
-  if (tile && (fromRow !== toRow || fromCol !== toCol)) {
-    animationInfo = {
-      // 애니메이션 정보를 객체 형태로 배열에 추가합니다.
-      tile, // 이동할 타일의 DOM 엘리먼트입니다.
-      fromX: fromCol * cellSize, // 이동 전 X 좌표입니다.
-      fromY: fromRow * cellSize, // 이동 전 Y 좌표입니다.
-      toX: toCol * cellSize, // 이동 후 X 좌표입니다.
-      toY: toRow * cellSize, // 이동 후 Y 좌표입니다.
-      fromCol: fromCol,
-      fromRow: fromRow,
-      toRow: toRow,
-      toCol: toCol,
-      newValue: newValue, // 이동 후의 값 (병합된 경우 새로운 값)
-      isMerged: isMerged, // 병합되었는지 여부.
-      removeAfter: true, // 병합 또는 이동 후 타일 제거 여부.
-    };
-    // console.log("generateAnimationInfo ",animationInfo);
-    if (isMerged) {
-      mergedInfo = `${toRow}-${toCol}`;
-    }
-    return { animationInfo, mergedInfo };
-  }
-  return null;
-}
-
-function applyAnimation(animations) {
-  // 애니메이션을 적용합니다.
-  let completedAnimations = 0; // 완료된 애니메이션 수를 추적합니다.
-  const totalAnimations = animations.length; // 총 애니메이션 수를 저장합니다.
-
-  // 각 애니메이션 정보에 대해 반복합니다.
-  animations.forEach(
-    ({
-      tile,
-      fromX,
-      fromY,
-      toX,
-      toY,
-      toRow,
-      toCol,
-      newValue,
-      isMerged,
-      removeAfter,
-    }) => {
-      const deltaX = toX - fromX; // X축 이동 거리입니다.
-      const deltaY = toY - fromY; // Y축 이동 거리입니다.
-      tile.style.transform = `translate(${deltaX}px, ${deltaY}px)`; // 타일을 이동시킵니다.
-
-      // 애니메이션 완료 시 처리
-      tile.addEventListener(
-        "transitionend",
-        function handler() {
-          // 각 타일의 이동 애니메이션이 끝나면 실행할 이벤트 리스너를 추가합니다.
-          tile.removeEventListener("transitionend", handler); // 이벤트 핸들러를 제거합니다.
-          //if (removeAfter) tile.remove(); // 기존 타일을 DOM에서 제거합니다.
-          completedAnimations++; // 완료된 애니메이션 수를 증가시킵니다.
-          if (completedAnimations === totalAnimations) finishMove(animations); // 모든 애니메이션이 완료되면 finishMove 함수를 호출합니다.
-        },
-        { once: true }
-      ); // 이벤트 핸들러는 한 번만 실행됩니다.
-    }
-  );
-
-  // 애니메이션이 없는 경우 즉시 종료합니다.
-  if (totalAnimations === 0) finishMove();
-}
-
-/**
- * 애니메이션 완료 후 DOM과 보드 상태를 갱신
- * @param {Array} grid - 업데이트된 게임 보드
- */
-function finishMove(animations) {
-  // 모든 셀의 기존 타일 제거(병합되서 겹쳐진거 제거)
-  //document.querySelectorAll(".cell .tile").forEach((tile) => tile.remove());
-
-    if (animations !== undefined && animations !== null ){
-        animations.forEach((animation) => {
-            const { fromCol, fromRow, toRow, toCol } = animation;
-            const cell1 = getGridElement(fromRow, fromCol);
-            const cell2 = getGridElement(toRow, toCol);
-            const tile1 = cell1.children[0];
-        
-            tile1.removeAttribute("style");
-
-            cell2.innerHTML = cell1.innerHTML;
-            cell1.innerHTML = "";
-            
-            const tile2 = cell2.children[0];
-
-            if (mergedPositions.has(`${cell2.dataset.row}-${cell2.dataset.col}`)) {
-                tile2.classList.add('merged');
-                tile2.addEventListener('animationend', () => {
-                    tile2.classList.remove('merged');
-                });
-                tile2.dataset.value = animation.newValue;
-            }
-        });
-    }
-/*
-  // 모든 셀에 새 타일 추가
-  for (let i = 0; i < gridSize; i++) {
-    for (let j = 0; j < gridSize; j++) {
-        // 현재 위치의 계산된 숫자 결과
-        const value = valueGrid[i][j];
-      if (value !== null) {
-        const cell = document.querySelector(
-          `.cell[data-row="${i}"][data-col="${j}"]`
-        );
-        const tile = document.createElement("div");
-
-        tile.className = "tile";
-        tile.innerText = value;
-        tile.dataset.value = value;
-
-        // 현재 이동한 타일의 dataset속성 복사
-        // const foundAnimation = animations.find(anim => anim.toRow === i && anim.toCol === j);
-        // for(const key in foundAnimation.tile.dataset){
-
-        //     // tile.dataset[key] =  foundAnimation.tile.dataset[key];
-        // }
-
-        const positionKey = `${i}-${j}`;
-        if (mergedPositions.has(positionKey)) {
-            tile.classList.add('merged');
-        }
-        // tile.style.transform = 'translate(0, 0)';
-        if (cell.querySelector(".tile") === null) {
-          // 중복 추가 방지
-          cell.appendChild(tile);
-        }
-      }
-    }
-  }
-    */
-  setCurrentState("FinishTurn");
-}
-
-/**
- * 타일 이동 및 병합을 시뮬레이션하는 함수입니다.
- * 주어진 한 줄(행 또는 열)에 대해 병합을 수행하고, 병합 결과, 점수, 이동 정보를 반환합니다.
- *
- * 시뮬레이션할 한 줄, 쉴드 적용 여부, 시뮬레이션할 줄의 셀 태그 리스트
- */
-function simulateMergeList(line, applyShield = false, cellArr = [], caller = "") {
-    if (applyShield) console.log("simulateMergeList", applyShield, cellArr, caller);
-    let score = 0; // 병합으로 얻는 총 점수
-    let result = []; // 병합 후의 타일 값들을 저장할 배열
-    let canMerge = true; // 현재 위치의 타일이 병합 가능한지 여부 (연속 병합 방지)
-    const targetLength = line.length; // 원래 배열의 길이를 저장 (결과 배열의 길이를 맞추기 위함)
-    let movements = []; // 각 타일의 이동 및 병합 정보를 저장할 배열
-    // 결과 배열의 각 타일이 실드인지 여부를 저장하는 배열
-    let shieldTiles = [];
-    if (applyShield) {
-
-  
-      for (let i = 0; i < line.length; i++) {
-        if (line[i] === null) continue;
-  
-        // 현재 타일이 실드 타일인지 확인
-        const isShield = cellArr[i]?.children[0]?.dataset.isShield === 'true' ||
-                         cellArr[i - 1]?.children[0]?.dataset.isShield === 'true';
-
-  
-        // 병합 조건: 이전 타일 존재, 값이 같고, 연속 병합 가능하며, 현재 타일과 이전 타일 모두 실드가 아닌 경우
-        const isMergeAble = result.length > 0 && result[result.length - 1] === line[i] && canMerge;
-        console.log(isShield)
-        if (
-            isMergeAble &&
-            !isShield &&
-            !shieldTiles[shieldTiles.length - 1] // 이전 타일이 실드가 아니어야 함
-        ) {
-          // 병합 처리
-          const mergedValue = result[result.length - 1] * 2;
-          result[result.length - 1] = mergedValue;
-          score += mergedValue;
-          canMerge = false;
-  
-          console.log(result, line);
-          if (line[i] === -10) {
-            score += 2147483658;
-          }
-  
-          const toIndex = result.length - 1;
-          movements.push({
-            from: i,
-            to: toIndex,
-            value: line[i],
-            mergedWith: toIndex,
-            newValue: mergedValue,
-          });
-  
-          const lastMovement = movements.find(
-            (m) => m.to === toIndex && !m.mergedWith
-          );
-          if (lastMovement) {
-            lastMovement.mergedWith = i;
-            lastMovement.newValue = mergedValue;
-          }
-          // 기존 타일은 실드가 아니었으므로 shieldMarkers는 그대로 유지합니다.
-        } else {
-          // 병합 조건에 해당하지 않거나 현재 타일이 실드인 경우, 결과에 단순 추가
-          result.push(line[i]);
-          if (isShield && isMergeAble){
-            console.log("실드 타일 모모모");
-            shieldTiles.push(cellArr[i].children[0]); // 실드 여부 기록
-            shieldTiles.push(cellArr[i - 1].children[0]); // 실드 여부 기록
-            // 실드 타일이면 이후 병합을 막기 위해 canMerge을 false로 설정
-            canMerge = false;
-          } else {
-            shieldTiles.push(null);
-          }
-
-  
-          movements.push({
-            from: i,
-            to: result.length - 1,
-            value: line[i],
-            mergedWith: undefined,
-            newValue: line[i],
-          });
-        }
-      }
-    } else {
-      // 실드를 고려하지 않은 결과 반환 (기존 로직)
-      for (let i = 0; i < line.length; i++) {
-        if (line[i] === null) continue;
-  
-        if (
-          result.length > 0 &&
-          result[result.length - 1] === line[i] &&
-          canMerge
-        ) {
-          const mergedValue = result[result.length - 1] * 2;
-          result[result.length - 1] = mergedValue;
-          score += mergedValue;
-          canMerge = false;
-  
-          console.log(result, line);
-          if (line[i] === -10) {
-            score += 2147483658;
-          }
-  
-          const toIndex = result.length - 1;
-          movements.push({
-            from: i,
-            to: toIndex,
-            value: line[i],
-            mergedWith: toIndex,
-            newValue: mergedValue,
-          });
-  
-          const lastMovement = movements.find(
-            (m) => m.to === toIndex && !m.mergedWith
-          );
-          if (lastMovement) {
-            lastMovement.mergedWith = i;
-            lastMovement.newValue = mergedValue;
-          }
-        } else {
-          result.push(line[i]);
-          canMerge = true;
-  
-          movements.push({
-            from: i,
-            to: result.length - 1,
-            value: line[i],
-            mergedWith: undefined,
-            newValue: line[i],
-          });
-        }
-      }
-    }
-
-    shieldTiles.forEach((tile) => {
-        if (tile) {
-            delete tile.dataset.isShield;
-            tile.classList.remove("tile-shield");
-        }
-
-    });
-  
-    // 결과 배열의 길이를 원래 배열의 길이와 동일하게 조정 (빈 칸은 null로 채움)
-    while (result.length < targetLength) {
-      result.push(null);
-    }
-  
-    return { result, score, movements };
-  }
-
-  // 그록
-  function simulateMergeList2(line, applyShield = false, cellArr = [], caller = "") {
-    if (applyShield) console.log("simulateMergeList called by", caller, "with", line, cellArr);
-
-    let score = 0;
-    let result = [];
-    let canMerge = true;
-    const targetLength = line.length;
-    let movements = [];
-    let shieldTiles = []; // 실드 타일 객체 저장
-
-    for (let i = 0; i < line.length; i++) {
-        if (line[i] === null) continue;
-
-        // 실드 타일 여부 확인
-        const isShield = applyShield && cellArr[i]?.children?.[0]?.dataset?.isShield === 'true';
-        console.log(`Index ${i}: Value=${line[i]}, isShield=${isShield}, canMerge=${canMerge}`);
-
-        // 병합 조건
-        const isMergeAble = result.length > 0 && result[result.length - 1] === line[i] && canMerge;
-
-        if (isMergeAble && !isShield && (applyShield ? !shieldTiles[shieldTiles.length - 1] : true)) {
-            // 병합 처리
-            const mergedValue = result[result.length - 1] * 2;
-            result[result.length - 1] = mergedValue;
-            score += mergedValue;
-            canMerge = false;
-
-            if (line[i] === -10) score += 2147483658;
-
-            const toIndex = result.length - 1;
-            movements.push({
-                from: i,
-                to: toIndex,
-                value: line[i],
-                mergedWith: toIndex,
-                newValue: mergedValue,
-            });
-
-            const lastMovement = movements.find((m) => m.to === toIndex && !m.mergedWith);
-            if (lastMovement) {
-                lastMovement.mergedWith = i;
-                lastMovement.newValue = mergedValue;
-            }
-            shieldTiles.push(null); // 병합된 경우 실드 없음
-            console.log(`Merged at ${i}: result=${result}, score=${score}`);
-        } else {
-            // 병합 불가 또는 실드 타일
-            result.push(line[i]);
-
-            if (isShield && isMergeAble) {
-                // 실드가 병합 방어
-                console.log(`Shield at ${i} blocked merge`);
-                shieldTiles.push(cellArr[i].children[0]); // 병합 방어한 실드 기록
-            } else {
-                shieldTiles.push(null); // 실드 없거나 병합 불가
-            }
-
-            movements.push({
-                from: i,
-                to: result.length - 1,
-                value: line[i],
-                mergedWith: undefined,
-                newValue: line[i],
-            });
-            canMerge = true; // 다음 병합 가능
-            console.log(`Added at ${i}: result=${result}`);
-        }
-    }
-
-    // 실드 제거
-    shieldTiles.forEach((tile, index) => {
-        if (tile) {
-            console.log(`Removing shield at original index ${index}`);
-            delete tile.dataset.isShield;
-            tile.classList.remove("tile-shield");
-        }
-    });
-
-    // 결과 배열 길이 조정
-    while (result.length < targetLength) {
-        result.push(null);
-    }
-
-    console.log("Final result:", { result, score, movements });
-    return { result, score, movements };
-}
-
 
   
 
@@ -1163,47 +528,69 @@ function explodeTile(r, c) {
   console.log(board);
   for (let x = minX; x <= maxX; x++) {
     for (let y = minY; y <= maxY; y++) {
-      getGridElement(y, x).innerHTML = "";
+        Cell.getCell(y, x).removeTile();
     }
   }
-  getGridElement(r, c).innerHTML = "";
-  console.log("Bomb explode");
+  Cell.getCell(r, c).removeTile();
 
-  DrawBoard();
+  console.log("Bomb explode");
 }
 
 // 타일 지정 스킬이 타일을 지정할 때 실행되는 함수
 function UseSkillToTile(cell) {
-  const tile = cell.children.length === 1 ? cell.children[0] : null;
-  assignSkillMode(false);
-  clickMode = "insertMode";
+    const tile = cell.tile;
+    assignSkillMode(false);
+    clickMode = "insertMode";
+    if (tile === null && CurrentGameState === "Control") {
+        coolTime = 0;
+        updateCooltime();
+        return;
+    }
 
-  // 빈칸을 선택하면 스킬사용을 취소한다.
-  if (tile === null && CurrentGameState === "Control") {
-    coolTime = 0;
-    updateCooltime();
-    return;
-  }
+    switch (playerSkill) {
+        case "shield":
+            tile.isShield = true;
+            break;
+        case "fix":
+            tile.isFixed = true;
+            break;
+        case "double":
+            tile.value *= 2;
+            break;
+        default:
+    }
+    /**
+     const tile = cell.children.length === 1 ? cell.children[0] : null;
+    assignSkillMode(false);
+    clickMode = "insertMode";
 
-  switch (playerSkill) {
-    case "shield":
-      // 선택필요 스킬
-      tile.dataset.isShield = "true";
-      tile.classList.add('tile-shield');
-      break;
-    case "fix":
-      tile.dataset.isFixed = "true";
-      // 선택필요 스킬
-      break;
-    case "double":
-      const value = tile.dataset.value;
-      tile.dataset.value = value * 2;
-      tile.textContent = value * 2;
-      break;
-    default:
-  }
+    // 빈칸을 선택하면 스킬사용을 취소한다.
+    if (tile === null && CurrentGameState === "Control") {
+        coolTime = 0;
+        updateCooltime();
+        return;
+    }
 
-  DrawBoard();
+    switch (playerSkill) {
+        case "shield":
+            // 선택필요 스킬
+            tile.dataset.isShield = "true";
+            tile.classList.add('tile-shield');
+            break;
+        case "fix":
+            tile.dataset.isFixed = "true";
+            // 선택필요 스킬
+            break;
+        case "double":
+            const value = tile.dataset.value;
+            tile.dataset.value = value * 2;
+            tile.textContent = value * 2;
+            break;
+        default:
+    }
+
+    DrawBoard();
+    */
 }
 
 // 스페이스 바(스킬 사용 아이콘) 클릭시 실행되는 함수
@@ -1233,7 +620,7 @@ function UseSkill() {
       console.log(grid.children);
       break;
     case "bomb": //미완료
-      insertTile = "-10";
+      insertTile = "bomb";
       break;
     case "fix": //미완료
       // 선택필요 스킬

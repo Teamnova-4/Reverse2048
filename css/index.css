@@ -133,7 +133,7 @@ body {
     }
 
     50% {
-        transform: scale(1.2);
+        transform: scale(0.8);
     }
 
     100% {
@@ -168,6 +168,10 @@ body {
     /* 원본 비율 유지 */
     object-fit: contain;
     /* 비율을 유지하면서 컨테이너에 맞춤 */
+}
+.tile img + img {
+    display: none;
+    /* 두 번째 이미지 숨기기 */
 }
 
 .tile-skill-mode img {
@@ -235,7 +239,7 @@ body {
     }
 
     50% {
-        transform: scale(1.2);
+        transform: scale(0.8);
     }
 
     100% {

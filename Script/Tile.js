@@ -1,252 +1,336 @@
-import { CurrentGameState, DrawBoard, explodeTile } from "./main.js";
+import { CurrentGameState, DrawBoard, explodeTile, playSound } from "./main.js";
+        
+export class Cell {
+    static gridHtml = document.getElementById("grid");
+    static Grid = null;
 
-export class Value {
-    constructor(value) {
-        this.value = value;
-        this.isShield = false;
-        this.isFixed = false;
-        this.isExplode = false;
+    static cellSize = 100;
+    static padding = 10;
+    static width = 0;
+    static height = 0;
+    constructor(row, col, clickEvent) {
+
+        if (row < 0 || row >= Cell.height || col < 0 || col >= Cell.width) {
+            throw new Error("Cell 생성 오류: 유효하지 않은 좌표입니다.");
+        }
+
+        this.html = document.createElement("div");
+
+        this.row = row;
+        this.col = col;
+
+        this.tile = null;
+        this.newTile = null;
+
+        this.html.addEventListener("click", (e) => {
+            clickEvent(this);
+        });
+
+        this.html.classList.add("cell");
+        this.html.classList.add("insert-mode-cell");
+
+        Cell.gridHtml.appendChild(this.html);
+    }
+
+    static InitCells(width, height, clickEvent) {
+        this.gridHtml.innerHTML = "";
+        Cell.Grid = [];
+
+        Cell.width = width;
+        Cell.height = height;
+
+        for (let row = 0; row < height; row++) {
+            Cell.Grid[row] = [];
+            for (let col = 0; col < width; col++) { 
+                Cell.Grid[row][col] = new Cell(row, col, clickEvent);
+            }
+        }
+    }
+
+    static printPos(){
+        Cell.Grid.forEach(row => {
+            let prt = "";
+            row.forEach(cell => {
+                prt += `[${cell.col}, ${cell.row}, ${cell.tile?.value}] `;
+            });
+            console.log(prt);
+        });
+    }
+
+    static getCell(row, col) {
+        return Cell.Grid[row][col];
+    }
+
+    static getCellHtml(row, col) {
+        return Cell.Grid[row][col].html;
+    }
+
+    static DrawAll() {
+        Cell.printPos();
+        Cell.Grid.forEach(row => row.forEach(cell => cell.draw()));
+    }
+
+    // GriRow를 새 배열로 반환
+    static GridRow(idx) {
+        const row = [];
+        // 필요한 행을 새 배열로 채운다
+        for (let i = 0; i < Cell.width; i++) {
+            row.push(Cell.Grid[idx][i]);  // idx 열을 추가
+        }
+        return row;
+    }
+
+    // GridCol을 새 배열로 반환
+    static GridCol(idx) {
+        const col = [];
+        // 필요한 열을 새 배열로 채운다
+        for (let i = 0; i < Cell.height; i++) {
+            col.push(Cell.Grid[i][idx]);  // idx 행을 추가
+        }
+        return col;
+    }
+
+    static GridForEach(callback) {
+        Cell.Grid.forEach(row => row.forEach(cell => callback(cell)));
     }
 
 
-    isEqual(value) {
-        if (!isNaN(value)) {
-            return this.value === value;
-        } else if (value instanceof Value){
-            return this.value === value.value;
+
+    static isSameLine (line1, line2){
+        return line1.every((cell, idx) => cell.tile?.value === line2[idx].tile?.value);
+    }
+
+    static isMoveAbleList(list) {
+        let foundNull = false;
+        let lastTile = null;
+        return list.some(cell => {
+            if (foundNull) {
+                return true;
+            } else  if (cell.tile){
+                if (cell.tile.value === lastTile.value)
+                    return true;
+
+                lastTile = cell.tile;
+            } else {
+                foundNull = true;
+            }
+
+            return false;
+        })
+    }
+
+    static getLineScore(line) {
+        const moveScore = 1;
+        let findNullTile = false;
+        let lastTile = null;
+        let score = 0;
+        line.forEach(cell => { 
+            if (cell.tile) {
+                if (lastTile !== null && cell.tile.value === lastTile.value) {
+                    switch (cell.tile.type) {
+                        case "Number":
+                            score += cell.tile.value * 2;
+                            break;
+                        case "Bomb":
+                            score += Number.MAX_SAFE_INTEGER / 2;
+                            break;
+                    }
+                    lastTile = null;
+                } else if (findNullTile) {
+                    score += moveScore;
+                } else {
+                    lastTile = cell.tile;
+                }
+            } else {
+                findNullTile = true;
+            }
+        });
+        return score;
+    }
+
+    static mergeLine(line){
+        if (!Array.isArray(line)) {
+            throw new TypeError('입력은 배열이어야 합니다.');
         }
-        return false;
+        
+        let moveableIdx = 0;
+        for (let i = 0; i < line.length; i++) {
+            const targetCell = line[moveableIdx];
+            const currentCell = line[i];
+
+            if (moveableIdx === i || currentCell.tile === null) {
+                //자기 위치에 그대로 있는 경우
+                continue;
+            }
+            
+            if (targetCell.tile === null) {
+                console.log("타겟이 null인 경우");
+                currentCell.moveTile(targetCell, false);
+            } else if (Tile.isMergeAble(targetCell.tile,currentCell.tile)) {
+                console.log("합쳐지는 경우");
+                currentCell.moveTile(targetCell, true);
+                moveableIdx++;
+            } else {
+                console.log("null 도 아니고 합쳐지지도 않는 경우");
+                moveableIdx++;
+                currentCell.moveTile(line[moveableIdx], false);
+            }
+        }
+    }
+
+    draw() {
+        if (this.tile) {
+            console.log(this.tile.type);
+            this.tile.html.className = "tile";
+            this.tile.html.innerHTML = "";
+            if (this.tile.type === "Number") {
+                this.tile.html.textContent = this.tile.value;
+                this.tile.html.dataset.value = this.tile.value;
+            } else if (this.tile.type === "Bomb") { 
+                const img = document.createElement("img");
+                img.className = "bomb";
+                img.src = "Resources/bomb.png";
+                img.style.width = "100%";
+                this.tile.html.appendChild(img);
+            }
+        } else {
+            this.html.innerHTML = "";
+        }
+    }
+
+    placeTile(value) {
+        playSound("place");
+
+        if (value === "bomb" || value === "Bomb"){
+            this.addTile("Bomb", value);
+        } else {
+            this.addTile("Number", value);
+        }
+        console.log(Cell.Grid);
+    }
+
+    addTile(type, value) {
+        this.setTile(new Tile(type, value));
+
+        this.html.appendChild(this.tile.html);
+    }
+
+    moveTile(targetCell, isMergeAble) {
+        if (this.tile === null)
+            return;
+
+        const tileSize = 100; // 예제: 타일 크기 (px)
+        const gap = 10; // 예제: 타일 간격 (px)
+
+        const startRow = this.row;
+        const startCol = this.col;
+        const endRow = targetCell.row;
+        const endCol = targetCell.col;
+
+        const offsetX = (startCol - endCol) * (tileSize + gap);
+        const offsetY = (startRow - endRow) * (tileSize + gap);
+    
+        const movingTile = this.tile;
+        const movingTileElement = movingTile.html;
+
+        this.tile = null; // 현재 위치 타일 제거
+
+        //this.html.removeChild(movingTileElement);
+        targetCell.html.appendChild(movingTileElement);
+
+        movingTileElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        movingTileElement.getBoundingClientRect(); // 강제 리플로우
+
+        // 3. 애니메이션 적용
+        movingTileElement.style.transition = "transform 0.2s ease-out"; // 0.2초 애니메이션
+        movingTileElement.style.transform = `translate(0px, 0px)`;
+
+        // **1. 논리적인 값 변경 (애니메이션 시작 전에 값 합치기)**
+        if (isMergeAble) {
+            targetCell.tile.merge(movingTile); // 타일 합치기
+        } else {
+            targetCell.setTile(movingTile); // 그냥 이동
+        }
+
+        // 4. 애니메이션 종료 후 실제 이동 처리
+        movingTileElement.addEventListener("transitionend", () => {
+            // 5. 최종 위치에서 transform 초기화 (애니메이션 완료 후 리셋)
+            movingTileElement.style.transition = "";
+            movingTileElement.style.transform = "";
+
+            if (isMergeAble){
+                targetCell.tile.mergeAnimation();
+                targetCell.html.removeChild(movingTileElement); // 타일 제거
+            }
+
+        }, { once: true });
+    }
+
+    setTile(tile){
+        tile.cell = this;
+        this.tile = tile;
+    }
+
+    removeTile() {
+        this.tile = null;
+        this.draw();
     }
 }
 
 export class Tile {
-    static isChanged;
+    constructor(type , value) {
+        this.html = document.createElement("div");
+        this.type = type;
 
-    constructor(y, x, div) {
-        this.x = x;
-        this.y = y;
-        this.div = div;
-
-        this.isNumber = true;
-        this.value = null;
-
-        Tile.isChanged = false;
-
-    }
-
-    useSkill(skill) {
-
-    }
-
-    insertTile(value) {
-        const val = new Value(value)
-        if(val.value === "bomb")
-            val.isExplode = true;
-        this.setValue(val);
-    }
-
-    setValue(value){
-        this.value = value;
-        if (value === null || this.div.textContent === undefined){
-            this.div.textContent = null;
-        }else {
-            this.div.textContent = value.value;
+        switch (type) {
+            case "Bomb":
+                this.value = -10;
+                break;
+            case "Number":
+                this.value = value;
+                break;
+            default:
+                throw new Error("유효하지 않은 타입입니다");
         }
 
-        this.assignValue();
+        this.isShield = false;
+        this.isFixed = false;
+
+        this.isExplode = false;
+        this.isMerged = false;
+
+        this.cell = null;
     }
 
-    getTileColor(num){
-        const colors = {
-            0: "#EEE4DA",
-            2: "#EEE4DA",
-            4: "#EDE0C8",
-            8: "#F2B179",
-            16: "#F59563",
-            32: "#F67C5F",
-            64: "#F65E3B",
-            128: "#EDCF72",
-            256: "#EDCC61",
-            512: "#EDC850",
-            1024: "#EDC53F",
-            2048: "#EDC22E",
-        };
-    
-        // 숫자가 2048 초과일 경우 같은 색 유지 (또는 추가 변형 가능)
-        return colors[num] || "#3C3A32"; // 2048 이상은 어두운 색
-    };
-
-    assignValue() {
-        this.div.innerHTML = ""; // 기존 내용 지우기
-        this.div.classList.remove("tile-fixed", "tile-shield"); // 기존 클래스 제거 추가
-        if(this.value === null) {
-            this.div.textContent = null;
-            this.div.style.backgroundColor = "#cdc1b4";
-            return;
-        }
-
-        if (this.value.value === "bomb") {
-            const img = document.createElement("img");
-            this.div.style.backgroundColor = "#EEE4DA";
-            img.src = "Resources/bomb.png"; // 이미지 경로 설정
-            img.alt = "Bomb"; // 이미지 대체 텍스트
-            img.className = "tile-shield"; // 클래스 추가
-            this.div.appendChild(img);
-        } else {
-            if(this.value.isFixed) {
-                console.log(this.value);
-                this.div.classList.add("tile-fixed");
-            } else if(this.value.isShield) {
-                console.log(this.value);
-                this.div.classList.add("tile-shield");
-            }
-
-            this.div.textContent = this.value.value;
-
-            this.div.style.backgroundColor = this.getTileColor(this.value.value);
-        }
-    }
-
-    mergeEffect() {
-        setTimeout(() => {
-            this.div.style.animation = "mergeEffect 0.4s ease-in-out";
-        },0);
-    }
-    resetTilePosition() {
-        setTimeout(() => {
-            this.div.style.transition = "transform 0.2s ease-in-out";
-            this.div.style.transform = "translate(0px, 0px)";
-        }, 200); // 200ms 후 원래 위치로 복귀
-    }
-
-    /**
-     * 합칠수있는지 확인
-     * 
-     * 합칠수 있는 경우 return true;
-     */
-    isMergeAble(tile1Val, tile2Val) {
-        return tile1Val === tile2Val;
+    copy () {
+        const copy = new Tile(this.type, this.value);
+        copy.isShield = this.isShield;
+        copy.isFixed = this.isFixed;
+        copy.isExplode = this.isExplode;
+        copy.isMerged = this.isMerged;
+        return copy;
     }
 
 
-
-    startCheckValueChange(value = null) {
-        this.checkValue = [];
-        if (value !== null) {
-            this.checkValue.push(value);
-        }
+    static isMergeAble(tile1, tile2) {
+        return  tile1.type === tile2.type && tile1.value === tile2.value && !tile1.isMerged && !tile2.isMerged;
     }
-    checkValueChange(value) {
-        if (this.checkValue !== null || this.checkValue !== undefined) {
-            this.checkValue.push(value);
-        }
+    isMergeAble(other) {
+        return Tile.isMergeAble(this, other);
     }
 
-    endCheckValueChange() {
-        const result = !(this.checkValue === null || this.checkValue.length === 0 || this.checkValue.every(v => v.value === this.checkValue[0].value));
-        this.checkValue = null;
-        return
+    merge(other) {
+        this.value += other.value; 
+        this.isMerged = true;
+        if (this.type === "Bomb") {
+            this.isExplode = true;
+        }
     }
+    mergeAnimation() {
+        this.html.classList.add("merged");
+        this.html.addEventListener("animationend", () => {
+            this.html.classList.remove("merged");
+        }, { once: true });
 
-    static merge(tile1Val, tile2Val) {
-        let result = null; 
-        let score = 0;
-        if (isNaN(tile1Val.value)){
-            switch(tile1Val.value){
-                case "bomb":
-                    result = new Value("bomb");
-                    result.isExplode = true;
-                    score = Number.MAX_VALUE / 2;
-                    break;
-            }
-        } else {
-            result = new Value(tile1Val.value + tile2Val.value);
-            score = tile1Val.value + tile2Val.value;
-        }
-        return {result, score};
-    }
-
-    static mergeList(arr){
-        if (!Array.isArray(arr)) {
-            throw new TypeError('입력은 배열이어야 합니다.');
-        }
-        
-        // 1. null이 아닌 value들을 원래 순서대로 추출
-        const nonNullValues = arr.reduce((acc, instance) => {
-            if (instance.value !== null) {
-                acc.push(instance.value);
-            }
-            return acc;
-        }, []);
-
-        //fix 스킬
-        if (nonNullValues.some(value => value.isFixed )){
-            nonNullValues.forEach(value => value.isFixed = false);
-            return arr;
-        }
-        
-        // 2. 좌측부터 인접한 같은 숫자 병합 (한 번 병합된 값은 재병합 불가)
-        let explodeTileArr = [];
-        const mergedValues = [];
-        for (let i = 0; i < nonNullValues.length; i++) {
-            if (i < nonNullValues.length - 1 && nonNullValues[i].isEqual(nonNullValues[i + 1])) {
-                //쉴드 스킬 사용 체크
-                if(!(nonNullValues[i].isShield || nonNullValues[i+1].isShield)){
-                    if (nonNullValues[i].isExplode){
-                        explodeTileArr.push(arr[mergedValues.length]);
-                    }
-                    mergedValues.push(Tile.merge(nonNullValues[i], nonNullValues[i + 1]).result);
-                } else {
-                    //쉴드 제거
-                    nonNullValues[i].isShield = false;
-                    nonNullValues[i+1].isShield = false;
-                    mergedValues.push(nonNullValues[i]);
-                    mergedValues.push(nonNullValues[i+1]);
-                }
-                i++; // 병합에 사용된 다음 값을 건너뜀
-            } else {
-                mergedValues.push(nonNullValues[i]);
-            }
-        }
-        
-        // 3. 원래 배열의 참조 순서를 유지하며 value 업데이트:
-        //    좌측부터 병합 결과를 할당하고, 나머지는 null로 설정
-        for (let i = 0; i < arr.length; i++) {
-            arr[i].setValue((i < mergedValues.length) ? mergedValues[i] : null);
-        }
-        explodeTileArr.forEach(tile => {
-            explodeTile(tile);
-        });
-
-        return arr;
-    }
-
-    static simulateMergeList(arr){
-        if (!Array.isArray(arr)) {
-            throw new TypeError('입력은 배열이어야 합니다.');
-        }
-        let mergedScore = 0;
-        
-        // 1. null이 아닌 value들을 원래 순서대로 추출
-        const nonNullValues = arr.reduce((acc, instance) => {
-            if (instance.value !== null && instance.value !== undefined) {
-                acc.push(instance.value);
-            }
-            return acc;
-        }, []);
-
-        
-        // 2. 좌측부터 인접한 같은 숫자 병합 (한 번 병합된 값은 재병합 불가)
-        for (let i = 0; i < nonNullValues.length; i++) {
-            if (!nonNullValues[i].isEqual(arr[i].value))
-                Tile.isChanged = true;
-            if (i < nonNullValues.length - 1 && nonNullValues[i].isEqual(nonNullValues[i + 1])) {
-                mergedScore += 1 + this.merge(nonNullValues[i], nonNullValues[i + 1]).score;
-                Tile.isChanged = true;
-                i++; // 병합에 사용된 다음 값을 건너뜀
-            }
-        }
-
-        return mergedScore;
     }
 }
