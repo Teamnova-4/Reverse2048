@@ -110,7 +110,6 @@ function setHP(hp) {
         const damageText = document.querySelector(".damage-text");
         damageText.textContent = `- ${playerHP - hp}`;
 
-
         damageText.classList.add("show");
 
         setTimeout(() => {
@@ -128,7 +127,9 @@ function setHP(hp) {
     let percent = (playerHP / playerMaxHP) * 100;
     document.querySelector(".health-fill").style.width = `${percent}%`;
 
-
+    if (playerHP <= 0) {
+        setCurrentState("End");
+    }
 }
 
 // 체력 데이터 초기화
@@ -344,6 +345,17 @@ async function showGameClearModal(turns, time) {
     // 게임클리어 화면이 나오고 난 후 db에 100등에 들어가는지 조회합니다.
     checkrank_DB_userScore(turns, time);
 }
+
+// 게임 오버 모달 표시
+async function showGameOverModal(turns, time) {
+    console.log("게임 오버 화면시작!");
+    document.getElementById("final-turns").textContent = turns;
+    document.getElementById("final-time").textContent = time;
+    document.getElementById("game-over-screen").classList.remove("hidden");
+    console.log("db에서 100위 확인시작!");
+
+}
+
 
 // 타이틀 이동 버튼 ->
 document.getElementById("go_title_1").addEventListener("click", () => {
