@@ -146,6 +146,7 @@ function setCurrentState(state) {
     switch (CurrentGameState) {
         case "Start":
             initHP();
+            // setHP(0); // 게임오버화면 테스트용
             setGridSize();
             startGameTimer();
             initBoard();
@@ -203,6 +204,13 @@ function gameEnding() {
     console.log("게임이 끝났습니다!");
     // 게임 플레이시간 데이터
     const formattedTime = updateGameTimeDisplay();
+
+    // hp 0일때 게임 오버 (패배)
+    if (playerHP <= 0) {
+        showGameOverModal(turn, formattedTime);
+        return;
+    }
+
     // 클리어모달(화면)
     showGameClearModal(turn, formattedTime);
 }
@@ -351,8 +359,25 @@ async function showGameOverModal(turns, time) {
     console.log("게임 오버 화면시작!");
     document.getElementById("final-turns").textContent = turns;
     document.getElementById("final-time").textContent = time;
-    document.getElementById("game-over-screen").classList.remove("hidden");
-    console.log("db에서 100위 확인시작!");
+
+    // 모달 표시
+    const gameOverScreen = document.getElementById("game-over-screen");
+    gameOverScreen.classList.remove("hidden");
+
+    // 게임오버 메시지 출력
+    gameOverScreen.querySelector('h2').textContent = "게임 오버";
+    gameOverScreen.querySelector('#game-over-msg').classList.remove("hidden");
+
+    // 게임오버 화면에서 숨김
+    gameOverScreen.querySelector('label').classList.add('hidden');
+    gameOverScreen.querySelector('#nickname-input').classList.add('hidden');
+    gameOverScreen.querySelector('#submit-nickname').classList.add('hidden');
+
+    // 게임오버 화면에서 보임
+    gameOverScreen.querySelector('#view-ranking').classList.remove("hidden");
+    document.getElementById("view-ranking").addEventListener("click", () => {
+        window.location.href = `ranking.html`;
+    });
 
 }
 

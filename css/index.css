@@ -359,6 +359,10 @@ body {
     display: none;
 }
 
+.hidden {
+    display: none;
+}
+
 #restart-button {
     /* 버튼 스타일 */
     padding: 10px 20px;
