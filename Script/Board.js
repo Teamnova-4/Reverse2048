@@ -540,42 +540,10 @@ function UseSkillToTile(cell) {
             break;
         case "double":
             tile.value *= 2;
-            cell.draw();
             break;
         default:
     }
-    /**
-     const tile = cell.children.length === 1 ? cell.children[0] : null;
-    assignSkillMode(false);
-    clickMode = "insertMode";
-
-    // 빈칸을 선택하면 스킬사용을 취소한다.
-    if (tile === null && CurrentGameState === "Control") {
-        coolTime = 0;
-        updateCooltime();
-        return;
-    }
-
-    switch (playerSkill) {
-        case "shield":
-            // 선택필요 스킬
-            tile.dataset.isShield = "true";
-            tile.classList.add('tile-shield');
-            break;
-        case "fix":
-            tile.dataset.isFixed = "true";
-            // 선택필요 스킬
-            break;
-        case "double":
-            const value = tile.dataset.value;
-            tile.dataset.value = value * 2;
-            tile.textContent = value * 2;
-            break;
-        default:
-    }
-
-    DrawBoard();
-    */
+    cell.draw();
 }
 
 // 스페이스 바(스킬 사용 아이콘) 클릭시 실행되는 함수
@@ -597,13 +565,14 @@ function UseSkill() {
 
       break;
     case "fullShield":
-      for (const cell of grid.children) {
-        if (cell.children.length === 1) {
-          cell.children[0].dataset.isShield = "true";
-        }
-      }
-      console.log(grid.children);
-      break;
+        Cell.GridForEach(cell => {
+            console.log(cell.tile);
+            if (cell.tile){
+                cell.tile.isShield = true;
+                cell.draw();
+            }
+        });
+        break;
     case "bomb": //미완료
       insertTile = "bomb";
       break;

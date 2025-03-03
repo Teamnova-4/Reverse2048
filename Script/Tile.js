@@ -161,15 +161,27 @@ export class Cell {
                 //자기 위치에 그대로 있는 경우
                 continue;
             }
+
+            if (currentCell.tile.isFixed) {
+                // 고정된 타일인 경우
+                moveableIdx = i;
+                currentCell.tile.isFixed = false;
+                continue;
+            }
             
             if (targetCell.tile === null) {
                 console.log("타겟이 null인 경우");
                 currentCell.moveTile(targetCell, false);
-            } else if (Tile.isMergeAble(targetCell.tile,currentCell.tile)) {
+            } else if (Tile.isMergeAble(targetCell.tile,currentCell.tile).result) {
                 console.log("합쳐지는 경우");
                 currentCell.moveTile(targetCell, true);
                 moveableIdx++;
-            } else {
+            } else { 
+                const {result, isEqual, isMergeAble, hasShield} = Tile.isMergeAble(targetCell.tile,currentCell.tile);
+                if(hasShield){
+                    targetCell.tile.isShield = false;
+                    currentCell.tile.isShield = false;
+                }
                 console.log("null 도 아니고 합쳐지지도 않는 경우");
                 moveableIdx++;
                 currentCell.moveTile(line[moveableIdx], false);
@@ -190,6 +202,13 @@ export class Cell {
                 img.src = "Resources/bomb.png";
                 img.style.width = "100%";
                 this.tile.html.appendChild(img);
+            }
+
+            if (this.tile.isShield){
+                this.tile.html.classList.add("tile-shield");
+            } 
+            if (this.tile.isFixed){
+                this.tile.html.classList.add("tile-fixed");
             }
         } else {
             this.html.innerHTML = "";
@@ -311,10 +330,14 @@ export class Tile {
 
 
     static isMergeAble(tile1, tile2) {
-        return  tile1.type === tile2.type && tile1.value === tile2.value && !tile1.isMerged && !tile2.isMerged;
-    }
-    isMergeAble(other) {
-        return Tile.isMergeAble(this, other);
+        const isEqual = tile1.type === tile2.type && tile1.value === tile2.value;
+        const isMergeAble = !tile1.isMerged && !tile2.isMerged;
+        const hasShield = tile1.isShield || tile2.isShield;
+
+        return {
+            result: isEqual && isMergeAble && !hasShield,
+            isEqual, isMergeAble, hasShield
+        }
     }
 
     merge(other) {
@@ -324,6 +347,7 @@ export class Tile {
             this.isExplode = true;
         }
     }
+
     mergeAnimation() {
         this.html.classList.add("merged");
         this.html.addEventListener("animationend", () => {
