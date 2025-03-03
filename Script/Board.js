@@ -19,7 +19,10 @@ let gameTimer;
 
 //스킬 변수
 let playerSkill = localStorage.getItem("gameSkill");
+let playerSkillNextCoolTime = 0;
 let playerSkillCoolTime;
+let playerSkillStack = 0;
+let playerSkillMaxStack = 3;
 setSkillCoolTime();
 let coolTime = 0;
 
@@ -34,7 +37,7 @@ let isMindControl = false;
  *
  */
 document.addEventListener("keydown", (event) => {
-  if (CurrentGameState === "Control" && event.key === " ") {
+  if ((CurrentGameState === "Control") && event.key === " ") {
     clickSkill();
   }
 });
@@ -62,9 +65,7 @@ function getGridElement(row, column) {
 
 // 스킬 사용 버튼이 클릭되었을 때 호출되는 함수
 function clickSkill() {
-  if (coolTime === 0) {
-    // 스킬 사용시 쿨타임 적용
-    coolTime = playerSkillCoolTime;
+  if (playerSkillStack > 0) {
     UseSkill();
   } else {
     console.log(`coolTime : ${coolTime}`);
@@ -314,6 +315,14 @@ function finishTurn() {
         }
     });
 
+    if (coolTime == 0) {
+        if (playerSkillMaxStack > playerSkillStack){
+            playerSkillStack++;
+            coolTime = (playerSkillStack == playerSkillMaxStack) ? 0 : playerSkillCoolTime;
+        } 
+        playerSkillNextCoolTime--;
+    }
+
     // 턴 증가
     turn += 1;
     limitTime = baseLimitTime;
@@ -557,55 +566,59 @@ function UseSkillToTile(cell) {
 
 // 스페이스 바(스킬 사용 아이콘) 클릭시 실행되는 함수
 function UseSkill() {
-  const grid = document.getElementById("grid");
-  switch (playerSkill) {
-    case "zeroTile": // 완료
-      insertTile = 0;
-      document.getElementById("next").innerText = insertTile;
-      break;
-    case "timeAmplification": // 완료
-      limitTime = 15;
-      showHtmlTimeCount(limitTime);
-      break;
-    case "shield": // 미완료
-      // 선택필요 스킬
-      clickMode = "skillMode";
-      assignSkillMode();
+    const grid = document.getElementById("grid");
+    // 스킬 사용시 쿨타임 적용
+    // coolTime = playerSkillCoolTime;
+    playerSkillNextCoolTime = playerSkillCoolTime;
+    playerSkillStack--;
+    switch (playerSkill) {
+        case "zeroTile": // 완료
+            insertTile = 0;
+            document.getElementById("next").innerText = insertTile;
+            break;
+        case "timeAmplification": // 완료
+            limitTime = 15;
+            showHtmlTimeCount(limitTime);
+            break;
+        case "shield": // 미완료
+            // 선택필요 스킬
+            clickMode = "skillMode";
+            assignSkillMode();
 
-      break;
-    case "fullShield":
-        Cell.GridForEach(cell => {
-            console.log(cell.tile);
-            if (cell.tile){
-                cell.tile.isShield = true;
-                cell.draw();
-            }
-        });
         break;
-    case "bomb": //미완료
-      insertTile = "bomb";
-      break;
-    case "fix": //미완료
-      // 선택필요 스킬
-      clickMode = "skillMode";
-      assignSkillMode();
-      break;
-    case "mindControl": // 중완료
-      grid.classList.add("mind-control");
-      isMindControl = true;
-      break;
-    case "double": // 완료
-      // 선택필요 스킬
-      clickMode = "skillMode";
-      assignSkillMode();
-      break;
-    case "sequence": //완료
-      isSequence = true;
-      break;
-    default:
-  }
-  DrawBoard();
-  updateCooltime();
+            case "fullShield":
+                Cell.GridForEach(cell => {
+                    console.log(cell.tile);
+                    if (cell.tile){
+                        cell.tile.isShield = true;
+                        cell.draw();
+                    }
+                });
+                break;
+        case "bomb": //미완료
+            insertTile = "bomb";
+            break;
+        case "fix": //미완료
+            // 선택필요 스킬
+            clickMode = "skillMode";
+            assignSkillMode();
+            break;
+        case "mindControl": // 중완료
+            grid.classList.add("mind-control");
+            isMindControl = true;
+            break;
+        case "double": // 완료
+            // 선택필요 스킬
+            clickMode = "skillMode";
+            assignSkillMode();
+            break;
+        case "sequence": //완료
+            isSequence = true;
+            break;
+            default:
+    }
+    DrawBoard();
+    updateCooltime();
 }
 
 function reduceCoolTime() {
@@ -640,11 +653,12 @@ function updateGameTimeDisplay() {
 
 function updateCooltime() {
   const spaceButton = document.querySelector(".show-space");
-  if (coolTime > 0) {
-    spaceButton.classList.add("disable");
-  } else {
+  if (playerSkillStack > 0) {
     spaceButton.classList.remove("disable");
+  } else {
+    spaceButton.classList.add("disable");
   }
+  spaceButton.textContent = `Space Bar [${((playerSkillMaxStack > 0) ? playerSkillStack : "")}]` ;
   const overlay = document.getElementById("cooltimeOverlay");
   const cooltimeSpan = document.getElementById("cooltime");
 
@@ -669,19 +683,6 @@ function setGridSize() {
   const grid = document.getElementById("grid");
   grid.classList.add(`size-${gridSize}`);
 
-  // const baseSize = 420; // 4x4 기준의 그리드 전체 크기 (padding 제외)
-  // const tileSize = Math.floor((baseSize - (10 * (gridSize - 1))) / gridSize); // gap 10px 고려
-
-  // // 그리드 템플릿 설정
-  // grid.style.gridTemplateColumns = `repeat(${gridSize}, ${tileSize}px)`;
-  // grid.style.gridTemplateRows = `repeat(${gridSize}, ${tileSize}px)`;
-
-  // // 전체 그리드 크기는 4x4 기준으로 고정
-  // grid.style.width = `${baseSize}px`;
-  // grid.style.height = `${baseSize}px`;
-
-  // // 타일 크기 동적 조정을 위한 CSS 변수 설정
-  // document.documentElement.style.setProperty('--tile-size', `${tileSize}px`);
 }
 
 function setSkillCoolTime() {
@@ -729,3 +730,7 @@ export {
   explodeTile,
   setCurrentState,
 };
+
+export {
+    playerSkillCoolTime,
+}
