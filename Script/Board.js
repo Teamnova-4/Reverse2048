@@ -337,44 +337,26 @@ function startTimer() {
     showHtmlTimeCount(countTime);
 
     if (countTime % limitTime == 0) {
-      //   divideAllTileByNumber();
+        divideAllTileByNumber();
     }
   }, 1000);
   return timer;
 }
 
 function divideAllTileByNumber() {
-  // 2차원 상태 배열 순회
-  for (let i = 0; i < gridSize; i++) {
-    for (let j = 0; j < gridSize; j++) {
-      // 각 칸을 가져오기
-      const cell = document.querySelector(
-        `.cell[data-row="${i}"][data-col="${j}"]`
-      );
-      const tile = cell.querySelector(".tile");
-
-      if (tile) {
-        // 타일이 존재하는 경우만 처리
-        const value = tile.dataset.value; // 현재 타일 값
-        if (Number.parseInt(value) === 2 || Number.parseInt(value)) {
-          // 값이 2인 타일 제거
-          cell.innerHTML = ""; // 셀에서 타일 제거
-        } else if (Number.parseInt(value) === -10){
-            
-        } else {
-          // 나머지 타일은 값을 절반으로 나눔 (소수점 버림)
-          const dividedValue = Math.floor(value / 2);
-
-          // DOM 업데이트
-          // 기존 타일이 있으면 값 갱신
-          tile.innerText = dividedValue;
-          tile.dataset.value = dividedValue;
+    Cell.GridForEach((cell) => {
+        if (cell.tile) {
+            const value = cell.tile.value;
+            if (value === 2 || value === 0) {
+                cell.removeTile();
+            } else if (value === "bomb") {
+            } else {
+                cell.tile.value = Number.parseInt(cell.tile.value / 2);
+            }
+            cell.draw();
         }
-      }
-    }
-  }
-  playSound("emergency");
-  // DrawBoard();
+    });
+    playSound("emergency");
 }
 
 function showHtmlTimeCount(countTime) {
@@ -402,6 +384,7 @@ function placeTile(cell) {
 
         if (isSequence) {
             isSequence = false;
+            cell.draw();
         } else {
             setCurrentState("FinishControl");
         }
@@ -473,9 +456,9 @@ function simulate() {
         }
     });
 
-    if (isMindControl && worstMove !== null) {
+    if (isMindControl) {
         isMindControl = false;
-        BestMove = worstMove;
+        BestMove = worstMove[Math.floor(Math.random() * worstMove.length)];
         setCurrentState("Move");
     } else if (bestMove.length > 0) {
         // 병합 가능한 방향 중 랜덤 선택
@@ -493,7 +476,8 @@ function simulate() {
 function move() {
     playSound("move"); // 이동 사운드를 재생합니다.
 
-    // 게임 보드의 각 줄(행 또는 열)에 대해 반복합니다.
+    console.log(BestMove);
+
     for (let i = 0; i < gridSize; i++) {
         let simulateList = []; // 시뮬레이션에 사용되는 셀의 배열
 
@@ -556,6 +540,7 @@ function UseSkillToTile(cell) {
             break;
         case "double":
             tile.value *= 2;
+            cell.draw();
             break;
         default:
     }

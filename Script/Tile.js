@@ -66,7 +66,6 @@ export class Cell {
     }
 
     static DrawAll() {
-        Cell.printPos();
         Cell.Grid.forEach(row => row.forEach(cell => cell.draw()));
     }
 
@@ -180,7 +179,6 @@ export class Cell {
 
     draw() {
         if (this.tile) {
-            console.log(this.tile.type);
             this.tile.html.className = "tile";
             this.tile.html.innerHTML = "";
             if (this.tile.type === "Number") {
