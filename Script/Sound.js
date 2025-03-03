@@ -13,6 +13,11 @@ function initAudio() {
     audioMap.set('emergency', new Audio('../assets/sound/주의신호.mp3'));
     audioMap.set('bomb', new Audio('../assets/sound/폭탄.mp3'));
 
+    audioMap.set('weakAttack', new Audio('../assets/sound/약공격.mp3'));
+    audioMap.set('strongAttack', new Audio('../assets/sound/강공격.mp3'));
+
+
+
     // 각 오디오 객체에 볼륨 설정 (초기 설정)
     audioMap.forEach(sound => {
         sound.volume = isSoundOn ? 1 : 0; // 사운드가 켜져 있으면 볼륨 1, 꺼져 있으면 0
@@ -61,7 +66,7 @@ export function toggleSound() {
 window.addEventListener('DOMContentLoaded', () => {
     window.toggleSound = toggleSound;
     initAudio(); // 오디오 초기화는 DOMContentLoaded 이벤트 내에서 실행
-    
+
     // 초기 UI 상태 설정
     let speakerIcon = document.getElementById('speakerIcon');
     if (speakerIcon) {

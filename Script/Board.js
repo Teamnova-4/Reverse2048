@@ -34,8 +34,9 @@ let idleTimer; // 타이머 변수 추가
 
 let playerMaxHP; // 플레이어 최대 체력
 let playerHP; // 플레이어 현재 체력
-let healthFill; // 체력 게이지
-let healthText; // 체력 숫자 표시
+
+let giveUpTurnCount = 0; // 연속으로 턴 방치한 횟수 기록
+
 
 /**
  * 플레이어 가 스페이스 바를 눌렀을떄 실행되고 각자
@@ -108,13 +109,29 @@ function setHP(hp) {
     // 받은 데미지 표시
     if (hp < playerHP) {
         const damageText = document.querySelector(".damage-text");
-        damageText.textContent = `- ${playerHP - hp}`;
-
+        const damage = playerHP - hp;
+        damageText.textContent = `- ${damage}`;
         damageText.classList.add("show");
+
+        if (damage <= 16) {
+            playSound('weakAttack');
+        } else {
+            playSound('strongAttack');
+        }
 
         setTimeout(() => {
             damageText.classList.remove("show");
         }, 1000);  // 1초 후에 페이드 아웃 시작 (CSS transition 시간과 일치)
+
+        const healthBar = document.querySelector(".health-bar");
+
+        // 흔들림 효과 추가
+        healthBar.classList.add('shake');
+
+        // 애니메이션 완료 후 클래스 제거 (재사용 가능하도록)
+        setTimeout(() => {
+            healthBar.classList.remove('shake');
+        }, 500); // shake 애니메이션 지속 시간과 일치
     }
 
     // 현재체력 변경
@@ -179,6 +196,7 @@ function setCurrentState(state) {
             break;
         case "FinishControl":
             clearInterval(timer);
+            giveUpTurnCount = 0; // 플레이어가 행동을 했으므로 방치턴 카운터 초기화
             setTimeout(() => {
                 setCurrentState("Simulate");
             }, 500);
@@ -447,6 +465,9 @@ function startTimer() {
         if (countTime % limitTime == 0) {
             divideAllTileByNumber();
             countTime = 0;
+            giveUpTurnCount += 1; // 방치턴 횟수 기록
+
+            if (giveUpTurnCount % 2 === 0){}
         }
         // 1초마다 event3 실행
         showHtmlTimeCount(countTime);

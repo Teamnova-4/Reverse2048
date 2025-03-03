@@ -480,13 +480,13 @@ body {
 .damage-text {
     position: absolute;
     top: 0;
-    left: 47%;
+    left: 55%;
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgb(0, 0, 0);
+    color: rgb(255, 0, 0);
     font-weight: bold;
     font-size: 14px;
     opacity: 0;
@@ -504,6 +504,58 @@ body {
     to {
         opacity: 0;
     }
+}
+
+/* 흔들림 애니메이션 정의 */
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    10% {
+        transform: translateX(-5px);
+    }
+
+    20% {
+        transform: translateX(5px);
+    }
+
+    30% {
+        transform: translateX(-4px);
+    }
+
+    40% {
+        transform: translateX(4px);
+    }
+
+    50% {
+        transform: translateX(-3px);
+    }
+
+    60% {
+        transform: translateX(3px);
+    }
+
+    70% {
+        transform: translateX(-2px);
+    }
+
+    80% {
+        transform: translateX(2px);
+    }
+
+    90% {
+        transform: translateX(-1px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* 피격 시 적용할 클래스 */
+.shake {
+    animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
 }
 
 
