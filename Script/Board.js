@@ -105,6 +105,7 @@ function setCurrentState(state) {
       break;
     case "Control":
       timer = startTimer();
+      document.getElementById('nextnumber-container').classList.remove('emphasis');
       clearTimeout(idleTimer); // 이전 타이머 클리어
       idleTimer = setTimeout(() => {
         Cell.GridForEach(cell => {
@@ -376,6 +377,7 @@ function divideAllTileByNumber() {
     });
     const tileNumbers = [16, 32, 64];
     const randomNumber = Math.floor(Math.random() * tileNumbers.length);
+    document.getElementById('nextnumber-container').classList.add('emphasis');
 
     insertTile = tileNumbers[randomNumber];
     document.getElementById("next").innerText = insertTile;
