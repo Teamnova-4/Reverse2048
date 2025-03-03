@@ -11,7 +11,7 @@ let board;
 
 let BestMove;
 
-const baseLimitTime = 6;
+let baseLimitTime = 6;
 let timer;
 let limitTime = baseLimitTime;
 let gameTime = 0;
@@ -333,12 +333,12 @@ function startTimer() {
   let timer = setInterval(() => {
     countTime++;
 
+    if (countTime % limitTime == 0) {
+      divideAllTileByNumber();
+      countTime= 0;
+    }
     // 1초마다 event3 실행
     showHtmlTimeCount(countTime);
-
-    if (countTime % limitTime == 0) {
-        divideAllTileByNumber();
-    }
   }, 1000);
   return timer;
 }
@@ -356,6 +356,15 @@ function divideAllTileByNumber() {
             cell.draw();
         }
     });
+    const tileNumbers = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048];
+    const randomNumber = Math.floor(Math.random() * tileNumbers.length);
+
+    insertTile = tileNumbers[randomNumber];
+    document.getElementById("next").innerText = insertTile;
+
+    baseLimitTime = Math.max(baseLimitTime-1, 2);
+    limitTime = baseLimitTime;
+
     playSound("emergency");
 }
 
@@ -363,7 +372,7 @@ function showHtmlTimeCount(countTime) {
     //console.log("ShowHtmlTimeCOunt " + countTime);
     // 턴마다 6초 제한 표시
     // 6초에서 카운트다운 되는 형식으로 제한시간 표시
-    let remainingTime = limitTime - countTime % limitTime;
+    let remainingTime = limitTime-countTime;
     if(remainingTime <= 2){
         document.getElementById('limit').style.color = '#ea6357';
     } else {
