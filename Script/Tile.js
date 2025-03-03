@@ -1,5 +1,6 @@
-import { CurrentGameState, DrawBoard, explodeTile, playSound } from "./main.js";
-        
+import { getMergeScore, setMergeScore } from "./Board.js";
+import { playSound } from "./main.js";
+
 export class Cell {
     static gridHtml = document.getElementById("grid");
     static Grid = null;
@@ -41,13 +42,13 @@ export class Cell {
 
         for (let row = 0; row < height; row++) {
             Cell.Grid[row] = [];
-            for (let col = 0; col < width; col++) { 
+            for (let col = 0; col < width; col++) {
                 Cell.Grid[row][col] = new Cell(row, col, clickEvent);
             }
         }
     }
 
-    static printPos(){
+    static printPos() {
         Cell.Grid.forEach(row => {
             let prt = "";
             row.forEach(cell => {
@@ -95,7 +96,7 @@ export class Cell {
 
 
 
-    static isSameLine (line1, line2){
+    static isSameLine(line1, line2) {
         return line1.every((cell, idx) => cell.tile?.value === line2[idx].tile?.value);
     }
 
@@ -105,7 +106,7 @@ export class Cell {
         return list.some(cell => {
             if (foundNull) {
                 return true;
-            } else  if (cell.tile){
+            } else if (cell.tile) {
                 if (cell.tile.value === lastTile.value)
                     return true;
 
@@ -120,15 +121,17 @@ export class Cell {
 
     static getLineScore(line) {
         const moveScore = 1;
+        let mergeScore = 0;     // 머지한 값의 총합을 구하기 위해 새로 만듬
         let findNullTile = false;
         let lastTile = null;
         let score = 0;
-        line.forEach(cell => { 
+        line.forEach(cell => {
             if (cell.tile) {
                 if (lastTile !== null && cell.tile.value === lastTile.value) {
                     switch (cell.tile.type) {
                         case "Number":
                             score += cell.tile.value * 2;
+                            mergeScore += cell.tile.value * 2;
                             break;
                         case "Bomb":
                             score += Number.MAX_SAFE_INTEGER / 2;
@@ -144,14 +147,14 @@ export class Cell {
                 findNullTile = true;
             }
         });
-        return score;
+        return { score, mergeScore };
     }
 
-    static mergeLine(line){
+    static mergeLine(line) {
         if (!Array.isArray(line)) {
             throw new TypeError('입력은 배열이어야 합니다.');
         }
-        
+
         let moveableIdx = 0;
         for (let i = 0; i < line.length; i++) {
             const targetCell = line[moveableIdx];
@@ -168,17 +171,18 @@ export class Cell {
                 currentCell.tile.isFixed = false;
                 continue;
             }
-            
+
             if (targetCell.tile === null) {
                 console.log("타겟이 null인 경우");
                 currentCell.moveTile(targetCell, false);
-            } else if (Tile.isMergeAble(targetCell.tile,currentCell.tile).result) {
+            } else if (Tile.isMergeAble(targetCell.tile, currentCell.tile).result) {
                 console.log("합쳐지는 경우");
-                currentCell.moveTile(targetCell, true);
+                currentCell.moveTile(targetCell, true);// moveTile한 시점에 병합이 완료됨
+                setMergeScore(getMergeScore() + targetCell.tile.value); // 변수를 가져오면 상수 할당 에러가 발생하여 함수로 감쌈
                 moveableIdx++;
-            } else { 
-                const {result, isEqual, isMergeAble, hasShield} = Tile.isMergeAble(targetCell.tile,currentCell.tile);
-                if(hasShield){
+            } else {
+                const { result, isEqual, isMergeAble, hasShield } = Tile.isMergeAble(targetCell.tile, currentCell.tile);
+                if (hasShield) {
                     targetCell.tile.isShield = false;
                     currentCell.tile.isShield = false;
                 }
@@ -196,7 +200,7 @@ export class Cell {
             if (this.tile.type === "Number") {
                 this.tile.html.textContent = this.tile.value;
                 this.tile.html.dataset.value = this.tile.value;
-            } else if (this.tile.type === "Bomb") { 
+            } else if (this.tile.type === "Bomb") {
                 const img = document.createElement("img");
                 img.className = "bomb";
                 img.src = "Resources/bomb.png";
@@ -204,10 +208,10 @@ export class Cell {
                 this.tile.html.appendChild(img);
             }
 
-            if (this.tile.isShield){
+            if (this.tile.isShield) {
                 this.tile.html.classList.add("tile-shield");
-            } 
-            if (this.tile.isFixed){
+            }
+            if (this.tile.isFixed) {
                 this.tile.html.classList.add("tile-fixed");
             }
         } else {
@@ -218,7 +222,7 @@ export class Cell {
     placeTile(value) {
         playSound("place");
 
-        if (value === "bomb" || value === "Bomb"){
+        if (value === "bomb" || value === "Bomb") {
             this.addTile("Bomb", value);
         } else {
             this.addTile("Number", value);
@@ -246,7 +250,7 @@ export class Cell {
 
         const offsetX = (startCol - endCol) * (tileSize + gap);
         const offsetY = (startRow - endRow) * (tileSize + gap);
-    
+
         const movingTile = this.tile;
         const movingTileElement = movingTile.html;
 
@@ -275,7 +279,7 @@ export class Cell {
             movingTileElement.style.transition = "";
             movingTileElement.style.transform = "";
 
-            if (isMergeAble){
+            if (isMergeAble) {
                 targetCell.tile.mergeAnimation();
                 targetCell.html.removeChild(movingTileElement); // 타일 제거
             }
@@ -283,7 +287,7 @@ export class Cell {
         }, { once: true });
     }
 
-    setTile(tile){
+    setTile(tile) {
         tile.cell = this;
         this.tile = tile;
     }
@@ -295,7 +299,7 @@ export class Cell {
 }
 
 export class Tile {
-    constructor(type , value) {
+    constructor(type, value) {
         this.html = document.createElement("div");
         this.type = type;
 
@@ -319,7 +323,7 @@ export class Tile {
         this.cell = null;
     }
 
-    copy () {
+    copy() {
         const copy = new Tile(this.type, this.value);
         copy.isShield = this.isShield;
         copy.isFixed = this.isFixed;
@@ -341,7 +345,7 @@ export class Tile {
     }
 
     merge(other) {
-        this.value += other.value; 
+        this.value += other.value;
         this.isMerged = true;
         if (this.type === "Bomb") {
             this.isExplode = true;

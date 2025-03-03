@@ -7,6 +7,7 @@
     <title>리버스 2048</title>
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/speaker.css">
+
     <script type="module">
         import { playSound } from './Script/Sound.js';
         window.playSound = playSound;  // 전역으로 사용할 수 있게 설정
@@ -44,6 +45,16 @@
                     <div class="turn-value" id="turn">0</div>
                 </div>
             </div>
+
+            <div class="health-container">
+                <div class="health-bar">
+                    <div class="health-fill"></div>
+                    <span class="health-text">10000 HP</span>
+                    <span class="damage-text">3</span>
+                </div>
+            </div>
+
+
             <div class="grid" id="grid"></div>
         </div>
         <div class="container">
@@ -61,7 +72,7 @@
     </div>
     <div id="game-over-screen" class="hidden">
         <h2>게임 클리어!</h2>
-    
+
         <div class="text-container">
             <p>턴: <span id="final-turns"></span></p>
             <p>플레이시간: <span id="final-time"></span></p>
@@ -77,9 +88,9 @@
 
     <script>
         // 우클릭 방지
-        document.oncontextmenu = function(){return false;}
+        document.oncontextmenu = function () { return false; }
 
-        function reload(){
+        function reload() {
             // 게임 시작 시 사운드 재생
             playSound('place');
             console.log('재시작사운드')
@@ -94,7 +105,7 @@
             let skillName = localStorage.getItem('gameSkill');
             let skillImageSrc = '';
             let skillDescription = '';
-            
+
             switch (skillName) {
                 case 'zeroTile':
                     skillImageSrc = "Resources/zeroTile.png";
@@ -137,10 +148,10 @@
                     skillDescription = "[미선택] 아무것도 선택하지 않으셨습니다.";
                     break;
             }
-            
+
             const skillContainer = document.querySelector('.skill-image-container');
             const tooltip = document.getElementById('skill-tooltip');
-            
+
             if (skillContainer && tooltip) {
                 skillContainer.addEventListener('mousemove', (e) => {
                     tooltip.style.display = 'block';
@@ -160,14 +171,14 @@
             if (tooltip) {
                 tooltip.innerHTML = skillDescription;
             }
-            
+
             // 디버깅을 위한 콘솔 로그
             console.log('Skill Image:', skillImage);
             console.log('Tooltip:', tooltip);
             console.log('Skill Name:', skillName);
             console.log('Skill Description:', skillDescription);
 
-            
+
         });
     </script>
     <script type="module" src="./Script/main.js"></script>
