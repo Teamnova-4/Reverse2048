@@ -235,7 +235,7 @@ export function setReduceMergeDamage(value) {
     isReduceDamage = true; // isReduceDamage 값을 설정
 }
 
-export function setisMergeRestrictedUntil(value){
+export function setisMergeRestrictedUntil(value) {
     isMergeRestrictedUntil = value;
     reducePersent = value;
     isReduceDamage = true; // isReduceDamage 값을 설정
@@ -277,7 +277,7 @@ function setCurrentState(state) {
             //     });
             // }, 2000); // 2초 후 랜덤 숫자 표시
 
-            insertTile = Math.random() < 0.9 ? 2 : 4;
+            insertTile = Math.pow(2, _giveUpTurnCount + 1);
             document.getElementById("next").innerText = insertTile;
 
             const grid = document.getElementById("grid");
@@ -530,22 +530,19 @@ function finishTurn(isForce = false) {
             if (cell.tile) {
                 cell.tile.isMerged = false;
 
+                // notMergedCount가 5이면 값 x2
+                if (cell.tile.type === "Number" && cell.tile.notMergedCount >= 5) {
+                    cell.tile.value *= 2;
+                    console.log("병합을 하지 못한 횟수가 5회가 되어 타일의 값이 *2가 증가합니다");
+                    // 연속 5회 병합되지 않음을
+                    cell.tile.notMergedCount = 0;
+                    cell.draw();
+                }
+
                 if (cell.tile.isExplode) {
                     explodeTile(cell.row, cell.col);
                 }
 
-                /**
-                // notMergedCount가 3이면 값 +2 증가
-                if (cell.tile.notMergedCount === 5) {
-                    if (cell.tile.type === "Number") {
-                        // cell.tile.value *= 2;
-                        console.log("병합을 하지 못한 횟수가 5회가 되어 타일의 값이 *2가 증가합니다");
-                        // 연속 5회 병합되지 않음을
-                        cell.tile.notMergedCount = 0;
-                    }
-
-                }
-                */
             }
         });
 
@@ -752,7 +749,7 @@ function simulate() {
         if (totalScore < minTotalScore) {
             minTotalScore = totalScore;
             worstMove = direction;
-        } 
+        }
 
         // 병합 점수 최대값 기록
         if (mergeScore > maxMergeScore) {
@@ -818,7 +815,7 @@ function move() {
 
     // 만약 병합데미지 감소가 활성화 되어있다면 데미지 감소
     if (isReduceDamage && mergeScore > 0) {
-        console.log("기존 데미지 : "+ mergeScore);
+        console.log("기존 데미지 : " + mergeScore);
         mergeScore = Math.round(mergeScore * reducePersent); // 반올림 처리
         isReduceDamage = false;
         console.log("병합 데미지 감소률: " + reducePersent);
