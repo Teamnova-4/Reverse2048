@@ -459,7 +459,7 @@ body {
 
 .health-fill {
     height: 100%;
-    background-color: #f65e3b;
+    background-color: #ce2803;
     transition: width 0.3s ease;
 }
 
@@ -490,6 +490,10 @@ body {
     font-weight: bold;
     font-size: 14px;
     opacity: 0;
+}
+
+.heal {
+    color: #0c9b0c;
 }
 
 .damage-text.show {
@@ -556,6 +560,73 @@ body {
 /* 피격 시 적용할 클래스 */
 .shake {
     animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+
+/* 보상 획득 팝업 스타일 */
+.reward-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.reward-container {
+    background-color: #faf8ef;
+    padding: 30px;
+    border-radius: 6px;
+    text-align: center;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.reward-container h2 {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.reward-cards {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.reward-card {
+    background-color: #eee4da;
+    padding: 20px;
+    border-radius: 6px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    flex: 1;
+}
+
+.reward-card:hover {
+    transform: translateY(-10px);
+    background-color: #ede0c8;
+}
+
+.reward-card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.none-select-btn{
+    margin-top: 20px;
+    background-color: #ede0cd;
+    padding: 20px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
 

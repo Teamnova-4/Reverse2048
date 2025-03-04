@@ -1,4 +1,7 @@
 import { Cell, playSound } from "./main.js";
+import { RewardSystem } from "./RewardSystem.js";
+
+const rewardSystem = new RewardSystem();
 
 let clickMode = "insertMode";
 let insertTile;
@@ -33,9 +36,25 @@ let isMindControl = false;
 let idleTimer; // 타이머 변수 추가
 
 let playerMaxHP; // 플레이어 최대 체력
-let playerHP; // 플레이어 현재 체력
+export let playerHP; // 플레이어 현재 체력
 
-let giveUpTurnCount = 0; // 연속으로 턴 방치한 횟수 기록
+let _giveUpTurnCount = 0; // 연속으로 턴 방치한 횟수 기록
+
+// 외부에서 timer 조회, 할당하기 위해 만든 함수
+export function getTimer() {
+    return timer;
+}
+export function setTimer(_timer) {
+    timer = _timer
+}
+
+export function getGiveUpTurnCount() {
+    return _giveUpTurnCount;
+}
+export function setGiveUpTurnCount(count) {
+    _giveUpTurnCount = count;
+}
+
 
 
 /**
@@ -102,7 +121,7 @@ function initBoard() {
 }
 
 // 적은 숫자만큼 체력게이지가 변함
-function setHP(hp) {
+export function setHP(hp) {
     if (hp < 0) hp = 0
     if (hp > playerMaxHP) hp = playerMaxHP;
 
@@ -132,6 +151,22 @@ function setHP(hp) {
         setTimeout(() => {
             healthBar.classList.remove('shake');
         }, 500); // shake 애니메이션 지속 시간과 일치
+    }
+
+    // 체력 회복
+    if (hp > playerHP) {
+        const damageText = document.querySelector(".damage-text");
+        const damage = hp - playerHP;
+        damageText.textContent = `+ ${damage}`;
+        damageText.classList.add("heal");
+        damageText.classList.add("show");
+
+        // 힐 사운드 추가
+
+        setTimeout(() => {
+            damageText.classList.remove("show");
+            damageText.classList.remove("heal");
+        }, 1000);  // 1초 후에 페이드 아웃 시작 (CSS transition 시간과 일치)
     }
 
     // 현재체력 변경
@@ -164,6 +199,7 @@ function setCurrentState(state) {
         case "Start":
             initHP();
             // setHP(0); // 게임오버화면 테스트용
+            // rewardSystem.showRewards(3);
             setGridSize();
             startGameTimer();
             initBoard();
@@ -196,7 +232,7 @@ function setCurrentState(state) {
             break;
         case "FinishControl":
             clearInterval(timer);
-            giveUpTurnCount = 0; // 플레이어가 행동을 했으므로 방치턴 카운터 초기화
+            _giveUpTurnCount = 0; // 플레이어가 행동을 했으므로 방치턴 카운터 초기화
             setTimeout(() => {
                 setCurrentState("Simulate");
             }, 500);
@@ -456,7 +492,7 @@ function finishTurn() {
     setCurrentState("Control");
 }
 
-function startTimer() {
+export function startTimer() {
     showHtmlTimeCount(0);
     let countTime = 0;
     let timer = setInterval(() => {
@@ -465,9 +501,13 @@ function startTimer() {
         if (countTime % limitTime == 0) {
             divideAllTileByNumber();
             countTime = 0;
-            giveUpTurnCount += 1; // 방치턴 횟수 기록
-
-            if (giveUpTurnCount % 2 === 0){}
+            _giveUpTurnCount += 1; // 방치턴 횟수 기록
+            console.log("startTimer: 연속으로 넘긴 턴 횟수 = ", _giveUpTurnCount);
+            // giveUpTurnCount =  3, 5, 7 인경우 보상 획득 팝업 출력 
+            if (_giveUpTurnCount >= 3 && (_giveUpTurnCount - 3) % 2 === 0 && _giveUpTurnCount <= 7) {
+                // console.log(giveUpTurnCount);
+                rewardSystem.showRewards(_giveUpTurnCount);
+            }
         }
         // 1초마다 event3 실행
         showHtmlTimeCount(countTime);
