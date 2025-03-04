@@ -32,6 +32,7 @@ let coolTime = 0;
 
 let isSequence = false;
 let isReduceDamage = false;
+let reducePersent;
 let isMindControl = false;
 
 let idleTimer; // 타이머 변수 추가
@@ -227,7 +228,8 @@ export function setSequence(value) {
 }
 
 export function setReduceMergeDamage(value) {
-  isReduceDamage = value; // isReduceDamage 값을 설정
+  reducePersent = value;
+  isReduceDamage = true; // isReduceDamage 값을 설정
 }
 
 // 체력 데이터 초기화
@@ -778,14 +780,15 @@ function move() {
     }
 
     // 만약 병합데미지 감소가 활성화 되어있다면 데미지 감소
-    if(isReduceDamage && mergeScore>0){
-      mergeScore /= 2;
-      isReduceDamage= false;
-      console.log("병합 데미지 감소");
+    if (isReduceDamage && mergeScore > 0) {
+        console.log("기존 데미지 : "+ mergeScore);
+        mergeScore = Math.round(mergeScore * reducePersent); // 반올림 처리
+        isReduceDamage = false;
+        console.log("병합 데미지 감소률: " + reducePersent);
     }
     // mergeScore만큼 플레이어 체력 감소
     let damagedHP = playerHP - mergeScore;
-    console.log("병합으로 인한 데미지 : ", mergeScore);
+    console.log("병합으로 인한 데미지 : "+ mergeScore);
     setHP(damagedHP);
 
     setTimeout(() => { setCurrentState("FinishTurn"); }, 200);

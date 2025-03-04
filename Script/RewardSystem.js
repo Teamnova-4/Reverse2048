@@ -142,8 +142,8 @@ export class RewardSystem {
     
     // 병합 데미지 50% 감소
     reduceMergeDamage(reward) {
-        console.log("병합 데미지 감소: "+reward+"%");
-        setReduceMergeDamage(true)
+        console.log("병합 데미지 감소: "+reward.value+"%");
+        setReduceMergeDamage(reward.value)
     }
 
     initRewardOptions() {
@@ -219,8 +219,8 @@ export class RewardSystem {
                     icon: "🎆",
                     name: "다음 병합 대미지 무효화",
                     description: "다음 두 번의 시스템 턴에서 병합 데미지를 무효화 시킵니다.",
-                    value: 100,
-                    type: this.types.bonus_block,
+                    value: 0,
+                    type: this.types.reduce_damage,
                 },
             ],
             // 9턴 방치 보상
