@@ -39,6 +39,7 @@ let idleTimer; // 타이머 변수 추가
 let playerMaxHP; // 플레이어 최대 체력
 export let playerHP; // 플레이어 현재 체력
 
+
 let _giveUpTurnCount = 0; // 연속으로 턴 방치한 횟수 기록
 
 // 외부에서 timer 조회, 할당하기 위해 만든 함수
@@ -570,6 +571,7 @@ export function startTimer() {
     const timeBar = document.getElementById("time-limit");
     const divideBy = 20;
     const OneSecond = 1000;
+    const overTimeDamage = 10; 
     let countTime = 0;
     let timer = setInterval(() => {
         countTime++;
@@ -584,7 +586,8 @@ export function startTimer() {
                 printGiveUpTurn(_giveUpTurnCount);
                 console.log("startTimer: 연속으로 넘긴 턴 횟수 = ", _giveUpTurnCount);
 
-                clearInterval(this);
+                setHP(playerHP - overTimeDamage);
+
                 setCurrentState("FinishControl");
             }
         }
