@@ -224,11 +224,12 @@ export class Cell {
     }
 
     placeTile(value) {
-        playSound("place");
 
         if (value === "bomb" || value === "Bomb") {
+            playSound("bomb");
             this.addTile("Bomb", value);
         } else {
+            playSound("place");
             this.addTile("Number", value);
         }
         console.log(Cell.Grid);

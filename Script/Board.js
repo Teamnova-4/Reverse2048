@@ -578,6 +578,7 @@ export function startTimer() {
 
             if ((countTime / divideBy) % limitTime == 0) {
                 // divideAllTileByNumber();
+                playSound("emergency");
                 countTime = 0;
                 _giveUpTurnCount += 1; // 방치턴 횟수 기록
                 printGiveUpTurn(_giveUpTurnCount);
