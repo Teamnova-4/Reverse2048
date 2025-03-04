@@ -477,6 +477,7 @@ body {
     background: #4caf50; /* 초록색 */
     position: absolute;
     bottom: 0; /* 아래에서 시작 */
+    transition: height 0.1s linear; /* 부드러운 높이 변화 */
 }
 
 

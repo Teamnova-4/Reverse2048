@@ -23,11 +23,9 @@ export class RewardSystem {
     }
 
     // 보상 선택 UI 표시
-    showRewards(giveUpTurnCount) {
+    showRewards(giveUpTurnCount, clickCallback) {
         console.log("🎁 보상 선택 UI 표시");
         // 턴 타이머 정지
-        clearInterval(getTimer());
-
         const overlay = document.createElement("div");
         overlay.classList.add("reward-overlay");
 
@@ -60,8 +58,11 @@ export class RewardSystem {
                 overlay.remove();
 
                 // 턴 타이머 초기화 및 _giveUpTurnCount 0으로 초기화
-                setTimer(startTimer());
+                // setTimer(startTimer());
                 setGiveUpTurnCount(0);
+
+                //callback
+                clickCallback(reward);
             });
 
             cardsContainer.appendChild(rewardCard);
@@ -74,8 +75,9 @@ export class RewardSystem {
         noneSelectBtn.addEventListener("click", () => {
             // 클릭시 멈췄던 턴 타이머 계속 진행
             console.log("보상 선택 안함");
-            setTimer(startTimer());
+            // setTimer(startTimer());
             overlay.remove();
+            clickCallback(null);
         });
 
         container.appendChild(cardsContainer);
