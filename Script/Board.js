@@ -533,6 +533,7 @@ function finishTurn(isForce = false) {
                     explodeTile(cell.row, cell.col);
                 }
 
+                /**
                 // notMergedCount가 3이면 값 +2 증가
                 if (cell.tile.notMergedCount === 5) {
                     if (cell.tile.type === "Number") {
@@ -543,6 +544,7 @@ function finishTurn(isForce = false) {
                     }
 
                 }
+                */
             }
         });
 
@@ -826,13 +828,13 @@ function move() {
 
 
 function explodeTile(r, c) {
+    playSound("bomb");
     const grid = document.getElementById("grid");
     const minX = Math.max(c - 1, 0);
     const minY = Math.max(r - 1, 0);
     const maxX = Math.min(c + 1, gridSize - 1);
     const maxY = Math.min(r + 1, gridSize - 1);
 
-    console.log(board);
     for (let x = minX; x <= maxX; x++) {
         for (let y = minY; y <= maxY; y++) {
             Cell.getCell(y, x).removeTile();
@@ -840,7 +842,6 @@ function explodeTile(r, c) {
     }
     Cell.getCell(r, c).removeTile();
 
-    console.log("Bomb explode");
 }
 
 // 타일 지정 스킬이 타일을 지정할 때 실행되는 함수
