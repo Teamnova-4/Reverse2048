@@ -589,8 +589,8 @@ export function startTimer() {
         timeBar.style.height = `${100 * (gauge > 0.95 ? 1 : gauge)}%`;
 
         // 채도가 낮은 색상 계산
-        const maxColorValue = 255; // 최대 RGB 값
-        const minColorValue = 80; // 채도를 낮추기 위한 최소 값 (회색 성분)
+        const maxColorValue = 200; // 최대 RGB 값
+        const minColorValue = 50; // 채도를 낮추기 위한 최소 값 (회색 성분)
 
         // R: minColorValue -> maxColorValue
         const r = Math.floor(minColorValue + (maxColorValue - minColorValue) * (1 - gauge));
