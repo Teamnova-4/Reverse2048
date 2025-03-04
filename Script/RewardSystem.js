@@ -6,7 +6,8 @@ import {
     setHP,
     setTimer,
     startTimer,
-    setSequence
+    setSequence,
+    setReduceMergeDamage
 } from "./Board.js";
 
 export class RewardSystem {
@@ -129,12 +130,17 @@ export class RewardSystem {
         setHP(playerHP + reward.value);
     }
 
-    // 
+    // 보너스 타일
     bonusTile(reward) {
         console.log("보너스 타일 ", reward.value);
         setSequence(true);
     }
-
+    
+    // 병합 데미지 50% 감소
+    reduceMergeDamage(reward) {
+        console.log("병합 데미지 감소: "+reward+"%");
+        setReduceMergeDamage(true)
+    }
 
     initRewardOptions() {
         // 턴별 보상이 객체의 배열로 저장되어 있음
