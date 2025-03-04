@@ -516,11 +516,10 @@ function divideAllTileByNumber() {
             cell.draw();
         }
     });
-    const tileNumbers = [16, 32, 64];
-    const randomNumber = Math.floor(Math.random() * tileNumbers.length);
+    
     document.getElementById('nextnumber-container').classList.add('emphasis');
 
-    insertTile = tileNumbers[randomNumber];
+    insertTile = 32;
     document.getElementById("next").innerText = insertTile;
 
     baseLimitTime = Math.max(baseLimitTime - 1, 2);
