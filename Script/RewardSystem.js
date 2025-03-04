@@ -163,7 +163,7 @@ export class RewardSystem {
     // 5턴 병합 방지
     isMergeRestrictedUntil(reward) {
         console.log("병합 " + reward.value + "회 불가");
-        setisMergeRestrictedUntil(true, reward.value);
+        setisMergeRestrictedUntil(reward.value);
 
     }
 
