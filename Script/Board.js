@@ -274,7 +274,7 @@ function setCurrentState(state) {
             //     });
             // }, 2000); // 2초 후 랜덤 숫자 표시
 
-            insertTile = Math.random() < 0.9 ? 2 : 4;
+            insertTile = Math.pow(2, _giveUpTurnCount + 1);
             document.getElementById("next").innerText = insertTile;
 
             const grid = document.getElementById("grid");
@@ -527,9 +527,19 @@ function finishTurn(isForce = false) {
             if (cell.tile) {
                 cell.tile.isMerged = false;
 
+                // notMergedCount가 5이면 값 x2
+                if (cell.tile.type === "Number" && cell.tile.notMergedCount >= 5) {
+                    cell.tile.value *= 2;
+                    console.log("병합을 하지 못한 횟수가 5회가 되어 타일의 값이 *2가 증가합니다");
+                    // 연속 5회 병합되지 않음을
+                    cell.tile.notMergedCount = 0;
+                    cell.draw();
+                }
+
                 if (cell.tile.isExplode) {
                     explodeTile(cell.row, cell.col);
                 }
+
             }
         });
 
@@ -729,11 +739,11 @@ function simulate() {
             bestMove = [direction];
         } else if (totalScore === maxTotalScore) {
             bestMove.push(direction);
-        } else if (totalScore < minTotalScore) {
+        }
+
+        if (totalScore < minTotalScore) {
             minTotalScore = totalScore;
-            worstMove = [direction];
-        } else if (totalScore === minTotalScore) {
-            worstMove.push(direction);
+            worstMove = direction;
         }
 
         // 병합 점수 최대값 기록
@@ -751,7 +761,8 @@ function simulate() {
 
     if (isMindControl) {
         isMindControl = false;
-        BestMove = worstMove[Math.floor(Math.random() * worstMove.length)];
+        console.log(worstMove);
+        BestMove = worstMove;
         setCurrentState("Move");
     } else if (bestMove.length > 0) {
         // 병합 가능한 방향 중 랜덤 선택
