@@ -234,10 +234,8 @@ export function setReduceMergeDamage(value) {
     isReduceDamage = true; // isReduceDamage 값을 설정
 }
 
-export function setisMergeRestrictedUntil(value){
+export function setisMergeRestrictedUntil(value) {
     isMergeRestrictedUntil = value;
-    reducePersent = value;
-    isReduceDamage = true; // isReduceDamage 값을 설정
 }
 
 
@@ -532,17 +530,6 @@ function finishTurn(isForce = false) {
                 if (cell.tile.isExplode) {
                     explodeTile(cell.row, cell.col);
                 }
-
-                // notMergedCount가 3이면 값 +2 증가
-                if (cell.tile.notMergedCount === 5) {
-                    if (cell.tile.type === "Number") {
-                        // cell.tile.value *= 2;
-                        console.log("병합을 하지 못한 횟수가 5회가 되어 타일의 값이 *2가 증가합니다");
-                        // 연속 5회 병합되지 않음을
-                        cell.tile.notMergedCount = 0;
-                    }
-
-                }
             }
         });
 
@@ -811,7 +798,7 @@ function move() {
 
     // 만약 병합데미지 감소가 활성화 되어있다면 데미지 감소
     if (isReduceDamage && mergeScore > 0) {
-        console.log("기존 데미지 : "+ mergeScore);
+        console.log("기존 데미지 : " + mergeScore);
         mergeScore = Math.round(mergeScore * reducePersent); // 반올림 처리
         isReduceDamage = false;
         console.log("병합 데미지 감소률: " + reducePersent);
