@@ -24,7 +24,8 @@ function initAudio() {
     audioMap.set('damage_1024', new Audio('../assets/sound/damage_1024.mp3'));
     audioMap.set('damage_2048', new Audio('../assets/sound/damage_2048.mp3'));
 
-
+    audioMap.set('reward', new Audio('../assets/sound/보상선택.mp3'));
+    audioMap.set('reward-select', new Audio('../assets/sound/보상획득.mp3'));
 
     // 각 오디오 객체에 볼륨 설정 (초기 설정)
     audioMap.forEach(sound => {

@@ -1,14 +1,12 @@
 import {
-    getGiveUpTurnCount,
-    getTimer,
     playerHP,
     setGiveUpTurnCount,
     setHP,
-    setTimer,
-    startTimer,
     setSequence,
-    setReduceMergeDamage
+    setReduceMergeDamage,
+    setisMergeRestrictedUntil
 } from "./Board.js";
+import { playSound } from "./Sound.js";
 
 export class RewardSystem {
     constructor() {
@@ -17,6 +15,7 @@ export class RewardSystem {
         this.types = {
             heal: 'heal',
             bonus_block: 'bonus_block',
+
         }; // 보상 타입 목록
 
         this.initRewardOptions();
@@ -25,6 +24,7 @@ export class RewardSystem {
     // 보상 선택 UI 표시
     showRewards(giveUpTurnCount, clickCallback) {
         console.log("🎁 보상 선택 UI 표시");
+        playSound("reward");
         // 턴 타이머 정지
         const overlay = document.createElement("div");
         overlay.classList.add("reward-overlay");
@@ -54,6 +54,8 @@ export class RewardSystem {
 
             rewardCard.addEventListener("click", () => {
                 console.log(`🎁 보상 선택: ${reward.name} (${reward.type})`);
+                playSound("reward-select");
+
                 this.applyReward(reward);
                 overlay.remove();
 
@@ -92,20 +94,30 @@ export class RewardSystem {
         let rewards = [];
         let rewardOptions = this.rewardOptions[turn]; // 해당 턴의 보상객체 배열
         console.log("리워드 원본", rewardOptions);
-        let rewardOptionsCopy = JSON.parse(JSON.stringify(rewardOptions)); // 복사본
-        console.log("리워드 카피 필터링", rewardOptionsCopy);
 
-        if (rewardOptions) {
-            for (let i = rewardOptionsCopy.length; i > 0; i--) {
-                // 0과 i 사이의 랜덤한 인덱스를 선택합니다.
-                const j = Math.floor(Math.random() * (i + 1));
-                [rewardOptionsCopy[i], rewardOptionsCopy[j]] = [rewardOptionsCopy[j], rewardOptionsCopy[i]];
-            }
+        // 보상이 없거나 빈 배열일 경우 처리
+        if (!rewardOptions || rewardOptions.length === 0) {
+            console.warn(`턴 ${turn}에 대한 보상이 없습니다.`);
+            return rewards;
         }
 
-        // console.log(rewardOptionsCopy);
+        let rewardOptionsCopy = JSON.parse(JSON.stringify(rewardOptions)); // 복사본
+        console.log("리워드 카피", rewardOptionsCopy);
+
+        // Fisher-Yates 셔플 수정
+        for (let i = rewardOptionsCopy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [rewardOptionsCopy[i], rewardOptionsCopy[j]] = [rewardOptionsCopy[j], rewardOptionsCopy[i]];
+        }
+
+        // 보상 개수가 rewardCount보다 적을 경우 처리
+        if (rewardOptionsCopy.length < rewardCount) {
+            console.warn(`턴 ${turn}의 보상 개수가 ${rewardCount}보다 적습니다. 모든 보상을 반환합니다.`);
+            return rewardOptionsCopy;
+        }
+
+        // rewardCount만큼 보상 선택
         rewards = rewardOptionsCopy.slice(0, rewardCount);
-        rewards = rewards.filter(item => item !== undefined);
         return rewards;
     }
 
@@ -123,8 +135,7 @@ export class RewardSystem {
             case this.types.reduce_damage:
                 this.reduceMergeDamage(reward);
                 break;
-
-            default:
+            case this.types.unMerged:
                 console.log("알 수 없는 보상 타입:", reward.type);
                 break;
         }
@@ -141,12 +152,22 @@ export class RewardSystem {
         console.log("보너스 타일 ", reward.value);
         setSequence(true);
     }
-    
+
     // 병합 데미지 50% 감소
     reduceMergeDamage(reward) {
-        console.log("병합 데미지 감소: "+reward.value+"%");
+        console.log("병합 데미지 감소: " + reward + "%");
+        setReduceMergeDamage(true)
+        console.log("병합 데미지 감소: " + reward.value + "%");
         setReduceMergeDamage(reward.value)
     }
+    // 5턴 병합 방지
+    isMergeRestrictedUntil(reward) {
+        console.log("병합 " + reward.value + "회 불가");
+        setisMergeRestrictedUntil(true, reward.value);
+
+    }
+
+
 
     initRewardOptions() {
         // 턴별 보상이 객체의 배열로 저장되어 있음
@@ -174,13 +195,6 @@ export class RewardSystem {
                     description: "1회성으로 다음턴에 발생하는 병합 대미지를 절반으로 줄입니다.",
                     value: 0.5,
                     type: this.types.reduce_damage,
-                },
-                {
-                    icon: "5️⃣",
-                    name: "타일 위치 변경",
-                    description: "두 타일을 선택해서 위치를 바꿉니다.",
-                    value: 2,
-                    type: this.types.bonus_block,
                 }
 
             ],
@@ -199,13 +213,6 @@ export class RewardSystem {
                     description: "다음 두 번의 시스템 턴에서 병합 데미지를 절반으로 줄입니다.",
                     value: 0.5,
                     type: this.types.reduce_damage,
-                },
-                {
-                    icon: "4️⃣",
-                    name: "알수없는 배치",
-                    description: "모든 배치된 타일들의 위치를 랜덤으로 뒤바꿉니다.",
-                    value: 50,
-                    type: this.types.bonus_block,
                 }
             ],
             // 7턴 방치 보상
