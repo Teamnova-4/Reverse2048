@@ -127,6 +127,7 @@ function initBoard() {
     DrawBoard();
 }
 
+
 // 적은 숫자만큼 체력게이지가 변함
 export function setHP(hp) {
     if (hp < 0) hp = 0
@@ -986,6 +987,10 @@ function setMergeScore(score) {
 
 function getMergeScore() {
     return mergeScore;
+}
+
+export function setSequence(value) {
+    isSequence = value; // isSequence 값을 설정
 }
 
 export {
