@@ -164,13 +164,6 @@ export class RewardSystem {
                     type: this.types.bonus_block,
                 },
                 {
-                    icon: "🪚",
-                    name: "작은 타일 제거",
-                    description: "격자에서 가장 작은 숫자의 타일(예: 2나 4) 하나를 제거합니다.",
-                    value: 2,
-                    type: this.types.bonus_block,
-                },
-                {
                     icon: "5️⃣",
                     name: "타일 위치 변경",
                     description: "두 타일을 선택해서 위치를 바꿉니다.",
