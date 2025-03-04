@@ -113,10 +113,38 @@ function setHP(hp) {
         damageText.textContent = `- ${damage}`;
         damageText.classList.add("show");
 
-        if (damage <= 16) {
-            playSound('weakAttack');
-        } else {
-            playSound('strongAttack');
+        if (damage < 4) {
+            // 4 미만의 데미지 처리 (필요한 경우)
+        } else if (damage >= 4 && damage < 8) {
+            playSound('damage_4'); // 4와 8 사이의 데미지
+            console.log("sound: " + 4);
+        } else if (damage >= 8 && damage < 16) {
+            playSound('damage_8'); // 8과 16 사이의 데미지
+            console.log("sound: " + 8);
+        } else if (damage >= 16 && damage < 32) {
+            playSound('damage_16'); // 16과 32 사이의 데미지
+            console.log("sound: " + 16);
+        } else if (damage >= 32 && damage < 64) {
+            playSound('damage_32'); // 32와 64 사이의 데미지
+            console.log("sound: " + 32);
+        } else if (damage >= 64 && damage < 128) {
+            playSound('damage_64'); // 64와 128 사이의 데미지
+            console.log("sound: " + 64);
+        } else if (damage >= 128 && damage < 256) {
+            playSound('damage_128'); // 128과 256 사이의 데미지
+            console.log("sound: " + 128);
+        } else if (damage >= 256 && damage < 512) {
+            playSound('damage_256'); // 256과 512 사이의 데미지
+            console.log("sound: " + 256);
+        } else if (damage >= 512 && damage < 1024) {
+            playSound('damage_512'); // 512와 1024 사이의 데미지
+            console.log("sound: " + 512);
+        } else if (damage >= 1024 && damage < 2048) {
+            playSound('damage_1024'); // 1024와 2048 사이의 데미지
+            console.log("sound: " + 1024);
+        } else if (damage >= 2048) {
+            playSound('damage_2048'); // 2048 이상의 데미지
+            console.log("sound: " + 2048);
         }
 
         setTimeout(() => {
