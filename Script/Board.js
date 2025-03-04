@@ -276,7 +276,7 @@ function setCurrentState(state) {
             //     });
             // }, 2000); // 2초 후 랜덤 숫자 표시
 
-            insertTile = Math.random() < 0.9 ? 2 : 4;
+            insertTile = Math.pow(2, _giveUpTurnCount + 1);
             document.getElementById("next").innerText = insertTile;
 
             const grid = document.getElementById("grid");
