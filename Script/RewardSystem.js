@@ -4,8 +4,9 @@ import {
     setHP,
     setSequence,
     setReduceMergeDamage,
-} from "./Board.js";
-import { playSound } from "./Sound.js";
+    setisMergeRestrictedUntil,
+    playSound
+} from "./main.js";
 
 export class RewardSystem {
     constructor() {
