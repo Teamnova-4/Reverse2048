@@ -494,13 +494,14 @@ function finishTurn() {
             }
 
             // notMergedCount가 3이면 값 +2 증가
-            if (cell.tile.notMergedCount === 3) {
+            if (cell.tile.notMergedCount === 5) {
                 if (cell.tile.type === "Number") {
-                    cell.tile.value += 2;
-                    console.log("병합을 하지 못한 횟수가 3회가 되어 타일의 값이 +2가 증가합니다");
+                    cell.tile.value * 2;
+                    console.log("병합을 하지 못한 횟수가 5회가 되어 타일의 값이 *2가 증가합니다");
+                    // 연속 5회 병합되지 않음을
+                    cell.tile.notMergedCount = 0;
                 }
-                cell.tile.notMergedCount = 0;
-                //cell.draw();  // 이 부분은 제거하거나 주석처리
+
             }
         }
     });
