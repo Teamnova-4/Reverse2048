@@ -778,9 +778,10 @@ function move() {
     }
 
     // 만약 병합데미지 감소가 활성화 되어있다면 데미지 감소
-    if(isReduceDamage){
+    if(isReduceDamage && mergeScore>0){
       mergeScore /= 2;
       isReduceDamage= false;
+      console.log("병합 데미지 감소");
     }
     // mergeScore만큼 플레이어 체력 감소
     let damagedHP = playerHP - mergeScore;
