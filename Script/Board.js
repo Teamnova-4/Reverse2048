@@ -460,6 +460,16 @@ function finishTurn() {
             if (cell.tile.isExplode) {
                 explodeTile(cell.row, cell.col);
             }
+
+            // notMergedCount가 3이면 값 +2 증가
+            if (cell.tile.notMergedCount === 3) {
+                if (cell.tile.type === "Number") {
+                    cell.tile.value += 2;
+                    console.log("병합을 하지 못한 횟수가 3회가 되어 타일의 값이 +2가 증가합니다");
+                }
+                cell.tile.notMergedCount = 0;
+                //cell.draw();  // 이 부분은 제거하거나 주석처리
+            }
         }
     });
 
@@ -495,7 +505,7 @@ function startTimer() {
             countTime = 0;
             giveUpTurnCount += 1; // 방치턴 횟수 기록
 
-            if (giveUpTurnCount % 2 === 0){}
+            if (giveUpTurnCount % 2 === 0) { }
         }
         // 1초마다 event3 실행
         showHtmlTimeCount(countTime);
