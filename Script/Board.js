@@ -34,6 +34,7 @@ let isSequence = false;
 let isReduceDamage = false;
 let reducePersent;
 let isMindControl = false;
+let isMergeRestrictedUntil = 0;
 
 let idleTimer; // 타이머 변수 추가
 
@@ -231,8 +232,15 @@ export function setSequence(value) {
 }
 
 export function setReduceMergeDamage(value) {
+<<<<<<< HEAD
+    isReduceDamage = value; // isReduceDamage 값을 설정
+}
+export function setisMergeRestrictedUntil(value) {
+    isMergeRestrictedUntil = value; // 보상에서의 '5'(value) 회 병합금지지 
+=======
     reducePersent = value;
     isReduceDamage = true; // isReduceDamage 값을 설정
+>>>>>>> f5a74483fcdbd2204c91469ae3e6924af10e2b26
 }
 
 // 체력 데이터 초기화
@@ -519,6 +527,14 @@ function finishTurn(isForce = false) {
     } else {
         printGiveUpTurn(_giveUpTurnCount);
 
+<<<<<<< HEAD
+            // notMergedCount가 5이면 값 *2 증가
+            if (cell.tile.notMergedCount === 5) {
+                cell.tile.value * 2;
+                console.log("병합을 하지 못한 횟수가 5회가 되어 타일의 값이 *2가 증가합니다");
+                // 연속 5회 병합되지 않음을
+                cell.tile.notMergedCount = 0;
+=======
         Cell.GridForEach((cell) => {
             if (cell.tile) {
                 cell.tile.isMerged = false;
@@ -537,6 +553,7 @@ function finishTurn(isForce = false) {
                     }
 
                 }
+>>>>>>> f5a74483fcdbd2204c91469ae3e6924af10e2b26
             }
         });
 
@@ -810,11 +827,17 @@ function move() {
     }
 
     // 만약 병합데미지 감소가 활성화 되어있다면 데미지 감소
+<<<<<<< HEAD
+    if (isReduceDamage) {
+        mergeScore /= 2;
+        isReduceDamage = false;
+=======
     if (isReduceDamage && mergeScore > 0) {
-        console.log("기존 데미지 : " + mergeScore);
+        console.log("기존 데미지 : "+ mergeScore);
         mergeScore = Math.round(mergeScore * reducePersent); // 반올림 처리
         isReduceDamage = false;
         console.log("병합 데미지 감소률: " + reducePersent);
+>>>>>>> f5a74483fcdbd2204c91469ae3e6924af10e2b26
     }
     // mergeScore만큼 플레이어 체력 감소
     let damagedHP = playerHP - mergeScore;
@@ -1037,8 +1060,6 @@ function setMergeScore(score) {
 function getMergeScore() {
     return mergeScore;
 }
-
-
 
 export {
     clickSkill,
