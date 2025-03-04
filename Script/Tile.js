@@ -131,9 +131,8 @@ export class Cell {
                 if (lastTile !== null && cell.tile.value === lastTile.value) {
                     switch (cell.tile.type) {
                         case "Number":
-                            const add = moveScore * 8 + cell.tile.value;
-                            score += add;
-                            mergeScore += add;
+                            score += moveScore * 5 + cell.tile.value * 2;
+                            mergeScore += cell.tile.value * 2;
                             break;
                         case "Bomb":
                             score += Number.MAX_SAFE_INTEGER / 2;
@@ -149,6 +148,7 @@ export class Cell {
                 findNullTile = true;
             }
         });
+        console.log(score, line);
         if (score === 0 && findMoveableTile) score = moveScore;
         return { score, mergeScore };
     }

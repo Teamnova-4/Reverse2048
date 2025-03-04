@@ -25,8 +25,6 @@ let gameTimer;
 let playerSkill = localStorage.getItem("gameSkill");
 let playerSkillNextCoolTime = 0;
 let playerSkillCoolTime;
-let playerSkillStack = 0;
-let playerSkillMaxStack = 3;
 setSkillCoolTime();
 let coolTime = 0;
 
@@ -96,7 +94,7 @@ function getGridElement(row, column) {
 
 // 스킬 사용 버튼이 클릭되었을 때 호출되는 함수
 function clickSkill() {
-    if (playerSkillStack > 0) {
+    if (coolTime === 0) {
         UseSkill();
     } else {
         console.log(`coolTime : ${coolTime}`);
@@ -540,18 +538,12 @@ function finishTurn(isForce = false) {
             }
         });
 
-        if (coolTime == 0) {
-            if (playerSkillMaxStack > playerSkillStack) {
-                playerSkillStack++;
-                coolTime = (playerSkillStack == playerSkillMaxStack) ? 0 : playerSkillCoolTime;
-            }
-            playerSkillNextCoolTime--;
-        }
 
         // 턴 증가
         turn += 1;
         limitTime = baseLimitTime;
         document.getElementById("turn").innerText = turn;
+
         // 쿨타임 감소
         if (coolTime > 0) {
             coolTime -= 1;
@@ -562,7 +554,6 @@ function finishTurn(isForce = false) {
     }
 }
 
-let giveupFlag = false;
 
 export function startTimer() {
 
@@ -717,6 +708,7 @@ function simulate() {
             totalScore += result.score;
             mergeScore += result.mergeScore;
         }
+        console.log(totalScore, direction);
 
         // console.log("simulate: direction, totalScore, mergeScore", direction, totalScore, mergeScore);
 
@@ -875,7 +867,6 @@ function UseSkill() {
     // 스킬 사용시 쿨타임 적용
     // coolTime = playerSkillCoolTime;
     playerSkillNextCoolTime = playerSkillCoolTime;
-    playerSkillStack--;
     switch (playerSkill) {
         case "zeroTile": // 완료
             insertTile = 0;
@@ -956,14 +947,16 @@ function updateGameTimeDisplay() {
     return timeString;
 }
 
+/**
+ */
 function updateCooltime() {
     const spaceButton = document.querySelector(".show-space");
-    if (playerSkillStack > 0) {
+    if (coolTime > 0) {
         spaceButton.classList.remove("disable");
     } else {
         spaceButton.classList.add("disable");
     }
-    spaceButton.textContent = `Space Bar [${((playerSkillMaxStack > 0) ? playerSkillStack : "")}]`;
+    spaceButton.textContent = `Space Bar`;
     const overlay = document.getElementById("cooltimeOverlay");
     const cooltimeSpan = document.getElementById("cooltime");
 
