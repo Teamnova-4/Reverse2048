@@ -27,10 +27,11 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
 
     if (
-        !isset($data['turn'], $data['formattedTime']) ||
+        !isset($data['turn'], $data['formattedTime'], $data['mapSize']) || // mapSize 추가
         !is_numeric($data['turn']) ||
-        !is_string($data['formattedTime'])
-    ) { // formattedTime이 문자열인지 확인
+        !is_string($data['formattedTime']) ||
+        !is_numeric($data['mapSize']) // mapSize가 숫자인지 확인
+    ) {
         die(json_encode(['error' => 'Invalid input data']));
     }
 
@@ -39,14 +40,16 @@ try {
     $turn = (int) $data['turn'];
     // 클라이언트로부터 받은 formattedTime 값을 playTime 변수에 저장 (문자열)
     $playTime = $data['formattedTime'];
+    // 클라이언트로부터 받은 mapSize 값을 저장 (정수)
+    $mapSize = (int) $data['mapSize'];
 
-    // 100위 안에 드는 기록의 개수를 세는 쿼리
-    $stmt = $pdo->prepare("SELECT COUNT(*) as cnt 
-    FROM rankings 
-    WHERE turn < ? OR (turn = ? AND play_time < ?)");
-    $stmt->execute([$turn, $turn, $playTime]);
-    $result = $stmt->fetch();
-    $count = $result['cnt'];
+   // 100위 안에 드는 기록의 개수를 세는 쿼리 (mapSize 조건 추가)
+   $stmt = $pdo->prepare("SELECT COUNT(*) as cnt 
+   FROM rankings 
+   WHERE mapSize = ? AND (turn < ? OR (turn = ? AND play_time < ?))"); // mapSize 추가
+   $stmt->execute([$mapSize, $turn, $turn, $playTime]); //mapsize 추가
+   $result = $stmt->fetch();
+   $count = $result['cnt'];
 
     // 100등 기록이 존재하는지 확인
     // 새로운 기록이 100위 안에 들 수 있는지 확인

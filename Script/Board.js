@@ -356,7 +356,7 @@ function getByteLength(str) {
     return byteLength;
 }
 // 100위권안에 들어가는지 확인합니다.
-async function checkrank_DB_userScore(turn, formattedTime) {
+async function checkrank_DB_userScore(turn, formattedTime, mapSize) {
     try {
         const response = await fetch("./php/check_ranking.php", {
             // check_ranking.php 또는 canRegister.php
@@ -364,7 +364,7 @@ async function checkrank_DB_userScore(turn, formattedTime) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ turn: turn, formattedTime: formattedTime }),
+            body: JSON.stringify({ turn: turn, formattedTime: formattedTime, mapSize: mapSize }),
         });
 
         if (!response.ok) {
@@ -380,7 +380,7 @@ async function checkrank_DB_userScore(turn, formattedTime) {
         if (data.success && data.canRegister) {
             // 순위가 확인이 됬으니 랭크 등록이 가능하다.
             console.log("[Board.js] DB 100위 순위확인성공");
-            gameSizeCheck();
+            // gameSizeCheck();
             document.getElementById("view-ranking").style.display = "none";
             // 랭킹등록 버튼 활성화
             document.getElementById("submit-nickname").disabled = false;
@@ -407,7 +407,7 @@ async function checkrank_DB_userScore(turn, formattedTime) {
                             nickname,
                             turn,
                             updateGameTimeDisplay(),
-                            gameSizeCheck()
+                            mapSize
                         );
                     }
                 });
@@ -455,7 +455,7 @@ async function showGameClearModal(turns, time) {
     document.getElementById("game-over-screen").classList.remove("hidden");
     console.log("db에서 100위 확인시작!");
     // 게임클리어 화면이 나오고 난 후 db에 100등에 들어가는지 조회합니다.
-    checkrank_DB_userScore(turns, time);
+    checkrank_DB_userScore(turns, time, gameSizeCheck());
 }
 
 // 게임 오버 모달 표시
