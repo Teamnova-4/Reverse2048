@@ -234,6 +234,13 @@ export function setReduceMergeDamage(value) {
     isReduceDamage = true; // isReduceDamage 값을 설정
 }
 
+export function setisMergeRestrictedUntil(value){
+    isMergeRestrictedUntil = value;
+    reducePersent = value;
+    isReduceDamage = true; // isReduceDamage 값을 설정
+}
+
+
 // 체력 데이터 초기화
 function initHP(maxHP = 1000) {
     playerMaxHP = maxHP;
@@ -529,7 +536,7 @@ function finishTurn(isForce = false) {
                 // notMergedCount가 3이면 값 +2 증가
                 if (cell.tile.notMergedCount === 5) {
                     if (cell.tile.type === "Number") {
-                        cell.tile.value *= 2;
+                        // cell.tile.value *= 2;
                         console.log("병합을 하지 못한 횟수가 5회가 되어 타일의 값이 *2가 증가합니다");
                         // 연속 5회 병합되지 않음을
                         cell.tile.notMergedCount = 0;
@@ -867,8 +874,8 @@ function UseSkillToTile(cell) {
 function UseSkill() {
     const grid = document.getElementById("grid");
     // 스킬 사용시 쿨타임 적용
-    // coolTime = playerSkillCoolTime;
-    playerSkillNextCoolTime = playerSkillCoolTime;
+    coolTime = playerSkillCoolTime;
+    //playerSkillNextCoolTime = playerSkillCoolTime;
     switch (playerSkill) {
         case "zeroTile": // 완료
             insertTile = 0;
