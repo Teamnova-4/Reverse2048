@@ -540,6 +540,7 @@ function finishTurn(isForce = false) {
             if (cell.tile) {
                 cell.tile.isMerged = false;
 
+                /*
                 // notMergedCount가 5이면 값 x2
                 if (cell.tile.type === "Number" && cell.tile.notMergedCount >= 5) {
                     cell.tile.value *= 2;
@@ -548,6 +549,7 @@ function finishTurn(isForce = false) {
                     cell.tile.notMergedCount = 0;
                     cell.draw();
                 }
+                    */
 
                 if (cell.tile.isExplode) {
                     explodeTile(cell.row, cell.col);
