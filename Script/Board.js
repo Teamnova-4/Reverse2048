@@ -1038,8 +1038,6 @@ function getMergeScore() {
     return mergeScore;
 }
 
-
-
 export {
     clickSkill,
     CurrentGameState,
