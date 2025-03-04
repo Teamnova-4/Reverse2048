@@ -231,8 +231,8 @@ export function setSequence(value) {
 }
 
 export function setReduceMergeDamage(value) {
-  reducePersent = value;
-  isReduceDamage = true; // isReduceDamage 값을 설정
+    reducePersent = value;
+    isReduceDamage = true; // isReduceDamage 값을 설정
 }
 
 // 체력 데이터 초기화
@@ -586,15 +586,20 @@ export function startTimer() {
                 setCurrentState("FinishControl");
             }
         }
-        timeBar.style.height = `${100 * (gauge > 0.95 ? 1 : gauge)}%`
+        timeBar.style.height = `${100 * (gauge > 0.95 ? 1 : gauge)}%`;
 
-        // 기본 색상 :rgb(211, 157, 106) (RGB: 153, 124, 97)
-        let baseR = 211; // 기본 R 값
-        let baseG = 157; // 기본 G 값
-        let baseB = 106;  // 기본 B 값
+        // 채도가 낮은 색상 계산
+        const maxColorValue = 255; // 최대 RGB 값
+        const minColorValue = 80; // 채도를 낮추기 위한 최소 값 (회색 성분)
 
-        // R 값만 빨간색으로 변하도록 (gauge가 0에서 1로 변화)
-        timeBar.style.backgroundColor = `rgb(${Math.min(255, baseR + (255 - baseR) * (1 - gauge))}, ${baseG}, ${baseB})`;
+        // R: minColorValue -> maxColorValue
+        const r = Math.floor(minColorValue + (maxColorValue - minColorValue) * (1 - gauge));
+        // G: maxColorValue -> minColorValue
+        const g = Math.floor(maxColorValue - (maxColorValue - minColorValue) * (1 - gauge));
+        // B: minColorValue로 고정
+        const b = minColorValue;
+
+        timeBar.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
 
     }, OneSecond / divideBy);
 
@@ -806,14 +811,14 @@ function move() {
 
     // 만약 병합데미지 감소가 활성화 되어있다면 데미지 감소
     if (isReduceDamage && mergeScore > 0) {
-        console.log("기존 데미지 : "+ mergeScore);
+        console.log("기존 데미지 : " + mergeScore);
         mergeScore = Math.round(mergeScore * reducePersent); // 반올림 처리
         isReduceDamage = false;
         console.log("병합 데미지 감소률: " + reducePersent);
     }
     // mergeScore만큼 플레이어 체력 감소
     let damagedHP = playerHP - mergeScore;
-    console.log("병합으로 인한 데미지 : "+ mergeScore);
+    console.log("병합으로 인한 데미지 : " + mergeScore);
     setHP(damagedHP);
 
     setTimeout(() => { setCurrentState("FinishTurn"); }, 200);
