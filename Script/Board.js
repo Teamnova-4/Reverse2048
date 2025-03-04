@@ -873,8 +873,8 @@ function UseSkillToTile(cell) {
 function UseSkill() {
     const grid = document.getElementById("grid");
     // 스킬 사용시 쿨타임 적용
-    // coolTime = playerSkillCoolTime;
-    playerSkillNextCoolTime = playerSkillCoolTime;
+    coolTime = playerSkillCoolTime;
+    //playerSkillNextCoolTime = playerSkillCoolTime;
     switch (playerSkill) {
         case "zeroTile": // 완료
             insertTile = 0;
