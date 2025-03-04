@@ -123,6 +123,7 @@ export class Cell {
         const moveScore = 1;
         let mergeScore = 0;     // 머지한 값의 총합을 구하기 위해 새로 만듬
         let findNullTile = false;
+        let findMoveableTile = false;
         let lastTile = null;
         let score = 0;
         line.forEach(cell => {
@@ -130,8 +131,9 @@ export class Cell {
                 if (lastTile !== null && cell.tile.value === lastTile.value) {
                     switch (cell.tile.type) {
                         case "Number":
-                            score += cell.tile.value * 2;
-                            mergeScore += cell.tile.value * 2;
+                            const add = moveScore * 8 + cell.tile.value;
+                            score += add;
+                            mergeScore += add;
                             break;
                         case "Bomb":
                             score += Number.MAX_SAFE_INTEGER / 2;
@@ -139,7 +141,7 @@ export class Cell {
                     }
                     lastTile = null;
                 } else if (findNullTile) {
-                    score += moveScore;
+                    findMoveableTile = true;
                 } else {
                     lastTile = cell.tile;
                 }
@@ -147,6 +149,7 @@ export class Cell {
                 findNullTile = true;
             }
         });
+        if (score === 0 && findMoveableTile) score = moveScore;
         return { score, mergeScore };
     }
 
