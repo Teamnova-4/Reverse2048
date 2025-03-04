@@ -33,6 +33,7 @@ let coolTime = 0;
 let isSequence = false;
 let isReduceDamage = false;
 let isMindControl = false;
+let isMergeRestrictedUntil = 0;
 
 let idleTimer; // 타이머 변수 추가
 
@@ -110,7 +111,7 @@ function DrawBoard() {
 
 const giveUpTurnElement = document.getElementById('giveup-turn');
 console.log(giveUpTurnElement);
-function printGiveUpTurn(turn){
+function printGiveUpTurn(turn) {
     giveUpTurnElement.textContent = turn;
 }
 
@@ -223,11 +224,14 @@ export function setHP(hp) {
 
 // RewardSystem의 연속배치
 export function setSequence(value) {
-  isSequence = value; // isSequence 값을 설정
+    isSequence = value; // isSequence 값을 설정
 }
 
 export function setReduceMergeDamage(value) {
-  isReduceDamage = value; // isReduceDamage 값을 설정
+    isReduceDamage = value; // isReduceDamage 값을 설정
+}
+export function setisMergeRestrictedUntil(value) {
+    isMergeRestrictedUntil = value; // 보상에서의 '5'(value) 회 병합금지지 
 }
 
 // 체력 데이터 초기화
@@ -512,15 +516,12 @@ function finishTurn() {
                 explodeTile(cell.row, cell.col);
             }
 
-            // notMergedCount가 3이면 값 +2 증가
+            // notMergedCount가 5이면 값 *2 증가
             if (cell.tile.notMergedCount === 5) {
-                if (cell.tile.type === "Number") {
-                    cell.tile.value * 2;
-                    console.log("병합을 하지 못한 횟수가 5회가 되어 타일의 값이 *2가 증가합니다");
-                    // 연속 5회 병합되지 않음을
-                    cell.tile.notMergedCount = 0;
-                }
-
+                cell.tile.value * 2;
+                console.log("병합을 하지 못한 횟수가 5회가 되어 타일의 값이 *2가 증가합니다");
+                // 연속 5회 병합되지 않음을
+                cell.tile.notMergedCount = 0;
             }
         }
     });
@@ -778,9 +779,9 @@ function move() {
     }
 
     // 만약 병합데미지 감소가 활성화 되어있다면 데미지 감소
-    if(isReduceDamage){
-      mergeScore /= 2;
-      isReduceDamage= false;
+    if (isReduceDamage) {
+        mergeScore /= 2;
+        isReduceDamage = false;
     }
     // mergeScore만큼 플레이어 체력 감소
     let damagedHP = playerHP - mergeScore;

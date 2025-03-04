@@ -7,7 +7,8 @@ import {
     setTimer,
     startTimer,
     setSequence,
-    setReduceMergeDamage
+    setReduceMergeDamage,
+    setisMergeRestrictedUntil
 } from "./Board.js";
 
 export class RewardSystem {
@@ -17,6 +18,7 @@ export class RewardSystem {
         this.types = {
             heal: 'heal',
             bonus_block: 'bonus_block',
+
         }; // 보상 타입 목록
 
         this.initRewardOptions();
@@ -122,7 +124,9 @@ export class RewardSystem {
                 this.reduceMergeDamage(reward);
                 break;
 
-            default:
+            case this.types.unMerged:
+                this.
+                    default:
                 console.log("알 수 없는 보상 타입:", reward.type);
                 break;
         }
@@ -139,12 +143,20 @@ export class RewardSystem {
         console.log("보너스 타일 ", reward.value);
         setSequence(true);
     }
-    
+
     // 병합 데미지 50% 감소
     reduceMergeDamage(reward) {
-        console.log("병합 데미지 감소: "+reward+"%");
+        console.log("병합 데미지 감소: " + reward + "%");
         setReduceMergeDamage(true)
     }
+    // 5턴 병합 방지
+    isMergeRestrictedUntil(reward) {
+        console.log("병합 " + reward.value + "회 불가");
+        setisMergeRestrictedUntil(true, reward.value);
+
+    }
+
+
 
     initRewardOptions() {
         // 턴별 보상이 객체의 배열로 저장되어 있음
@@ -192,25 +204,11 @@ export class RewardSystem {
                     type: this.types.heal,
                 },
                 {
-                    icon: "🩻",
-                    name: "타일 숫자 감소",
-                    description: "랜덤한 타일의 숫자를 절반으로 감소시킵니다.",
-                    value: 0.5,
-                    type: this.types.bonus_block,
-                },
-                {
                     icon: "💪",
                     name: "다음 병합 대미지 50%감소 2",
                     description: "다음 두 번의 시스템 턴에서 병합 데미지를 절반으로 줄입니다.",
                     value: 0.5,
                     type: this.types.reduce_damage,
-                },
-                {
-                    icon: "4️⃣",
-                    name: "알수없는 배치",
-                    description: "모든 배치된 타일들의 위치를 랜덤으로 뒤바꿉니다.",
-                    value: 50,
-                    type: this.types.bonus_block,
                 }
             ],
             // 7턴 방치 보상
@@ -221,20 +219,6 @@ export class RewardSystem {
                     description: "체력을 500 만큼 회복합니다.",
                     value: 500,
                     type: this.types.heal,
-                },
-                {
-                    icon: "🩻",
-                    name: "전체타일 숫자 절반",
-                    description: "모든 타일의 숫자를 절반으로 줄입니다",
-                    value: 0.5,
-                    type: this.types.bonus_block,
-                },
-                {
-                    icon: "🆗",
-                    name: "원하는대로!",
-                    description: "플레이어가 원하는 타일 하나를 제거합니다",
-                    value: 2,
-                    type: this.types.bonus_block,
                 },
                 {
                     icon: "🎆",
