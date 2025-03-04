@@ -149,7 +149,7 @@ export class RewardSystem {
             // 3턴 방치 보상
             3: [
                 {
-                    icon: "❤️",
+                    icon: "💊",
                     name: "체력 회복 1",
                     description: "체력을 50 만큼 회복합니다.",
                     value: 50,
@@ -161,27 +161,115 @@ export class RewardSystem {
                     description: "다음 1턴에는 타일을 2개 배치할 수 있습니다.",
                     value: 2,
                     type: this.types.bonus_block,
+                },
+                {
+                    icon: "💪",
+                    name: "다음 병합 대미지 50%감소 1",
+                    description: "1회성으로 다음턴에 발생하는 병합 대미지를 절반으로 줄입니다.",
+                    value: 0.5,
+                    type: this.types.bonus_block,
+                },
+                {
+                    icon: "🪚",
+                    name: "작은 타일 제거",
+                    description: "격자에서 가장 작은 숫자의 타일(예: 2나 4) 하나를 제거합니다.",
+                    value: 2,
+                    type: this.types.bonus_block,
+                },
+                {
+                    icon: "5️⃣",
+                    name: "타일 위치 변경",
+                    description: "두 타일을 선택해서 위치를 바꿉니다.",
+                    value: 2,
+                    type: this.types.bonus_block,
                 }
+
             ],
             // 5턴 방치 보상
             5: [
                 {
-                    icon: "❤️",
+                    icon: "💖",
                     name: "체력 회복 2",
-                    description: "체력을 200 만큼 회복합니다.",
-                    value: 200,
+                    description: "체력을 150 만큼 회복합니다.",
+                    value: 150,
                     type: this.types.heal,
+                },
+                {
+                    icon: "🩻",
+                    name: "타일 숫자 감소",
+                    description: "랜덤한 타일의 숫자를 절반으로 감소시킵니다.",
+                    value: 0.5,
+                    type: this.types.bonus_block,
+                },
+                {
+                    icon: "💪",
+                    name: "다음 병합 대미지 50%감소 2",
+                    description: "다음 두 번의 시스템 턴에서 병합 데미지를 절반으로 줄입니다.",
+                    value: 0.5,
+                    type: this.types.bonus_block,
+                },
+                {
+                    icon: "4️⃣",
+                    name: "알수없는 배치",
+                    description: "모든 배치된 타일들의 위치를 랜덤으로 뒤바꿉니다.",
+                    value: 50,
+                    type: this.types.bonus_block,
                 }
             ],
             // 7턴 방치 보상
             7: [
                 {
-                    icon: "❤️",
+                    icon: "❤️‍🔥",
                     name: "체력 회복 3",
                     description: "체력을 500 만큼 회복합니다.",
                     value: 500,
                     type: this.types.heal,
-                }
+                },
+                {
+                    icon: "🩻",
+                    name: "전체타일 숫자 절반",
+                    description: "모든 타일의 숫자를 절반으로 줄입니다",
+                    value: 0.5,
+                    type: this.types.bonus_block,
+                },
+                {
+                    icon: "🆗",
+                    name: "원하는대로!",
+                    description: "플레이어가 원하는 타일 하나를 제거합니다",
+                    value: 2,
+                    type: this.types.bonus_block,
+                },
+                {
+                    icon: "🎆",
+                    name: "다음 병합 대미지 무효화",
+                    description: "다음 두 번의 시스템 턴에서 병합 데미지를 무효화 시킵니다.",
+                    value: 100,
+                    type: this.types.bonus_block,
+                },
+            ],
+            // 9턴 방치 보상
+            9: [
+                {
+                    icon: "💉💊",
+                    name: "체력 회복 4 ",
+                    description: "체력을 1000 회복 병합 데미지 무효화(7턴턴).",
+                    value: 1000,
+                    type: this.types.heal,
+                },
+                {
+                    icon: "🎆",
+                    name: "대천사의 축복",
+                    description: "5턴 동안 병합을 방지합니다",
+                    value: 5,
+                    type: this.types.bonus_block,
+                },
+                {
+                    icon: "⛓",
+                    name: "병합 불가 타일 ",
+                    description: "블록타일(병합불가 타일)3개 배치합니다다",
+                    value: 5,
+                    type: this.types.bonus_block,
+                },
             ]
         }
     }
