@@ -744,12 +744,12 @@ function simulate() {
             bestMove = [direction];
         } else if (totalScore === maxTotalScore) {
             bestMove.push(direction);
-        } else if (totalScore < minTotalScore) {
-            minTotalScore = totalScore;
-            worstMove = [direction];
-        } else if (totalScore === minTotalScore) {
-            worstMove.push(direction);
         }
+
+        if (totalScore < minTotalScore) {
+            minTotalScore = totalScore;
+            worstMove = direction;
+        } 
 
         // 병합 점수 최대값 기록
         if (mergeScore > maxMergeScore) {
@@ -766,7 +766,8 @@ function simulate() {
 
     if (isMindControl) {
         isMindControl = false;
-        BestMove = worstMove[Math.floor(Math.random() * worstMove.length)];
+        console.log(worstMove);
+        BestMove = worstMove;
         setCurrentState("Move");
     } else if (bestMove.length > 0) {
         // 병합 가능한 방향 중 랜덤 선택
