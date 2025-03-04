@@ -4,7 +4,6 @@ import {
     setHP,
     setSequence,
     setReduceMergeDamage,
-    setisMergeRestrictedUntil
 } from "./Board.js";
 import { playSound } from "./Sound.js";
 
