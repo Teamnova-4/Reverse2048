@@ -53,7 +53,7 @@ body {
     background-color: #bbada0;
     border-radius: 6px;
     padding: 10px;
-    margin: 10px auto;
+    margin: 10px auto 10px 10px;
     position: relative;
 }
 
@@ -70,6 +70,16 @@ body {
 .grid.size-5 {
     grid-template-columns: repeat(5, 100px);
     grid-template-rows: repeat(5, 100px);
+}
+
+.time-limit-bar.size-3{
+    height: 315px;
+}
+.time-limit-bar.size-4{
+    height: 425px;
+}
+.time-limit-bar.size-5{
+    height: 535px;
 }
 
 
@@ -435,6 +445,48 @@ body {
     border-radius: 5px;
     cursor: pointer;
     caret-color: transparent;
+}
+
+
+.horizontal-container{
+    display: flex;
+    align-items: flex-end;
+    margin: 0px auto;
+}
+
+/* 시간제한바 */
+.time-limit-bar{
+    width: 15px;
+    height: 340px;
+    background-color: #ddd;
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.time-limit-img{
+    width: 30px;
+    height: 30px;
+}
+
+.time-limit{
+    width: 100%; /* 너비를 꽉 채움 */
+    height: 100%; /* 60% 차오름 */
+    background: #4caf50; /* 초록색 */
+    position: absolute;
+    bottom: 0; /* 아래에서 시작 */
+}
+
+
+.time-limit-content {
+    width: 200px;
+    height: 200px;
+    background: lightblue;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* 체력바 */
