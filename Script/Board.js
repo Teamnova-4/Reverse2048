@@ -16,7 +16,7 @@ let BestMove;
 let mergeScore = 0;
 
 let baseLimitTime = 6;
-let timer;
+let _timer;
 let limitTime = baseLimitTime;
 let gameTime = 0;
 let gameTimer;
@@ -32,6 +32,7 @@ let coolTime = 0;
 
 let isSequence = false;
 let isReduceDamage = false;
+let reducePersent;
 let isMindControl = false;
 let isMergeRestrictedUntil = 0;
 
@@ -44,10 +45,10 @@ let _giveUpTurnCount = 0; // 연속으로 턴 방치한 횟수 기록
 
 // 외부에서 timer 조회, 할당하기 위해 만든 함수
 export function getTimer() {
-    return timer;
+    return _timer;
 }
-export function setTimer(_timer) {
-    timer = _timer
+export function setTimer(__timer) {
+    _timer = __timer
 }
 
 export function getGiveUpTurnCount() {
@@ -125,6 +126,9 @@ function initBoard() {
         } else if (clickMode === "skillMode") {
             UseSkillToTile(cell)
         }
+
+        _giveUpTurnCount = 0;
+        printGiveUpTurn(_giveUpTurnCount);
     });
     DrawBoard();
 }
@@ -228,10 +232,15 @@ export function setSequence(value) {
 }
 
 export function setReduceMergeDamage(value) {
+<<<<<<< HEAD
     isReduceDamage = value; // isReduceDamage 값을 설정
 }
 export function setisMergeRestrictedUntil(value) {
     isMergeRestrictedUntil = value; // 보상에서의 '5'(value) 회 병합금지지 
+=======
+    reducePersent = value;
+    isReduceDamage = true; // isReduceDamage 값을 설정
+>>>>>>> f5a74483fcdbd2204c91469ae3e6924af10e2b26
 }
 
 // 체력 데이터 초기화
@@ -256,18 +265,18 @@ function setCurrentState(state) {
             setCurrentState("Control");
             break;
         case "Control":
-            timer = startTimer();
+            _timer = startTimer();
             document.getElementById('nextnumber-container').classList.remove('emphasis');
             clearTimeout(idleTimer); // 이전 타이머 클리어
-            idleTimer = setTimeout(() => {
-                Cell.GridForEach(cell => {
-                    if (cell.tile) {
-                        cell.tile.html.textContent = ""; // 랜덤 숫자 표시
-                        cell.tile.html.dataset.value = 2; // data-value 설정
+            // idleTimer = setTimeout(() => {
+            //     Cell.GridForEach(cell => {
+            //         if (cell.tile) {
+            //             cell.tile.html.textContent = ""; // 랜덤 숫자 표시
+            //             cell.tile.html.dataset.value = 2; // data-value 설정
 
-                    }
-                });
-            }, 2000); // 2초 후 랜덤 숫자 표시
+            //         }
+            //     });
+            // }, 2000); // 2초 후 랜덤 숫자 표시
 
             insertTile = Math.random() < 0.9 ? 2 : 4;
             document.getElementById("next").innerText = insertTile;
@@ -277,9 +286,7 @@ function setCurrentState(state) {
 
             break;
         case "FinishControl":
-            clearInterval(timer);
-            _giveUpTurnCount = 0; // 플레이어가 행동을 했으므로 방치턴 카운터 초기화
-            printGiveUpTurn(_giveUpTurnCount);
+            clearInterval(_timer);
             setTimeout(() => {
                 setCurrentState("Simulate");
             }, 500);
@@ -506,49 +513,76 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("game-over-screen").classList.add("hidden");
     });
 });
-function finishTurn() {
 
-    Cell.GridForEach((cell) => {
-        if (cell.tile) {
-            cell.tile.isMerged = false;
+function finishTurn(isForce = false) {
+    console.log("finishTurn: ", _giveUpTurnCount);
+    // giveUpTurnCount =  3, 5, 7 인경우 보상 획득 팝업 출력 
+    if (!isForce &&
+        (_giveUpTurnCount >= 3 &&
+            (_giveUpTurnCount - 3) % 2 === 0 && _giveUpTurnCount <= 7)) {
 
-            if (cell.tile.isExplode) {
-                explodeTile(cell.row, cell.col);
-            }
+        rewardSystem.showRewards(_giveUpTurnCount, (reward) => {
+            finishTurn(true);
+        });
+    } else {
+        printGiveUpTurn(_giveUpTurnCount);
 
+<<<<<<< HEAD
             // notMergedCount가 5이면 값 *2 증가
             if (cell.tile.notMergedCount === 5) {
                 cell.tile.value * 2;
                 console.log("병합을 하지 못한 횟수가 5회가 되어 타일의 값이 *2가 증가합니다");
                 // 연속 5회 병합되지 않음을
                 cell.tile.notMergedCount = 0;
+=======
+        Cell.GridForEach((cell) => {
+            if (cell.tile) {
+                cell.tile.isMerged = false;
+
+                if (cell.tile.isExplode) {
+                    explodeTile(cell.row, cell.col);
+                }
+
+                // notMergedCount가 3이면 값 +2 증가
+                if (cell.tile.notMergedCount === 5) {
+                    if (cell.tile.type === "Number") {
+                        cell.tile.value * 2;
+                        console.log("병합을 하지 못한 횟수가 5회가 되어 타일의 값이 *2가 증가합니다");
+                        // 연속 5회 병합되지 않음을
+                        cell.tile.notMergedCount = 0;
+                    }
+
+                }
+>>>>>>> f5a74483fcdbd2204c91469ae3e6924af10e2b26
             }
-        }
-    });
+        });
 
-    if (coolTime == 0) {
-        if (playerSkillMaxStack > playerSkillStack) {
-            playerSkillStack++;
-            coolTime = (playerSkillStack == playerSkillMaxStack) ? 0 : playerSkillCoolTime;
+        if (coolTime == 0) {
+            if (playerSkillMaxStack > playerSkillStack) {
+                playerSkillStack++;
+                coolTime = (playerSkillStack == playerSkillMaxStack) ? 0 : playerSkillCoolTime;
+            }
+            playerSkillNextCoolTime--;
         }
-        playerSkillNextCoolTime--;
-    }
 
-    // 턴 증가
-    turn += 1;
-    limitTime = baseLimitTime;
-    document.getElementById("turn").innerText = turn;
-    // 쿨타임 감소
-    if (coolTime > 0) {
-        coolTime -= 1;
-        updateCooltime();
+        // 턴 증가
+        turn += 1;
+        limitTime = baseLimitTime;
+        document.getElementById("turn").innerText = turn;
+        // 쿨타임 감소
+        if (coolTime > 0) {
+            coolTime -= 1;
+            updateCooltime();
+        }
+        // 다음 턴 준비
+        setCurrentState("Control");
     }
-    // 다음 턴 준비
-    setCurrentState("Control");
 }
 
+let giveupFlag = false;
+
 export function startTimer() {
-    // showHtmlTimeCount(0);
+
     const timeBar = document.getElementById("time-limit");
     const divideBy = 20;
     const OneSecond = 1000;
@@ -559,32 +593,34 @@ export function startTimer() {
         if (countTime % divideBy === 0) {
 
             if ((countTime / divideBy) % limitTime == 0) {
-                divideAllTileByNumber();
+                // divideAllTileByNumber();
                 countTime = 0;
                 _giveUpTurnCount += 1; // 방치턴 횟수 기록
                 printGiveUpTurn(_giveUpTurnCount);
                 console.log("startTimer: 연속으로 넘긴 턴 횟수 = ", _giveUpTurnCount);
-                // giveUpTurnCount =  3, 5, 7 인경우 보상 획득 팝업 출력 
-                if (_giveUpTurnCount >= 3 && (_giveUpTurnCount - 3) % 2 === 0 && _giveUpTurnCount <= 7) {
-                    // console.log(giveUpTurnCount);
-                    rewardSystem.showRewards(_giveUpTurnCount);
-                }
+
+                clearInterval(this);
+                setCurrentState("FinishControl");
             }
-            // 1초마다 event3 실행
-            // showHtmlTimeCount(countTime / divideBy);
-
         }
-        timeBar.style.height = `${100 * gauge}%`
+        timeBar.style.height = `${100 * (gauge > 0.95 ? 1 : gauge)}%`;
 
-        // 기본 색상 :rgb(211, 157, 106) (RGB: 153, 124, 97)
-        let baseR = 211; // 기본 R 값
-        let baseG = 157; // 기본 G 값
-        let baseB = 106;  // 기본 B 값
+        // 채도가 낮은 색상 계산
+        const maxColorValue = 200; // 최대 RGB 값
+        const minColorValue = 50; // 채도를 낮추기 위한 최소 값 (회색 성분)
 
-        // R 값만 빨간색으로 변하도록 (gauge가 0에서 1로 변화)
-        timeBar.style.backgroundColor = `rgb(${Math.min(255, baseR + (255 - baseR) * (1 - gauge))}, ${baseG}, ${baseB})`;
+        // R: minColorValue -> maxColorValue
+        const r = Math.floor(minColorValue + (maxColorValue - minColorValue) * (1 - gauge));
+        // G: maxColorValue -> minColorValue
+        const g = Math.floor(maxColorValue - (maxColorValue - minColorValue) * (1 - gauge));
+        // B: minColorValue로 고정
+        const b = minColorValue;
+
+        timeBar.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
 
     }, OneSecond / divideBy);
+
+    console.log("생성된 턴 타이머 id = ", timer);
 
     return timer;
 }
@@ -735,6 +771,13 @@ function simulate() {
         }
     });
 
+    let isEmpty = true;
+    Cell.GridForEach((cell) => {
+        if (cell.tile) {
+            isEmpty = false;
+        }
+    });
+
     if (isMindControl) {
         isMindControl = false;
         BestMove = worstMove[Math.floor(Math.random() * worstMove.length)];
@@ -744,7 +787,12 @@ function simulate() {
         BestMove = bestMove[Math.floor(Math.random() * bestMove.length)];
         console.log("Best Move (merge): ", BestMove);
         setCurrentState("Move");
-    } else {
+    } else if (isEmpty) {
+        // 타일이 하나도 없으면 그냥 다음으로 넘어감
+        console.log("보드에 타일이 하나도 없음")
+        finishTurn();
+    }
+    else {
         // 이동 불가능한 경우
         console.log("No valid moves");
         setCurrentState("End");
@@ -779,13 +827,21 @@ function move() {
     }
 
     // 만약 병합데미지 감소가 활성화 되어있다면 데미지 감소
+<<<<<<< HEAD
     if (isReduceDamage) {
         mergeScore /= 2;
         isReduceDamage = false;
+=======
+    if (isReduceDamage && mergeScore > 0) {
+        console.log("기존 데미지 : " + mergeScore);
+        mergeScore = Math.round(mergeScore * reducePersent); // 반올림 처리
+        isReduceDamage = false;
+        console.log("병합 데미지 감소률: " + reducePersent);
+>>>>>>> f5a74483fcdbd2204c91469ae3e6924af10e2b26
     }
     // mergeScore만큼 플레이어 체력 감소
     let damagedHP = playerHP - mergeScore;
-    console.log("병합으로 인한 데미지 : ", mergeScore);
+    console.log("병합으로 인한 데미지 : " + mergeScore);
     setHP(damagedHP);
 
     setTimeout(() => { setCurrentState("FinishTurn"); }, 200);

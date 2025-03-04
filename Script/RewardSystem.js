@@ -1,11 +1,7 @@
 import {
-    getGiveUpTurnCount,
-    getTimer,
     playerHP,
     setGiveUpTurnCount,
     setHP,
-    setTimer,
-    startTimer,
     setSequence,
     setReduceMergeDamage,
     setisMergeRestrictedUntil
@@ -25,11 +21,9 @@ export class RewardSystem {
     }
 
     // 보상 선택 UI 표시
-    showRewards(giveUpTurnCount) {
+    showRewards(giveUpTurnCount, clickCallback) {
         console.log("🎁 보상 선택 UI 표시");
         // 턴 타이머 정지
-        clearInterval(getTimer());
-
         const overlay = document.createElement("div");
         overlay.classList.add("reward-overlay");
 
@@ -62,8 +56,11 @@ export class RewardSystem {
                 overlay.remove();
 
                 // 턴 타이머 초기화 및 _giveUpTurnCount 0으로 초기화
-                setTimer(startTimer());
+                // setTimer(startTimer());
                 setGiveUpTurnCount(0);
+
+                //callback
+                clickCallback(reward);
             });
 
             cardsContainer.appendChild(rewardCard);
@@ -76,8 +73,9 @@ export class RewardSystem {
         noneSelectBtn.addEventListener("click", () => {
             // 클릭시 멈췄던 턴 타이머 계속 진행
             console.log("보상 선택 안함");
-            setTimer(startTimer());
+            // setTimer(startTimer());
             overlay.remove();
+            clickCallback(null);
         });
 
         container.appendChild(cardsContainer);
@@ -92,20 +90,30 @@ export class RewardSystem {
         let rewards = [];
         let rewardOptions = this.rewardOptions[turn]; // 해당 턴의 보상객체 배열
         console.log("리워드 원본", rewardOptions);
-        let rewardOptionsCopy = JSON.parse(JSON.stringify(rewardOptions)); // 복사본
-        console.log("리워드 카피 필터링", rewardOptionsCopy);
 
-        if (rewardOptions) {
-            for (let i = rewardOptionsCopy.length; i > 0; i--) {
-                // 0과 i 사이의 랜덤한 인덱스를 선택합니다.
-                const j = Math.floor(Math.random() * (i + 1));
-                [rewardOptionsCopy[i], rewardOptionsCopy[j]] = [rewardOptionsCopy[j], rewardOptionsCopy[i]];
-            }
+        // 보상이 없거나 빈 배열일 경우 처리
+        if (!rewardOptions || rewardOptions.length === 0) {
+            console.warn(`턴 ${turn}에 대한 보상이 없습니다.`);
+            return rewards;
         }
 
-        // console.log(rewardOptionsCopy);
+        let rewardOptionsCopy = JSON.parse(JSON.stringify(rewardOptions)); // 복사본
+        console.log("리워드 카피", rewardOptionsCopy);
+
+        // Fisher-Yates 셔플 수정
+        for (let i = rewardOptionsCopy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [rewardOptionsCopy[i], rewardOptionsCopy[j]] = [rewardOptionsCopy[j], rewardOptionsCopy[i]];
+        }
+
+        // 보상 개수가 rewardCount보다 적을 경우 처리
+        if (rewardOptionsCopy.length < rewardCount) {
+            console.warn(`턴 ${turn}의 보상 개수가 ${rewardCount}보다 적습니다. 모든 보상을 반환합니다.`);
+            return rewardOptionsCopy;
+        }
+
+        // rewardCount만큼 보상 선택
         rewards = rewardOptionsCopy.slice(0, rewardCount);
-        rewards = rewards.filter(item => item !== undefined);
         return rewards;
     }
 
@@ -125,8 +133,6 @@ export class RewardSystem {
                 break;
 
             case this.types.unMerged:
-                this.
-                    default:
                 console.log("알 수 없는 보상 타입:", reward.type);
                 break;
         }
@@ -148,6 +154,8 @@ export class RewardSystem {
     reduceMergeDamage(reward) {
         console.log("병합 데미지 감소: " + reward + "%");
         setReduceMergeDamage(true)
+        console.log("병합 데미지 감소: " + reward.value + "%");
+        setReduceMergeDamage(reward.value)
     }
     // 5턴 병합 방지
     isMergeRestrictedUntil(reward) {
@@ -224,8 +232,8 @@ export class RewardSystem {
                     icon: "🎆",
                     name: "다음 병합 대미지 무효화",
                     description: "다음 두 번의 시스템 턴에서 병합 데미지를 무효화 시킵니다.",
-                    value: 100,
-                    type: this.types.bonus_block,
+                    value: 0,
+                    type: this.types.reduce_damage,
                 },
             ],
             // 9턴 방치 보상
