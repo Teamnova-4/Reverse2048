@@ -200,15 +200,16 @@ export class Cell {
         if (this.tile) {
             this.tile.html.className = "tile";
             this.tile.html.innerHTML = "";
+            this.tile.html.dataset.value = this.tile.value;
             if (this.tile.type === "Number") {
                 this.tile.html.textContent = this.tile.value;
-                this.tile.html.dataset.value = this.tile.value;
             } else if (this.tile.type === "Bomb") {
                 const img = document.createElement("img");
                 img.className = "bomb";
                 img.src = "Resources/bomb.png";
                 img.style.width = "100%";
                 this.tile.html.appendChild(img);
+                this.tile.html.classList.add("tile-bomb");
             }
 
             if (this.tile.isShield) {
