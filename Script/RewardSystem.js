@@ -131,7 +131,6 @@ export class RewardSystem {
             case this.types.reduce_damage:
                 this.reduceMergeDamage(reward);
                 break;
-
             case this.types.unMerged:
                 console.log("알 수 없는 보상 타입:", reward.type);
                 break;
@@ -192,13 +191,6 @@ export class RewardSystem {
                     description: "1회성으로 다음턴에 발생하는 병합 대미지를 절반으로 줄입니다.",
                     value: 0.5,
                     type: this.types.reduce_damage,
-                },
-                {
-                    icon: "5️⃣",
-                    name: "타일 위치 변경",
-                    description: "두 타일을 선택해서 위치를 바꿉니다.",
-                    value: 2,
-                    type: this.types.bonus_block,
                 }
 
             ],

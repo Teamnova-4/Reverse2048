@@ -833,7 +833,7 @@ function move() {
         isReduceDamage = false;
 =======
     if (isReduceDamage && mergeScore > 0) {
-        console.log("기존 데미지 : " + mergeScore);
+        console.log("기존 데미지 : "+ mergeScore);
         mergeScore = Math.round(mergeScore * reducePersent); // 반올림 처리
         isReduceDamage = false;
         console.log("병합 데미지 감소률: " + reducePersent);
@@ -1060,8 +1060,6 @@ function setMergeScore(score) {
 function getMergeScore() {
     return mergeScore;
 }
-
-
 
 export {
     clickSkill,
