@@ -587,7 +587,6 @@ export function startTimer() {
             }
         }
         timeBar.style.height = `${100 * (gauge > 0.95 ? 1 : gauge)}%`
-        console.log(timeBar.style.height);
 
         // 기본 색상 :rgb(211, 157, 106) (RGB: 153, 124, 97)
         let baseR = 211; // 기본 R 값
