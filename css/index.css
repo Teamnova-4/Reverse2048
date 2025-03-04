@@ -273,7 +273,7 @@ body {
     font-weight: bold;
     color: #eee4da;
     /* 줄바꿈 방지 */
-    white-space: nowrap;
+    white-space: word-break;
 }
 
 .turn-value {

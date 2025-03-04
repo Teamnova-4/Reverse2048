@@ -26,7 +26,6 @@ export class RewardSystem {
         // 턴 타이머 정지
         clearInterval(getTimer());
 
-        console.log("_giveUpTurnCount", getGiveUpTurnCount());
         const overlay = document.createElement("div");
         overlay.classList.add("reward-overlay");
 

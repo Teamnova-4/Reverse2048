@@ -106,6 +106,13 @@ function DrawBoard() {
     Cell.DrawAll();
 }
 
+
+const giveUpTurnElement = document.getElementById('giveup-turn');
+console.log(giveUpTurnElement);
+function printGiveUpTurn(turn){
+    giveUpTurnElement.textContent = turn;
+}
+
 /**
  * 게임 보드를 초기화하는 함수
  */
@@ -257,6 +264,7 @@ function setCurrentState(state) {
         case "FinishControl":
             clearInterval(timer);
             _giveUpTurnCount = 0; // 플레이어가 행동을 했으므로 방치턴 카운터 초기화
+            printGiveUpTurn(_giveUpTurnCount);
             setTimeout(() => {
                 setCurrentState("Simulate");
             }, 500);
@@ -527,7 +535,7 @@ function finishTurn() {
 }
 
 export function startTimer() {
-    showHtmlTimeCount(0);
+    // showHtmlTimeCount(0);
     const timeBar = document.getElementById("time-limit");
     const divideBy = 20;
     const OneSecond = 1000;
@@ -541,6 +549,7 @@ export function startTimer() {
                 divideAllTileByNumber();
                 countTime = 0;
                 _giveUpTurnCount += 1; // 방치턴 횟수 기록
+                printGiveUpTurn(_giveUpTurnCount);
                 console.log("startTimer: 연속으로 넘긴 턴 횟수 = ", _giveUpTurnCount);
                 // giveUpTurnCount =  3, 5, 7 인경우 보상 획득 팝업 출력 
                 if (_giveUpTurnCount >= 3 && (_giveUpTurnCount - 3) % 2 === 0 && _giveUpTurnCount <= 7) {
@@ -549,7 +558,7 @@ export function startTimer() {
                 }
             }
             // 1초마다 event3 실행
-            showHtmlTimeCount(countTime / divideBy);
+            // showHtmlTimeCount(countTime / divideBy);
 
         }
         timeBar.style.height = `${100 * gauge}%`
@@ -823,7 +832,7 @@ function UseSkill() {
             break;
         case "timeAmplification": // 완료
             limitTime = 15;
-            showHtmlTimeCount(limitTime);
+            // showHtmlTimeCount(limitTime);
             break;
         case "shield": // 미완료
             // 선택필요 스킬
