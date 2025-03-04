@@ -13,8 +13,16 @@ function initAudio() {
     audioMap.set('emergency', new Audio('../assets/sound/주의신호.mp3'));
     audioMap.set('bomb', new Audio('../assets/sound/폭탄.mp3'));
 
-    audioMap.set('weakAttack', new Audio('../assets/sound/약공격.mp3'));
-    audioMap.set('strongAttack', new Audio('../assets/sound/강공격.mp3'));
+    audioMap.set('damage_4', new Audio('../assets/sound/damage_4.mp3'));
+    audioMap.set('damage_8', new Audio('../assets/sound/damage_8.mp3'));
+    audioMap.set('damage_16', new Audio('../assets/sound/damage_16.mp3'));
+    audioMap.set('damage_32', new Audio('../assets/sound/damage_32.mp3'));
+    audioMap.set('damage_64', new Audio('../assets/sound/damage_64.mp3'));
+    audioMap.set('damage_128', new Audio('../assets/sound/damage_128.mp3'));
+    audioMap.set('damage_256', new Audio('../assets/sound/damage_256.mp3'));
+    audioMap.set('damage_512', new Audio('../assets/sound/damage_512.mp3'));
+    audioMap.set('damage_1024', new Audio('../assets/sound/damage_1024.mp3'));
+    audioMap.set('damage_2048', new Audio('../assets/sound/damage_2048.mp3'));
 
 
 

@@ -271,6 +271,8 @@ export class Cell {
             targetCell.tile.merge(movingTile); // 타일 합치기
         } else {
             targetCell.setTile(movingTile); // 그냥 이동
+            movingTile.notMergedCount++; // 병합되지 않았으므로 병합되지않음음 카운트 증가
+            console.log("병합이 되지 않았습니다! :" + movingTile.notMergedCount)
         }
 
         // 4. 애니메이션 종료 후 실제 이동 처리
@@ -319,7 +321,7 @@ export class Tile {
 
         this.isExplode = false;
         this.isMerged = false;
-
+        this.notMergedCount = 0; // 병합되지 않은 횟수
         this.cell = null;
     }
 
@@ -347,6 +349,7 @@ export class Tile {
     merge(other) {
         this.value += other.value;
         this.isMerged = true;
+        this.notMergedCount = 0; // 병합되지 않은 횟수
         if (this.type === "Bomb") {
             this.isExplode = true;
         }

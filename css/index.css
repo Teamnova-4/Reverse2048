@@ -53,7 +53,7 @@ body {
     background-color: #bbada0;
     border-radius: 6px;
     padding: 10px;
-    margin: 10px auto;
+    margin: 10px auto 10px 10px;
     position: relative;
 }
 
@@ -70,6 +70,16 @@ body {
 .grid.size-5 {
     grid-template-columns: repeat(5, 100px);
     grid-template-rows: repeat(5, 100px);
+}
+
+.time-limit-bar.size-3{
+    height: 315px;
+}
+.time-limit-bar.size-4{
+    height: 425px;
+}
+.time-limit-bar.size-5{
+    height: 535px;
 }
 
 
@@ -437,6 +447,48 @@ body {
     caret-color: transparent;
 }
 
+
+.horizontal-container{
+    display: flex;
+    align-items: flex-end;
+    margin: 0px auto;
+}
+
+/* 시간제한바 */
+.time-limit-bar{
+    width: 15px;
+    height: 340px;
+    background-color: #ddd;
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.time-limit-img{
+    width: 30px;
+    height: 30px;
+}
+
+.time-limit{
+    width: 100%; /* 너비를 꽉 채움 */
+    height: 100%; /* 60% 차오름 */
+    background: #4caf50; /* 초록색 */
+    position: absolute;
+    bottom: 0; /* 아래에서 시작 */
+}
+
+
+.time-limit-content {
+    width: 200px;
+    height: 200px;
+    background: lightblue;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* 체력바 */
 .health-container {
     box-sizing: border-box;
@@ -560,6 +612,20 @@ body {
 /* 피격 시 적용할 클래스 */
 .shake {
     animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+:root {
+    --power-of-two-values: 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536;
+    /* ... 필요한 만큼 추가 ... */
+}
+
+/* 2의 거듭제곱도 아니고, 0, -10도 아닌 모든 타일에 대한 통일된 스타일 */
+/* :not() 안에 data-value 조건을 모두 넣어야 함 */
+.tile:not([data-value="0"]):not([data-value="-10"]):not([data-value="2"]):not([data-value="4"]):not([data-value="8"]):not([data-value="16"]):not([data-value="32"]):not([data-value="64"]):not([data-value="128"]):not([data-value="256"]):not([data-value="512"]):not([data-value="1024"]):not([data-value="2048"])
+/* ... 더 큰 값들을 추가해야 하는 경우, 여기에 계속 추가 ... */
+{
+    background-color: rgb(124, 136, 201);  /* 원하는 통일된 배경색 */
+    color: black;        /* 원하는 통일된 글자색 */
 }
 
 

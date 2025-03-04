@@ -132,10 +132,38 @@ export function setHP(hp) {
         damageText.textContent = `- ${damage}`;
         damageText.classList.add("show");
 
-        if (damage <= 16) {
-            playSound('weakAttack');
-        } else {
-            playSound('strongAttack');
+        if (damage < 4) {
+            // 4 미만의 데미지 처리 (필요한 경우)
+        } else if (damage >= 4 && damage < 8) {
+            playSound('damage_4'); // 4와 8 사이의 데미지
+            console.log("sound: " + 4);
+        } else if (damage >= 8 && damage < 16) {
+            playSound('damage_8'); // 8과 16 사이의 데미지
+            console.log("sound: " + 8);
+        } else if (damage >= 16 && damage < 32) {
+            playSound('damage_16'); // 16과 32 사이의 데미지
+            console.log("sound: " + 16);
+        } else if (damage >= 32 && damage < 64) {
+            playSound('damage_32'); // 32와 64 사이의 데미지
+            console.log("sound: " + 32);
+        } else if (damage >= 64 && damage < 128) {
+            playSound('damage_64'); // 64와 128 사이의 데미지
+            console.log("sound: " + 64);
+        } else if (damage >= 128 && damage < 256) {
+            playSound('damage_128'); // 128과 256 사이의 데미지
+            console.log("sound: " + 128);
+        } else if (damage >= 256 && damage < 512) {
+            playSound('damage_256'); // 256과 512 사이의 데미지
+            console.log("sound: " + 256);
+        } else if (damage >= 512 && damage < 1024) {
+            playSound('damage_512'); // 512와 1024 사이의 데미지
+            console.log("sound: " + 512);
+        } else if (damage >= 1024 && damage < 2048) {
+            playSound('damage_1024'); // 1024와 2048 사이의 데미지
+            console.log("sound: " + 1024);
+        } else if (damage >= 2048) {
+            playSound('damage_2048'); // 2048 이상의 데미지
+            console.log("sound: " + 2048);
         }
 
         setTimeout(() => {
@@ -212,12 +240,8 @@ function setCurrentState(state) {
             idleTimer = setTimeout(() => {
                 Cell.GridForEach(cell => {
                     if (cell.tile) {
-                        const randomValue = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048];
-                        const randomIndex = Math.floor(Math.random() * randomValue.length);
-                        const displayedValue = randomValue[randomIndex]; // 랜덤 숫자 생성
-
-                        cell.tile.html.textContent = displayedValue; // 랜덤 숫자 표시
-                        cell.tile.html.dataset.value = displayedValue; // data-value 설정
+                        cell.tile.html.textContent = ""; // 랜덤 숫자 표시
+                        cell.tile.html.dataset.value = 2; // data-value 설정
 
                     }
                 });
@@ -468,6 +492,16 @@ function finishTurn() {
             if (cell.tile.isExplode) {
                 explodeTile(cell.row, cell.col);
             }
+
+            // notMergedCount가 3이면 값 +2 증가
+            if (cell.tile.notMergedCount === 3) {
+                if (cell.tile.type === "Number") {
+                    cell.tile.value += 2;
+                    console.log("병합을 하지 못한 횟수가 3회가 되어 타일의 값이 +2가 증가합니다");
+                }
+                cell.tile.notMergedCount = 0;
+                //cell.draw();  // 이 부분은 제거하거나 주석처리
+            }
         }
     });
 
@@ -494,24 +528,42 @@ function finishTurn() {
 
 export function startTimer() {
     showHtmlTimeCount(0);
+    const timeBar = document.getElementById("time-limit");
+    const divideBy = 20;
+    const OneSecond = 1000;
     let countTime = 0;
     let timer = setInterval(() => {
         countTime++;
+        const gauge = 1 - countTime / divideBy / limitTime;
+        if (countTime % divideBy === 0) {
 
-        if (countTime % limitTime == 0) {
-            divideAllTileByNumber();
-            countTime = 0;
-            _giveUpTurnCount += 1; // 방치턴 횟수 기록
-            console.log("startTimer: 연속으로 넘긴 턴 횟수 = ", _giveUpTurnCount);
-            // giveUpTurnCount =  3, 5, 7 인경우 보상 획득 팝업 출력 
-            if (_giveUpTurnCount >= 3 && (_giveUpTurnCount - 3) % 2 === 0 && _giveUpTurnCount <= 7) {
-                // console.log(giveUpTurnCount);
-                rewardSystem.showRewards(_giveUpTurnCount);
+            if ((countTime / divideBy) % limitTime == 0) {
+                divideAllTileByNumber();
+                countTime = 0;
+                _giveUpTurnCount += 1; // 방치턴 횟수 기록
+                console.log("startTimer: 연속으로 넘긴 턴 횟수 = ", _giveUpTurnCount);
+                // giveUpTurnCount =  3, 5, 7 인경우 보상 획득 팝업 출력 
+                if (_giveUpTurnCount >= 3 && (_giveUpTurnCount - 3) % 2 === 0 && _giveUpTurnCount <= 7) {
+                    // console.log(giveUpTurnCount);
+                    rewardSystem.showRewards(_giveUpTurnCount);
+                }
             }
+            // 1초마다 event3 실행
+            showHtmlTimeCount(countTime / divideBy);
+
         }
-        // 1초마다 event3 실행
-        showHtmlTimeCount(countTime);
-    }, 1000);
+        timeBar.style.height = `${100 * gauge}%`
+
+        // 기본 색상 :rgb(211, 157, 106) (RGB: 153, 124, 97)
+        let baseR = 211; // 기본 R 값
+        let baseG = 157; // 기본 G 값
+        let baseB = 106;  // 기본 B 값
+
+        // R 값만 빨간색으로 변하도록 (gauge가 0에서 1로 변화)
+        timeBar.style.backgroundColor = `rgb(${Math.min(255, baseR + (255 - baseR) * (1 - gauge))}, ${baseG}, ${baseB})`;
+
+    }, OneSecond / divideBy);
+
     return timer;
 }
 
@@ -528,11 +580,10 @@ function divideAllTileByNumber() {
             cell.draw();
         }
     });
-    const tileNumbers = [16, 32, 64];
-    const randomNumber = Math.floor(Math.random() * tileNumbers.length);
+
     document.getElementById('nextnumber-container').classList.add('emphasis');
 
-    insertTile = tileNumbers[randomNumber];
+    insertTile = 32;
     document.getElementById("next").innerText = insertTile;
 
     baseLimitTime = Math.max(baseLimitTime - 1, 2);
@@ -710,7 +761,7 @@ function move() {
     console.log("병합으로 인한 데미지 : ", mergeScore);
     setHP(damagedHP);
 
-    setTimeout(() => { setCurrentState("FinishTurn"); }, 500);
+    setTimeout(() => { setCurrentState("FinishTurn"); }, 200);
 }
 
 
@@ -876,6 +927,8 @@ function setGridSize() {
     // grid 사이즈별 클래스 추가 부여
     const grid = document.getElementById("grid");
     grid.classList.add(`size-${gridSize}`);
+
+    document.getElementById("time-limit-bar").classList.add(`size-${gridSize}`);
 
 }
 
