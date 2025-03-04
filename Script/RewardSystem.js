@@ -5,6 +5,7 @@ import {
     setReduceMergeDamage,
     setSequence
 } from "./Board.js";
+import { playSound } from "./Sound.js";
 
 export class RewardSystem {
     constructor() {
@@ -21,6 +22,7 @@ export class RewardSystem {
     // 보상 선택 UI 표시
     showRewards(giveUpTurnCount, clickCallback) {
         console.log("🎁 보상 선택 UI 표시");
+        playSound("reward");
         // 턴 타이머 정지
         const overlay = document.createElement("div");
         overlay.classList.add("reward-overlay");
@@ -50,6 +52,8 @@ export class RewardSystem {
 
             rewardCard.addEventListener("click", () => {
                 console.log(`🎁 보상 선택: ${reward.name} (${reward.type})`);
+                playSound("reward-select");
+
                 this.applyReward(reward);
                 overlay.remove();
 
