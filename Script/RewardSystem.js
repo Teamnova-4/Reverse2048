@@ -192,13 +192,6 @@ export class RewardSystem {
                     type: this.types.heal,
                 },
                 {
-                    icon: "🩻",
-                    name: "타일 숫자 감소",
-                    description: "랜덤한 타일의 숫자를 절반으로 감소시킵니다.",
-                    value: 0.5,
-                    type: this.types.bonus_block,
-                },
-                {
                     icon: "💪",
                     name: "다음 병합 대미지 50%감소 2",
                     description: "다음 두 번의 시스템 턴에서 병합 데미지를 절반으로 줄입니다.",
@@ -221,20 +214,6 @@ export class RewardSystem {
                     description: "체력을 500 만큼 회복합니다.",
                     value: 500,
                     type: this.types.heal,
-                },
-                {
-                    icon: "🩻",
-                    name: "전체타일 숫자 절반",
-                    description: "모든 타일의 숫자를 절반으로 줄입니다",
-                    value: 0.5,
-                    type: this.types.bonus_block,
-                },
-                {
-                    icon: "🆗",
-                    name: "원하는대로!",
-                    description: "플레이어가 원하는 타일 하나를 제거합니다",
-                    value: 2,
-                    type: this.types.bonus_block,
                 },
                 {
                     icon: "🎆",
