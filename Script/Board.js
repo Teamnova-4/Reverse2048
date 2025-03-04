@@ -806,7 +806,6 @@ function move() {
 
     // 만약 병합데미지 감소가 활성화 되어있다면 데미지 감소
     if (isReduceDamage && mergeScore > 0) {
-        console.log("기존 데미지 : "+ mergeScore);
         mergeScore = Math.round(mergeScore * reducePersent); // 반올림 처리
         isReduceDamage = false;
         console.log("병합 데미지 감소률: " + reducePersent);

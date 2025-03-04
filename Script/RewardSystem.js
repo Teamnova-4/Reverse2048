@@ -148,6 +148,11 @@ export class RewardSystem {
         setReduceMergeDamage(reward.value)
     }
 
+    // 타일 위치 변경
+    changeTilePosition(reward) {
+        
+    }
+
     initRewardOptions() {
         // 턴별 보상이 객체의 배열로 저장되어 있음
         // console.log(this.types);
@@ -199,13 +204,6 @@ export class RewardSystem {
                     description: "다음 두 번의 시스템 턴에서 병합 데미지를 절반으로 줄입니다.",
                     value: 0.5,
                     type: this.types.reduce_damage,
-                },
-                {
-                    icon: "4️⃣",
-                    name: "알수없는 배치",
-                    description: "모든 배치된 타일들의 위치를 랜덤으로 뒤바꿉니다.",
-                    value: 50,
-                    type: this.types.bonus_block,
                 }
             ],
             // 7턴 방치 보상
