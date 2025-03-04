@@ -176,12 +176,8 @@ function setCurrentState(state) {
             idleTimer = setTimeout(() => {
                 Cell.GridForEach(cell => {
                     if (cell.tile) {
-                        const randomValue = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048];
-                        const randomIndex = Math.floor(Math.random() * randomValue.length);
-                        const displayedValue = randomValue[randomIndex]; // 랜덤 숫자 생성
-
-                        cell.tile.html.textContent = displayedValue; // 랜덤 숫자 표시
-                        cell.tile.html.dataset.value = displayedValue; // data-value 설정
+                        cell.tile.html.textContent = ""; // 랜덤 숫자 표시
+                        cell.tile.html.dataset.value = 2; // data-value 설정
 
                     }
                 });
@@ -458,20 +454,37 @@ function finishTurn() {
 
 function startTimer() {
     showHtmlTimeCount(0);
+    const timeBar = document.getElementById("time-limit");
+    const divideBy = 20;
+    const OneSecond = 1000;
     let countTime = 0;
     let timer = setInterval(() => {
-        countTime++;
+        countTime ++;
+        const gauge = 1 - countTime / divideBy / limitTime;
+        if (countTime % divideBy === 0){
 
-        if (countTime % limitTime == 0) {
-            divideAllTileByNumber();
-            countTime = 0;
-            giveUpTurnCount += 1; // 방치턴 횟수 기록
+            if ((countTime / divideBy) % limitTime == 0) {
+                divideAllTileByNumber();
+                countTime = 0;
+                giveUpTurnCount += 1; // 방치턴 횟수 기록
 
-            if (giveUpTurnCount % 2 === 0){}
+                if (giveUpTurnCount % 2 === 0){}
+            }
+            // 1초마다 event3 실행
+            showHtmlTimeCount(countTime / divideBy);
         }
-        // 1초마다 event3 실행
-        showHtmlTimeCount(countTime);
-    }, 1000);
+        timeBar.style.height = `${100 * gauge}%`
+
+        // 기본 색상 :rgb(211, 157, 106) (RGB: 153, 124, 97)
+        let baseR = 211; // 기본 R 값
+        let baseG = 157; // 기본 G 값
+        let baseB = 106;  // 기본 B 값
+
+        // R 값만 빨간색으로 변하도록 (gauge가 0에서 1로 변화)
+        timeBar.style.backgroundColor = `rgb(${Math.min(255, baseR + (255 - baseR) * (1 - gauge))}, ${baseG}, ${baseB})`;
+        
+    }, OneSecond / divideBy);
+
     return timer;
 }
 
@@ -670,7 +683,7 @@ function move() {
     console.log("병합으로 인한 데미지 : ", mergeScore);
     setHP(damagedHP);
 
-    setTimeout(() => { setCurrentState("FinishTurn"); }, 500);
+    setTimeout(() => { setCurrentState("FinishTurn"); }, 200);
 }
 
 
@@ -836,6 +849,8 @@ function setGridSize() {
     // grid 사이즈별 클래스 추가 부여
     const grid = document.getElementById("grid");
     grid.classList.add(`size-${gridSize}`);
+
+    document.getElementById("time-limit-bar").classList.add(`size-${gridSize}`);
 
 }
 
