@@ -31,6 +31,7 @@ setSkillCoolTime();
 let coolTime = 0;
 
 let isSequence = false;
+let isReduceDamage = false;
 let isMindControl = false;
 
 let idleTimer; // 타이머 변수 추가
@@ -127,6 +128,7 @@ function initBoard() {
     DrawBoard();
 }
 
+
 // 적은 숫자만큼 체력게이지가 변함
 export function setHP(hp) {
     if (hp < 0) hp = 0
@@ -217,6 +219,15 @@ export function setHP(hp) {
     if (playerHP <= 0) {
         setCurrentState("End");
     }
+}
+
+// RewardSystem의 연속배치
+export function setSequence(value) {
+  isSequence = value; // isSequence 값을 설정
+}
+
+export function setReduceMergeDamage(value) {
+  isReduceDamage = value; // isReduceDamage 값을 설정
 }
 
 // 체력 데이터 초기화
@@ -789,6 +800,12 @@ function move() {
         Cell.mergeLine(simulateList); // 이 메소드 안에서 병합점수가 구해짐
     }
 
+    // 만약 병합데미지 감소가 활성화 되어있다면 데미지 감소
+    if(isReduceDamage && mergeScore>0){
+      mergeScore /= 2;
+      isReduceDamage= false;
+      console.log("병합 데미지 감소");
+    }
     // mergeScore만큼 플레이어 체력 감소
     let damagedHP = playerHP - mergeScore;
     console.log("병합으로 인한 데미지 : ", mergeScore);
@@ -1010,6 +1027,8 @@ function setMergeScore(score) {
 function getMergeScore() {
     return mergeScore;
 }
+
+
 
 export {
     clickSkill,
