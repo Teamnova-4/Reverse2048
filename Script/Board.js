@@ -124,6 +124,9 @@ function initBoard() {
         } else if (clickMode === "skillMode") {
             UseSkillToTile(cell)
         }
+
+        _giveUpTurnCount = 0;
+        printGiveUpTurn(_giveUpTurnCount);
     });
     DrawBoard();
 }
@@ -223,11 +226,11 @@ export function setHP(hp) {
 
 // RewardSystem의 연속배치
 export function setSequence(value) {
-  isSequence = value; // isSequence 값을 설정
+    isSequence = value; // isSequence 값을 설정
 }
 
 export function setReduceMergeDamage(value) {
-  isReduceDamage = value; // isReduceDamage 값을 설정
+    isReduceDamage = value; // isReduceDamage 값을 설정
 }
 
 // 체력 데이터 초기화
@@ -255,15 +258,15 @@ function setCurrentState(state) {
             _timer = startTimer();
             document.getElementById('nextnumber-container').classList.remove('emphasis');
             clearTimeout(idleTimer); // 이전 타이머 클리어
-            idleTimer = setTimeout(() => {
-                Cell.GridForEach(cell => {
-                    if (cell.tile) {
-                        cell.tile.html.textContent = ""; // 랜덤 숫자 표시
-                        cell.tile.html.dataset.value = 2; // data-value 설정
+            // idleTimer = setTimeout(() => {
+            //     Cell.GridForEach(cell => {
+            //         if (cell.tile) {
+            //             cell.tile.html.textContent = ""; // 랜덤 숫자 표시
+            //             cell.tile.html.dataset.value = 2; // data-value 설정
 
-                    }
-                });
-            }, 2000); // 2초 후 랜덤 숫자 표시
+            //         }
+            //     });
+            // }, 2000); // 2초 후 랜덤 숫자 표시
 
             insertTile = Math.random() < 0.9 ? 2 : 4;
             document.getElementById("next").innerText = insertTile;
@@ -277,7 +280,6 @@ function setCurrentState(state) {
             setTimeout(() => {
                 setCurrentState("Simulate");
             }, 500);
-
             break;
         case "Simulate":
             simulate();
@@ -801,10 +803,10 @@ function move() {
     }
 
     // 만약 병합데미지 감소가 활성화 되어있다면 데미지 감소
-    if(isReduceDamage && mergeScore>0){
-      mergeScore /= 2;
-      isReduceDamage= false;
-      console.log("병합 데미지 감소");
+    if (isReduceDamage && mergeScore > 0) {
+        mergeScore /= 2;
+        isReduceDamage = false;
+        console.log("병합 데미지 감소");
     }
     // mergeScore만큼 플레이어 체력 감소
     let damagedHP = playerHP - mergeScore;
