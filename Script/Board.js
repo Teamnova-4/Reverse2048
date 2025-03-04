@@ -961,9 +961,9 @@ function updateGameTimeDisplay() {
 function updateCooltime() {
     const spaceButton = document.querySelector(".show-space");
     if (coolTime > 0) {
-        spaceButton.classList.remove("disable");
-    } else {
         spaceButton.classList.add("disable");
+    } else {
+        spaceButton.classList.remove("disable");
     }
     spaceButton.textContent = `Space Bar`;
     const overlay = document.getElementById("cooltimeOverlay");
